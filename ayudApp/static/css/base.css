@@ -1,0 +1,34 @@
+/* Paleta de colores */
+    /* 
+    color 1: #04668C
+    color 2: #04738C
+    color 3: #047F8C
+    color 4: #048C8C
+    color 5: #82D9D0 
+    */
+
+/* NavBar */
+#navbarBase {
+    background-color: #048C8C;   
+    color: white;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+  }
+
+#navbarBase a {
+color: white;
+  }
+
+/* Footer */
+#footerBase {
+    background-color: #04738C;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    }
