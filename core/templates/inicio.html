@@ -1,8 +1,18 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Inicio{% endblock %}
+{% block title %}AyudApp{% endblock %}
+
+{% block css %} <link rel="stylesheet" href="{% static 'css/inicio.css' %}"> {% endblock %}
 
 {% block content %}
-    <h1>Bienvenido a AyudantiApp</h1>
-    <p>Conecta con los mejores ayudantes para tus estudios.</p>
+<div id="fondoPantalla" class="container-fluid">
+    <div id="contenderoDescripcionLogin" class="d-flex justify-content-center align-items-center">
+        <div class="texto-overlay p-4">
+            <h1>Bienvenido a AyudApp</h1>
+            <p>Conecta con los mejores ayudantes para tus estudios.</p>
+            <a href="">acceder</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -9,17 +9,31 @@
 
 /* NavBar */
 #navbarBase {
-    background-color: #048C8C;   
+    background-color: #04738C;   
     color: white;
     height: 80px;
     display: flex;
     align-items: center;
     padding: 0 20px;
+    border-bottom: 0.6px solid white;
   }
 
 #navbarBase a {
 color: white;
+padding-left: 15px;
   }
+
+.navbar-nav {
+  background: #04738C;
+  border-radius: 0 0 15px 15px; 
+  padding-left: 30px; 
+}
+
+/* main */
+main {
+  min-height: 80vh;
+  background: linear-gradient(to bottom, #04738C, #82D9D0);;
+}
 
 /* Footer */
 #footerBase {

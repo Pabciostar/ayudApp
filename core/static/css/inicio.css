@@ -1,0 +1,20 @@
+#fondoPantalla {
+    background-image: url('../images/fondoPantalla3_mod.png'); /* ajusta la ruta */
+  background-size: cover;        /* cubre todo el div */
+  background-position: center;   /* centra la imagen */
+  background-repeat: no-repeat;  /* evita que se repita */
+  width: 100%; 
+  height: 80vh;  
+}
+
+.texto-overlay {
+    color: white;
+    background-color: rgba(4, 102, 140, 0.8); 
+    border: 2px solid #04738C;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+#contenderoDescripcionLogin {
+    height: 80vh;
+}
