@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %} <link rel="stylesheet" href="{% static 'css/buscador.css' %}"> {% endblock %}
+
+{% block content %}
+<div id="contendorPrincipalBuscador" class="container-fluid">
+  <div class="row">
+
+    <!-- Columna 1: Clases agendadas -->
+    <div class="col-md-3">
+      <h5>Clases Agendadas</h5>
+      <ul class="list-group">
+        <li class="list-group-item">Juan Morales - Lunes 16:00 <button type="button" class="btn btn-primary">Ver más</button></li>
+        <li class="list-group-item">Romina Reyes - Martes 12:00 <button type="button" class="btn btn-primary">Ver más</button></li>
+        <li class="list-group-item">Camilo Muñoz - Jueves 17:00 <button type="button" class="btn btn-primary">Ver más</button></li>
+        <!-- Puedes agregar más dinámicamente desde Django -->
+      </ul>
+
+      <div class="p-3 mt-4 bg-info text-white rounded shadow">
+        <h5>¡Gana dinero!</h5>
+        <p>Postula como ayudante y ofrece tus clases a estudiantes que te necesitan.</p>
+        <a href="#" class="btn btn-light btn-sm">Postular ahora</a>
+      </div>
+
+    </div>
+
+    <!-- Columna 2: Buscador y recomendaciones -->
+    <div class="col-md-9">
+      <!-- Buscador -->
+      <div class="mb-3">
+        <input type="text" class="form-control" placeholder="Busca una asignatura o ayudante">
+      </div>
+
+      <!-- Recomendaciones -->
+      <h5>Recomendaciones</h5>
+      <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="square-image-container">
+                  <img src="{% static 'images/ayudante1.png' %}" class="img-fluid square-image" alt="Ayudante">
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Juana Oyarce</h5>
+                  <p class="card-text">Descripción breve del ayudante.</p>
+                  <button type="button" class="btn btn-primary">Ver más</button>
+                </div>
+              </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="square-image-container">
+                  <img src="{% static 'images/ayudante2.png' %}" class="img-fluid square-image" alt="Ayudante">
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Martina Naranjo</h5>
+                  <p class="card-text">Descripción breve del ayudante.</p>
+                  <button type="button" class="btn btn-primary">Ver más</button>
+                </div>
+              </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="square-image-container">
+                  <img src="{% static 'images/ayudante3.png' %}" class="img-fluid square-image" alt="Ayudante">
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Humberto Marinao</h5>
+                  <p class="card-text">Descripción breve del ayudante.</p>
+                  <button type="button" class="btn btn-primary">Ver más</button>
+                </div>
+              </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="square-image-container">
+                      <img src="{% static 'images/ayudante4.png' %}" class="img-fluid square-image" alt="Ayudante">
+                    </div>
+                    <div class="card-body">
+                      <h5 class="card-title">Esteban Aguilera</h5>
+                      <p class="card-text">Descripción breve del ayudante.</p>
+                      <button type="button" class="btn btn-primary">Ver más</button>
+                    </div>
+                  </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="square-image-container">
+                      <img src="{% static 'images/ayudante5.png' %}" class="img-fluid square-image" alt="Ayudante">
+                    </div>
+                    <div class="card-body">
+                      <h5 class="card-title">Ignacio Sanhueza</h5>
+                      <p class="card-text">Descripción breve del ayudante.</p>
+                      <button type="button" class="btn btn-primary">Ver más</button>
+                    </div>
+                  </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+{% endblock %}
