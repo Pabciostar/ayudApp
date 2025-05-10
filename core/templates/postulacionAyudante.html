@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %} <link rel="stylesheet" href="{% static 'css/postulacionAyudante.css' %}"> {% endblock %}
+
+{% block content %}
+<div id="contenedorFormulario">
+    <div id="marcoFormulario">
+    
+        <form class="container">
+            <h2 class="mb-4">Formulario de Postulación para Ayudante</h2>
+          
+            <!-- DATOS PERSONALES -->
+            <h4>Datos Personales</h4>
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre completo</label>
+              <input type="text" class="form-control" id="nombre" required>
+            </div>
+            <div class="mb-3">
+              <label for="rut" class="form-label">RUT</label>
+              <input type="text" class="form-control" id="rut" required>
+            </div>
+            <div class="mb-3">
+              <label for="telefono" class="form-label">Teléfono</label>
+              <input type="tel" class="form-control" id="telefono">
+            </div>
+            <div class="mb-3">
+              <label for="carrera" class="form-label">Carrera o especialidad</label>
+              <input type="text" class="form-control" id="carrera" required>
+            </div>
+          
+            <!-- EXPERIENCIA ACADÉMICA -->
+            <h4 class="mt-4">Experiencia Académica</h4>
+
+            <div class="mb-3">
+              <label class="form-label">¿Has sido ayudante antes?</label>
+              <select class="form-select" id="ayudanteAntes">
+                <option selected disabled>Selecciona una opción</option>
+                <option>Sí</option>
+                <option>No</option>
+              </select>
+            </div>
+          
+            <!-- RAMOS QUE PUEDE AYUDAR -->
+            <div class="mb-3">
+              <label for="ramos" class="form-label">¿En qué ramos puedes ayudar?</label>
+              <select class="form-select" id="ramos" multiple>
+                <option>Álgebra</option>
+                <option>Cálculo</option>
+                <option>Física</option>
+                <option>Química</option>
+                <option>Programación</option>
+                <option>Estadística</option>
+                <option>Contabilidad</option>
+              </select>
+              <small class="text-muted" style="color: white;">Presiona Ctrl (o Cmd) para seleccionar múltiples opciones.</small>
+            </div>
+          
+            <!-- OTROS -->
+            <h4 class="mt-4">Otros</h4>
+            <div class="mb-3">
+              <label for="presentacion" class="form-label">Cuéntanos brevemente por qué quieres ser ayudante</label>
+              <textarea class="form-control" id="presentacion" rows="4"></textarea>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" id="acepto" required>
+              <label class="form-check-label" for="acepto">
+                Acepto los términos y condiciones
+              </label>
+            </div>
+          
+            <!-- BOTONES -->
+            <button type="submit" class="btn btn-primary">Enviar postulación</button>
+            <a href="{% url 'buscador' %}">atrás</a>
+          </form>
+    
+    </div>
+</div>
+
+{% endblock %}
