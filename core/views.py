@@ -12,3 +12,6 @@ def postulacionAyudante_view(request):
 
 def detalleClase_view(request):
     return render(request, 'detalleClase.html')
+
+def perfilAyudante_view(request):
+    return render(request, 'perfilAyudante.html')
