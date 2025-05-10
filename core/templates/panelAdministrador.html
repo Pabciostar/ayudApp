@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AyudAppAdministrador{% endblock %}
+
+{% block css %} <link rel="stylesheet" href="{% static 'css/inicio.css' %}"> {% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+      <!-- Barra lateral -->
+      <div class="col-3">
+        <div class="list-group">
+          <button class="list-group-item list-group-item-action" onclick="mostrarUsuarios()">Ver usuarios</button>
+          <button class="list-group-item list-group-item-action" onclick="limpiarPanel()">Postulaciones a ayudante</button>
+          <button class="list-group-item list-group-item-action"  onclick="mostrarClasesAgendadas()">Estadísticas de clases</button>
+        </div>
+      </div>
+
+      <!-- Panel de contenido -->
+      <div class="col-9" id="panelInformacion">
+        <!-- Aquí se cargará el contenido dinámicamente -->
+        <div class="text-muted">Selecciona una opción para ver los detalles.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="{% static 'js/panelAdministrador.js' %}"></script>
+{% endblock %}

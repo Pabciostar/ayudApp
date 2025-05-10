@@ -15,3 +15,6 @@ def detalleClase_view(request):
 
 def perfilAyudante_view(request):
     return render(request, 'perfilAyudante.html')
+
+def panelAdministrador(request):
+    return render(request, 'panelAdministrador.html')
