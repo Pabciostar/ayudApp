@@ -9,3 +9,6 @@ def buscador_view(request):
 
 def postulacionAyudante_view(request):
     return render(request, 'postulacionAyudante.html')
+
+def detalleClase_view(request):
+    return render(request, 'detalleClase.html')

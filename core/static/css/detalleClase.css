@@ -1,0 +1,19 @@
+#contenedorprincipal {
+    margin-top: 30px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#marcoDetalle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    color: white;
+    background-color: #04668C; 
+    border: 2px solid #04738C;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    max-width: 700px;
+}

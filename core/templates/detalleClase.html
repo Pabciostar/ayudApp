@@ -4,8 +4,25 @@
 {% block css %} <link rel="stylesheet" href="{% static 'css/detalleClase.css' %}"> {% endblock %}
 
 {% block content %}
-<div id="contenedorFormulario">
-    <div id="marcoFormulario">
+<div id="contenedorprincipal">
+    <div id="marcoDetalle">
+        <div class="container">
+            <h3 class="mb-4">Detalle de la Clase Agendada</h3>
+      
+            <p><strong>Ayudante:</strong> María González</p>
+            <p><strong>Fecha:</strong> 14 de mayo, 2025</p>
+            <p><strong>Hora:</strong> 17:00 hrs</p>
+            <p><strong>Ramo:</strong> Álgebra Lineal</p>
+            <p><strong>Estado:</strong> <span class="badge bg-success">Confirmada</span></p>
+            <p><strong>Google Meet:</strong> <a href="https://meet.google.com/abc-defg-hij" target="_blank" class="link-light">Enlace a la clase</a></p>
+      
+            <div class="d-grid gap-2 mt-4">
+              <button class="btn btn-light">Solicitar cambio de fecha</button>
+              <button class="btn btn-light">Enviar mensaje al ayudante</button>
+              <button class="btn btn-danger">Cancelar clase</button>
+              <button class="btn btn-outline-light"><a href="{% url 'buscador' %}" target="_blank" class="link-light">Volver</a></button>
+            </div>
+          </div>
     
         
     
