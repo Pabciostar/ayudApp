@@ -18,3 +18,12 @@ def perfilAyudante_view(request):
 
 def panelAdministrador(request):
     return render(request, 'panelAdministrador.html')
+
+def notificaciones_view(request):
+    return render(request, 'notificaciones.html')
+
+def notificacion_view(request):
+    return render(request, 'notificacion.html')
+
+def mensajeEstudianteAyudado_view(request):
+    return render(request, 'mensajeEstudianteAyudante.html')

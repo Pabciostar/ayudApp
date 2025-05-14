@@ -1,32 +1,61 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block css %} <link rel="stylesheet" href="{% static 'css/detalleClase.css' %}"> {% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/detalleClase.css' %}"> {% endblock %}
 
 {% block content %}
 <div id="contenedorprincipal">
-    <div id="marcoDetalle">
-        <div class="container">
-            <h3 class="mb-4">Detalle de la Clase Agendada</h3>
-      
-            <p><strong>Ayudante:</strong> María González</p>
-            <p><strong>Fecha:</strong> 14 de mayo, 2025</p>
-            <p><strong>Hora:</strong> 17:00 hrs</p>
-            <p><strong>Ramo:</strong> Álgebra Lineal</p>
-            <p><strong>Estado:</strong> <span class="badge bg-success">Confirmada</span></p>
-            <p><strong>Google Meet:</strong> <a href="https://meet.google.com/abc-defg-hij" target="_blank" class="link-light">Enlace a la clase</a></p>
-      
-            <div class="d-grid gap-2 mt-4">
-              <button class="btn btn-light">Solicitar cambio de fecha</button>
-              <button class="btn btn-light">Enviar mensaje al ayudante</button>
-              <button class="btn btn-danger">Cancelar clase</button>
-              <button class="btn btn-outline-light"><a href="{% url 'buscador' %}" target="_blank" class="link-light">Volver</a></button>
-            </div>
-          </div>
-    
-        
-    
+  <div id="marcoDetalle">
+    <div class="container">
+      <h3 class="mb-4">Detalle de la Clase Agendada</h3>
+
+      <p><strong>Ayudante:</strong> María González</p>
+      <p><strong>Fecha:</strong> 14 de mayo, 2025</p>
+      <p><strong>Hora:</strong> 17:00 hrs</p>
+      <p><strong>Ramo:</strong> Álgebra Lineal</p>
+      <p><strong>Estado:</strong> <span class="badge bg-success">Confirmada</span></p>
+      <p><strong>Google Meet:</strong> <a href="https://meet.google.com/abc-defg-hij" target="_blank"
+          class="link-light">Enlace a la clase</a></p>
+
+      <div class="d-grid gap-2 mt-4">
+        <button class="btn btn-light">Solicitar cambio de fecha</button>
+        <a href="{% url 'mensajeEstudianteAyudante' %}" class="btn btn-light">Enviar mensaje al ayudante</a>
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalCancelarClase">
+          Cancelar Clase
+        </button>
+        <button class="btn btn-outline-light"><a href="{% url 'buscador' %}" target="_blank"
+            class="link-light">Volver</a></button>
+      </div>
     </div>
+
+
+
+  </div>
 </div>
+
+
+<!-- Modal de cancelar clase-->
+<div class="modal fade" id="modalCancelarClase" tabindex="-1" aria-labelledby="tituloModalCancelar" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="tituloModalCancelar">¿Estás seguro?</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro de que deseas cancelar esta clase? Se cobrará una comisión hacia el ayudante según los términos y condiciones.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Sí, cancelar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 {% endblock %}

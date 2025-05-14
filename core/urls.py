@@ -8,4 +8,7 @@ urlpatterns = [
     path('detalleClase', views.detalleClase_view, name='detalleClase'),
     path('perfilAyudante', views.perfilAyudante_view, name='perfilAyudante'),
     path('panelAdministrador', views.panelAdministrador, name='panelAdministrador'),
+    path('notificaciones', views.notificaciones_view, name='notificaciones'),
+    path('notificacion', views.notificacion_view, name='notificacion'),
+    path('mensajeEstudianteAyudante', views.mensajeEstudianteAyudado_view, name='mensajeEstudianteAyudante')
 ]
