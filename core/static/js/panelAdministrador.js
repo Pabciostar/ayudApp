@@ -199,7 +199,8 @@ function mostrarUsuarios() {
         estudiante: 'Pedro Torres',
         fechaAgendamiento: '2025-05-01',
         fechaClase: '2025-05-03',
-        estado: 'Confirmada',
+        estado: 'Realizada',
+        calificacion: '4.0',
         valor: 20000
       },
       {
@@ -208,6 +209,7 @@ function mostrarUsuarios() {
         fechaAgendamiento: '2025-04-28',
         fechaClase: '2025-05-02',
         estado: 'Pagada',
+        calificacion: 'No aplica',
         valor: 15000
       },
       {
@@ -216,6 +218,7 @@ function mostrarUsuarios() {
         fechaAgendamiento: '2025-05-04',
         fechaClase: '2025-05-06',
         estado: 'Realizada',
+        calificacion: '5.0',
         valor: 18000
       },
       {
@@ -224,6 +227,7 @@ function mostrarUsuarios() {
         fechaAgendamiento: '2025-05-02',
         fechaClase: '2025-05-05',
         estado: 'Confirmada',
+        calificacion: 'No aplica',
         valor: 22000
       }
     ];
@@ -238,6 +242,7 @@ function mostrarUsuarios() {
             <th>Fecha Agendamiento</th>
             <th>Fecha Clase</th>
             <th>Estado</th>
+            <th>Calificacion</th>
             <th>Valor</th>
             <th>Comisión (15%)</th>
             <th>Pago al Ayudante (85%)</th>
@@ -256,6 +261,7 @@ function mostrarUsuarios() {
           <td>${c.fechaAgendamiento}</td>
           <td>${c.fechaClase}</td>
           <td>${c.estado}</td>
+          <td>${c.calificacion}</td>
           <td>$${c.valor}</td>
           <td>$${comision}</td>
           <td>$${pago}</td>
@@ -266,3 +272,57 @@ function mostrarUsuarios() {
     tablaHTML += `</tbody></table>`;
     panel.innerHTML = tablaHTML;
   }
+
+
+
+    function mostrarPostulaciones() {
+    const panel = document.getElementById('panelInformacion');
+    limpiarPanel();
+  
+    const postulaciones = [
+      {
+        usuario: 'Ana Martínez',
+        fechaPostulacion: '2025-03-12',
+        grado: 'Estudiante de ingeniería en informática'
+      },
+      {
+        usuario: 'Juana Oyarce',
+        fechaPostulacion: '2025-03-05',
+        grado: 'Estudiante de pedagogía en lenguaje'
+      },
+      {
+      usuario: 'Jorge Muñoz',
+        fechaPostulacion: '2025-02-28',
+        grado: 'Ingeniero Comercial'
+        }
+    ];
+  
+    let tablaHTML = `
+      <h4>Postulaciones a ayudante</h4>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Fecha de postulación</th>
+            <th>Grado</th>
+            <th>Acción Clase</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+  
+    postulaciones.forEach(c => {
+      tablaHTML += `
+        <tr>
+          <td>${c.usuario}</td>
+          <td>${c.fechaPostulacion}</td>
+          <td>${c.grado}</td>
+          <td><a href="/detallePostulacion" class="btn btn-primary">Ver más</a></td>
+        </tr>
+      `;
+    });
+  
+    tablaHTML += `</tbody></table>`;
+    panel.innerHTML = tablaHTML;
+  }
+  

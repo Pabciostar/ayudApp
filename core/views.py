@@ -27,3 +27,9 @@ def notificacion_view(request):
 
 def mensajeEstudianteAyudado_view(request):
     return render(request, 'mensajeEstudianteAyudante.html')
+
+def detallePostulacion_view(request):
+    return render(request, 'detallePostulacion.html')
+
+def editarPerfilAyudante_view(request):
+    return render(request, 'editarPerfilAyudante.html')

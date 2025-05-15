@@ -10,5 +10,7 @@ urlpatterns = [
     path('panelAdministrador', views.panelAdministrador, name='panelAdministrador'),
     path('notificaciones', views.notificaciones_view, name='notificaciones'),
     path('notificacion', views.notificacion_view, name='notificacion'),
-    path('mensajeEstudianteAyudante', views.mensajeEstudianteAyudado_view, name='mensajeEstudianteAyudante')
+    path('mensajeEstudianteAyudante', views.mensajeEstudianteAyudado_view, name='mensajeEstudianteAyudante'),
+    path('detallePostulacion', views.detallePostulacion_view, name='detallePostulacion'),
+    path('editarPerfilAyudante', views.editarPerfilAyudante_view, name='editarPerfilAyudante'),
 ]
