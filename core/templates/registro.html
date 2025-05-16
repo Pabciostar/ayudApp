@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}"> {% endblock %}
+
+{% block content %}
+
+<div id="marcoNotificaciones" class="container">
+    <div id="contenedorNotificaciones" class="row mt-5 py-5">
+        <div class="container">
+            <div class="p-4">
+                <h2 >Registro de Usuario</h2>
+                <form action="/registrar_usuario/" method="POST">
+                    <!-- CSRF token si usas Django -->
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="apellido" class="form-label">Apellido</label>
+                        <input type="text" class="form-control" id="apellido" name="apellido" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento</label>
+                        <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="rut" class="form-label">RUT</label>
+                        <input type="text" class="form-control" id="rut" name="rut" placeholder="Ej: 12.345.678-9"
+                            required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Registrarse</button>
+                </form>
+                <a href="{% url 'inicio' %}" class="btn btn-secondary mt-2">Volver</a>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+{% endblock %}

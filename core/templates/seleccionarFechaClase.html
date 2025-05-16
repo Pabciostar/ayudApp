@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}"> {% endblock %}
+
+{% block content %}
+
+<div id="marcoNotificaciones" class="container">
+    <div id="contenedorNotificaciones" class="row mt-5 py-5">
+        <div class=" p-4">
+            <h2 class="mb-4">Agendar Clase</h2>
+            <form action="/agendar_clase/" method="POST">
+                <!-- Si estás usando Django, no olvides el token -->
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="fecha" class="form-label">Fecha de la clase</label>
+                    <input type="date" class="form-control" id="fecha" name="fecha" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="hora" class="form-label">Hora de la clase</label>
+                    <input type="time" class="form-control" id="hora" name="hora" required>
+                </div>
+
+                <button type="submit" class="btn btn-success">Agendar</button>
+
+            </form>
+            <a href="{% url 'buscador' %}" class="btn btn-secondary mt-2">Volver</a>
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

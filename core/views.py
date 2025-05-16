@@ -33,3 +33,9 @@ def detallePostulacion_view(request):
 
 def editarPerfilAyudante_view(request):
     return render(request, 'editarPerfilAyudante.html')
+
+def registro_view(request):
+    return render(request, 'registro.html')
+
+def seccionarFechaClase_view(request):
+    return render(request, 'seleccionarFechaClase.html')
