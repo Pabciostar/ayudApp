@@ -14,5 +14,8 @@ urlpatterns = [
     path('detallePostulacion', views.detallePostulacion_view, name='detallePostulacion'),
     path('editarPerfilAyudante', views.editarPerfilAyudante_view, name='editarPerfilAyudante'),
     path('registro', views.registro_view, name='registro'),
-    path('seleccionarFechaClase', views.seccionarFechaClase_view, name='seleccionarFechaClase')
+    path('seleccionarFechaClase', views.seccionarFechaClase_view, name='seleccionarFechaClase'),
+    path('login/', views.login_with_google, name='login'),
+    path('oauth2callback/', views.oauth2callback, name='oauth2callback'),
+    path('logout/', views.logout_view, name='logout')
 ]
