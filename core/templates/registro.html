@@ -36,7 +36,8 @@
                             required>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Registrarse</button>
+                    {% comment %} <button type="submit" class="btn btn-primary">Registrarse</button> {% endcomment %}
+                    <a href="{% url 'inicio' %}" class="btn btn-primary mt-2">Registrarse</a>
                 </form>
                 <a href="{% url 'inicio' %}" class="btn btn-secondary mt-2">Volver</a>
             </div>
