@@ -14,7 +14,6 @@ from decouple import config
 from pathlib import Path
 import os
 import dj_database_url
-from . import secrets
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-jg5s!559x8@57hygh=)tu5-rxkqudblpfm=$hz^w0ok6&du-e6'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -81,8 +80,14 @@ WSGI_APPLICATION = 'ayudApp.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL'))
+   'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('NAME'),        
+        'USER': config('USER'),
+        'PASSWORD': config('PASSWORD'),  
+        'HOST': config('HOST'), 
+        'PORT': config('PORT'),    
+    }
     }
 
 
@@ -136,6 +141,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
 SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
 CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
-GOOGLE_CLIENT_ID = secrets.GOOGLE_CLIENT_ID
-GOOGLE_CLIENT_SECRET = secrets.GOOGLE_CLIENT_SECRET
-GOOGLE_REDIRECT_URI = secrets.GOOGLE_REDIRECT_URI
+GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
+GOOGLE_REDIRECT_URI = config('GOOGLE_REDIRECT_URI')
