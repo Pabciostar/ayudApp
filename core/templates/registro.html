@@ -2,7 +2,8 @@
 {% load static %}
 
 {% block css %}
-<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}"> {% endblock %}
+<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}">
+{% endblock %}
 
 {% block content %}
 
@@ -10,42 +11,47 @@
     <div id="contenedorNotificaciones" class="row mt-5 py-5">
         <div class="container">
             <div class="p-4">
-                <h2 >Registro de Usuario</h2>
-                <form action="/registrar_usuario/" method="POST">
-                    <!-- CSRF token si usas Django -->
+                <h2>Registro de Usuario</h2>
+                <form method="POST">
                     {% csrf_token %}
 
                     <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                        <label for="nombres" class="form-label">Nombre</label>
+                        {{ form.nombres }}
                     </div>
 
                     <div class="mb-3">
-                        <label for="apellido" class="form-label">Apellido</label>
-                        <input type="text" class="form-control" id="apellido" name="apellido" required>
+                        <label for="apellidos" class="form-label">Apellido</label>
+                        {{ form.apellidos }}
                     </div>
 
                     <div class="mb-3">
-                        <label for="fecha_nacimiento" class="form-label">Fecha de nacimiento</label>
-                        <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
+                        <label for="nacimiento" class="form-label">Fecha de nacimiento</label>
+                        {{ form.nacimiento }}
                     </div>
 
                     <div class="mb-3">
-                        <label for="rut" class="form-label">RUT</label>
-                        <input type="text" class="form-control" id="rut" name="rut" placeholder="Ej: 12.345.678-9"
-                            required>
+                        <label for="rut_usuario" class="form-label">RUT</label>
+                        {{ form.rut_usuario }}
                     </div>
 
-                    {% comment %} <button type="submit" class="btn btn-primary">Registrarse</button> {% endcomment %}
-                    <a href="{% url 'inicio' %}" class="btn btn-primary mt-2">Registrarse</a>
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        {{ form.telefono }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="sexo" class="form-label">Sexo</label>
+                        {{ form.sexo }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-2">Registrarse</button>
                 </form>
+
                 <a href="{% url 'inicio' %}" class="btn btn-secondary mt-2">Volver</a>
             </div>
         </div>
     </div>
-
-
 </div>
-
 
 {% endblock %}

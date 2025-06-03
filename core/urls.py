@@ -17,5 +17,7 @@ urlpatterns = [
     path('seleccionarFechaClase', views.seccionarFechaClase_view, name='seleccionarFechaClase'),
     path('login/', views.login_with_google, name='login'),
     path('oauth2callback/', views.oauth2callback, name='oauth2callback'),
-    path('logout/', views.logout_view, name='logout')
+    path('logout/', views.logout_view, name='logout'),
+    path('datos_adicionales/', views.datos_adicionales, name='datos_adicionales'),
+    path('completar_datos/', views.completar_datos, name='completar_datos'),
 ]

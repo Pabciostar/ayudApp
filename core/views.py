@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from google_auth_oauthlib.flow import Flow
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import Usuario
+from .forms import DatosAdicionalesForm
 import google.auth.transport.requests
 import requests
 import os
@@ -37,10 +40,14 @@ def login_with_google(request):
 
 
 def oauth2callback(request):
-    try:
-        state = request.session['oauth_state']
-    except KeyError:
-        return HttpResponse("Error: No se encontró el estado de autenticación. Intenta iniciar sesión desde el botón de Google.")
+    session_state = request.session.get('oauth_state')
+    request_state = request.GET.get('state')
+
+    if not session_state or not request_state:
+        return HttpResponse("Error: Estado de autenticación faltante.")
+    
+    if session_state != request_state:
+        return HttpResponse("Error: El estado recibido no coincide. Intenta iniciar sesión nuevamente.")
     
     flow = Flow.from_client_config(
         {
@@ -52,8 +59,8 @@ def oauth2callback(request):
                 "token_uri": "https://oauth2.googleapis.com/token"
             }
         },
-        scopes=['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid'],
-        state=state
+        scopes=['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid', 'https://www.googleapis.com/auth/calendar'],
+        state=session_state
     )
     flow.redirect_uri = settings.GOOGLE_REDIRECT_URI
 
@@ -76,7 +83,39 @@ def oauth2callback(request):
     user, _ = User.objects.get_or_create(username=email, defaults={'first_name': name, 'email': email})
     login(request, user)
 
-    return redirect('buscador')
+    try:
+        usuario = Usuario.objects.get(correo=email)
+        return redirect('buscador')
+    except Usuario.DoesNotExist:
+        return redirect('completar_datos')
+    
+@login_required
+def datos_adicionales(request):
+    if Usuario.objects.filter(correo=request.user.email).exists():
+        return redirect('buscador')
+
+    if request.method == 'POST':
+        form = DatosAdicionalesForm(request.POST)
+        if form.is_valid():
+            usuario = form.save(commit=False)
+            usuario.correo = request.user.email
+            usuario.id_usuario = usuario.rut_usuario.replace('.', '').split('-')[0]
+            usuario.rol = 'estudiante'  # Rol fijo
+            usuario.save()
+            messages.success(request, 'Tus datos fueron registrados exitosamente.')
+            return redirect('buscador')
+    else:
+        form = DatosAdicionalesForm()
+
+    return render(request, 'registro.html', {'form': form})
+
+@login_required
+def completar_datos(request):
+    # Si ya tiene un perfil de Usuario, redirige al buscador
+    if Usuario.objects.filter(correo=request.user.email).exists():
+        return redirect('buscador')
+    
+    return redirect('datos_adicionales')
 
 def logout_view(request):
     logout(request)
@@ -87,9 +126,6 @@ def inicio(request):
     return render(request, 'inicio.html')
 
 @login_required
-def buscador_view(request):
-    return render(request, 'buscador.html')
-
 def buscador_view(request):
     return render(request, 'buscador.html')
 
