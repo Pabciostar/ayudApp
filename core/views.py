@@ -22,8 +22,8 @@ def login_with_google(request):
                 "token_uri": "https://oauth2.googleapis.com/token"
             }
         },
-        scopes=['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid']
-    )
+       scopes=['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid', 'https://www.googleapis.com/auth/calendar']
+       )
 
     flow.redirect_uri = settings.GOOGLE_REDIRECT_URI
 
