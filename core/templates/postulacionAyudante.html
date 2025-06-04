@@ -1,80 +1,71 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block css %} <link rel="stylesheet" href="{% static 'css/postulacionAyudante.css' %}"> {% endblock %}
+{% block css %} 
+<link rel="stylesheet" href="{% static 'css/postulacionAyudante.css' %}"> 
+{% endblock %}
 
 {% block content %}
 <div id="contenedorFormulario">
     <div id="marcoFormulario">
-    
-        <form class="container">
+        <form method="post" enctype="multipart/form-data" class="container">
+            {% csrf_token %}
             <h2 class="mb-4">Formulario de Postulación para Ayudante</h2>
-          
-            <!-- DATOS PERSONALES -->
-            <h4>Datos Personales</h4>
-            <div class="mb-3">
-              <label for="nombre" class="form-label">Nombre completo</label>
-              <input type="text" class="form-control" id="nombre" required>
-            </div>
-            <div class="mb-3">
-              <label for="rut" class="form-label">RUT</label>
-              <input type="text" class="form-control" id="rut" required>
-            </div>
-            <div class="mb-3">
-              <label for="telefono" class="form-label">Teléfono</label>
-              <input type="tel" class="form-control" id="telefono">
-            </div>
-            <div class="mb-3">
-              <label for="carrera" class="form-label">Carrera o especialidad</label>
-              <input type="text" class="form-control" id="carrera" required>
-            </div>
-          
-            <!-- EXPERIENCIA ACADÉMICA -->
-            <h4 class="mt-4">Experiencia Académica</h4>
 
+            <!-- Campo: Carrera o especialidad -->
             <div class="mb-3">
-              <label class="form-label">¿Has sido ayudante antes?</label>
-              <select class="form-select" id="ayudanteAntes">
-                <option selected disabled>Selecciona una opción</option>
-                <option>Sí</option>
-                <option>No</option>
-              </select>
+                <label for="{{ form.carrera.id_for_label }}" class="form-label">Carrera o especialidad</label>
+                {{ form.carrera }}
             </div>
-          
-            <!-- RAMOS QUE PUEDE AYUDAR -->
+
+            <!-- Campo: Foto -->
             <div class="mb-3">
-              <label for="ramos" class="form-label">¿En qué ramos puedes ayudar?</label>
-              <select class="form-select" id="ramos" multiple>
-                <option>Álgebra</option>
-                <option>Cálculo</option>
-                <option>Física</option>
-                <option>Química</option>
-                <option>Programación</option>
-                <option>Estadística</option>
-                <option>Contabilidad</option>
-              </select>
-              <small class="text-muted" style="color: white;">Presiona Ctrl (o Cmd) para seleccionar múltiples opciones.</small>
+                <label for="{{ form.foto.id_for_label }}" class="form-label">Foto</label>
+                {{ form.foto }}
             </div>
-          
-            <!-- OTROS -->
-            <h4 class="mt-4">Otros</h4>
+
+            <!-- Campo: Presentación -->
             <div class="mb-3">
-              <label for="presentacion" class="form-label">Cuéntanos brevemente por qué quieres ser ayudante</label>
-              <textarea class="form-control" id="presentacion" rows="4"></textarea>
+                <label for="{{ form.cuentanos.id_for_label }}" class="form-label">Cuéntanos brevemente por qué quieres ser ayudante</label>
+                {{ form.cuentanos }}
             </div>
+
+            <!-- Campo: Disponibilidad -->
+            <div class="mb-3">
+                <label for="{{ form.disponibilidad.id_for_label }}" class="form-label">Disponibilidad horaria</label>
+                {{ form.disponibilidad }}
+            </div>
+
+            <!-- Campo: Experiencia -->
+            <div class="mb-3">
+                <label for="{{ form.experiencia.id_for_label }}" class="form-label">¿Has sido ayudante antes?</label>
+                {{ form.experiencia }}
+            </div>
+
+            <!-- Campo: Ramos -->
+            <div class="mb-3">
+                <label for="{{ form.ramos.id_for_label }}" class="form-label">¿En qué ramos puedes ayudar?</label>
+                {{ form.ramos }}
+            </div>
+
+            <!-- Campo: Valor por hora -->
+            <div class="mb-3">
+                <label for="{{ form.valor.id_for_label }}" class="form-label">¿Cuál es tu valor por hora?</label>
+                {{ form.valor }}
+            </div>
+
+            <!-- Campo: Términos y condiciones -->
             <div class="form-check mb-3">
-              <input class="form-check-input" type="checkbox" id="acepto" required>
-              <label class="form-check-label" for="acepto">
-                Acepto los términos y condiciones
-              </label>
+                {{ form.terminos }}
+                <label class="form-check-label" for="{{ form.terminos.id_for_label }}">
+                    Acepto los términos y condiciones
+                </label>
             </div>
-          
-            <!-- BOTONES -->
+
+            <!-- Botones -->
             <button type="submit" class="btn btn-primary">Enviar postulación</button>
             <a href="{% url 'buscador' %}">atrás</a>
-          </form>
-    
+        </form>
     </div>
 </div>
-
 {% endblock %}

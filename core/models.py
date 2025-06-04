@@ -6,6 +6,7 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from datetime import datetime
 
 ROL_CHOICES = [
     ('estudiante', 'Estudiante'),
@@ -13,6 +14,11 @@ ROL_CHOICES = [
     ('administrador', 'Administrador'),
 ]
 
+ESTADO_CHOICES = [
+        ('pendiente', 'Pendiente'),
+        ('aceptada', 'Aceptada'),
+        ('rechazada', 'Rechazada'),
+    ]
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
@@ -213,14 +219,20 @@ class Notificacion(models.Model):
 class Postulacion(models.Model):
     id_postulacion = models.DecimalField(primary_key=True, max_digits=12, decimal_places=0)
     carrera = models.CharField(max_length=30)
-    foto = models.BinaryField(blank=True, null=True)
+    foto = models.ImageField(upload_to='postulaciones/')
     cuentanos = models.CharField(max_length=100)
     disponibilidad = models.CharField(max_length=50)
     experiencia = models.CharField(max_length=2)
     ramos = models.CharField(max_length=50)
     valor = models.DecimalField(max_digits=7, decimal_places=0)
     terminos = models.CharField(max_length=2)
+    estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='pendiente')
     usuario_id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='usuario_id_usuario')
+
+    def save(self, *args, **kwargs):
+        if not self.id_postulacion:
+            self.id_postulacion = int(datetime.now().strftime('%y%m%d%H%M%S'))
+        super().save(*args, **kwargs)
 
     class Meta:
         managed = False

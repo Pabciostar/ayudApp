@@ -6,8 +6,8 @@ from django.http import HttpResponse
 from google_auth_oauthlib.flow import Flow
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Usuario
-from .forms import DatosAdicionalesForm
+from .models import Usuario, Postulacion
+from .forms import DatosAdicionalesForm, PostulacionForm
 import google.auth.transport.requests
 import requests
 import os
@@ -129,8 +129,31 @@ def inicio(request):
 def buscador_view(request):
     return render(request, 'buscador.html')
 
+@login_required
 def postulacionAyudante_view(request):
-    return render(request, 'postulacionAyudante.html')
+    try:
+        usuario = Usuario.objects.get(correo=request.user.email)
+    except Usuario.DoesNotExist:
+        messages.error(request, "No se pudo encontrar tu información como usuario.")
+        return redirect('completar_datos')
+
+    # Verifica si ya tiene una postulación
+    if Postulacion.objects.filter(usuario_id_usuario=usuario).exists():
+        messages.warning(request, "Ya has enviado una postulación.")
+        return redirect('buscador')
+
+    if request.method == 'POST':
+        form = PostulacionForm(request.POST, request.FILES)
+        if form.is_valid():
+            postulacion = form.save(commit=False)
+            postulacion.usuario_id_usuario = usuario
+            postulacion.save()
+            messages.success(request, "Postulación enviada correctamente.")
+            return redirect('buscador')
+    else:
+        form = PostulacionForm()
+
+    return render(request, 'postulacionAyudante.html', {'form': form})
 
 def detalleClase_view(request):
     return render(request, 'detalleClase.html')
