@@ -1,3 +1,71 @@
 #contendorPrincipalBuscador {
     padding-top: 30px;
 }
+
+.titulo-centrado {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: blue; /* Opcional: cambia el color */
+    font-weight: 600; /* Opcional: negrita */
+}
+
+
+/* Botones de navegación circulares */
+.custom-control {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(128, 128, 128, 0.5) !important; /* Gris plomo transparente */
+  border-radius: 50%; /* Círculo perfecto */
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.8;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.custom-control:hover {
+  opacity: 1;
+  background-color: rgba(128, 128, 128, 0.7) !important;
+}
+
+.carousel-control-prev {
+  left: 15px;
+}
+
+.carousel-control-next {
+  right: 15px;
+}
+
+/* Iconos internos */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  filter: brightness(0) invert(1); /* Iconos blancos */
+  width: 20px;
+  height: 20px;
+}
+
+/* Indicadores amarillos en línea */
+.custom-indicators {
+  bottom: -25px;
+}
+
+.custom-indicators button {
+  width: 30px;
+  height: 3px;
+  background-color: #FFD700; /* Amarillo */
+  border: none;
+  opacity: 0.5;
+  margin: 0 2px;
+  border-radius: 0;
+  transition: opacity 0.3s ease;
+}
+
+.custom-indicators button.active {
+  opacity: 1;
+  background-color: #FFD700; /* Amarillo sólido para el activo */
+}
+
+/* Contenedor del carrusel */
+#ayudantesCarousel {
+  padding-bottom: 30px; /* Espacio para los indicadores */
+}
