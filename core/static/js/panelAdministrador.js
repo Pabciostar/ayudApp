@@ -1,3 +1,18 @@
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
 function limpiarPanel() {
   const panel = document.getElementById('panelInformacion');
   panel.innerHTML = '';
@@ -61,7 +76,7 @@ function mostrarUsuarios() {
           cambios.push({ id_usuario: id, rol: nuevoRol });
         });
 
-        cambios.forEach(cambio => {
+        Promise.all(cambios.map(cambio =>
           fetch(`/api/usuarios/${cambio.id_usuario}/`, {
             method: 'PATCH',
             headers: {
@@ -71,9 +86,15 @@ function mostrarUsuarios() {
             body: JSON.stringify({ rol: cambio.rol })
           }).then(response => {
             if (!response.ok) {
-              alert('Error al guardar cambios para usuario ' + cambio.id_usuario);
+              throw new Error(`Error al guardar usuario ${cambio.id_usuario}`);
             }
-          });
+          })
+        )).then(() => {
+          alert('Cambios guardados exitosamente');
+          mostrarUsuarios(); // Recarga la tabla con los datos actualizados
+        }).catch(error => {
+          console.error(error);
+          alert('Hubo un error al guardar uno o más cambios');
         });
         alert('Cambios guardados exitosamente');
       };
