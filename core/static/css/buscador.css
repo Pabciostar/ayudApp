@@ -14,18 +14,18 @@
 .custom-control {
   width: 40px;
   height: 40px;
-  background-color: rgba(128, 128, 128, 0.5) !important; /* Gris plomo transparente */
+  background-color: rgba(113, 117, 4, 0.505) !important; /* Gris plomo transparente */
   border-radius: 50%; /* Círculo perfecto */
   top: 50%;
   transform: translateY(-50%);
-  opacity: 0.8;
+  opacity: 2;
   transition: all 0.3s ease;
   border: none;
 }
 
 .custom-control:hover {
   opacity: 1;
-  background-color: rgba(128, 128, 128, 0.7) !important;
+  background-color: rgba(113, 117, 4, 0.505) !important;
 }
 
 .carousel-control-prev {

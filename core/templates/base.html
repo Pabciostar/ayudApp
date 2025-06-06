@@ -15,7 +15,7 @@
     <!-- Barra de navegación global -->
     <nav id="navbarBase" class="navbar navbar-expand-lg">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#" style="font-size: 2rem;">AyudApp</a>
+          <a class="navbar-brand ayudapp-hover" href="#" style="font-size: 2rem;" data-bs-toggle="modal" data-bs-target="#ayudappModal">AyudApp</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -25,9 +25,6 @@
                 <li class="nav-item">
                   <a class="nav-link active" aria-current="page" href="{% url 'buscador' %}">Inicio</a>
                 </li>
-                <li class="nav-item">
-                    <span class="nav-link disabled">Hola, {{ user.first_name }}</span>
-                </li>
                 {% if rol_usuario == "ayudante" %}
                 <li>
                   <a class="nav-link" href="{% url 'perfilAyudante' %}">
@@ -36,7 +33,7 @@
                 </li>
                 {% endif %}
                 <li class="nav-item me-3">
-                  <a class="nav-link" href="{% url 'notificaciones' %}"><i class="bi bi-bell-fill"></i> notificaciones</a>
+                  <a class="nav-link" href="{% url 'notificaciones' %}"><i class="bi bi-bell-fill"></i> Notificaciones</a>
                 </li>
                 {% if rol_usuario == "administrador" %}
                 <li>
@@ -53,9 +50,39 @@
               {% endif %}
 
             </ul>
+            <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <span class="nav-link disabled text-white fw-bold">Hola {{ user.first_name }}</span>
+            </li>
+            </ul>
           </div>
         </div>
       </nav>
+
+      <!-- Modal de AyudAPP -->
+      <div class="modal fade" id="ayudappModal" tabindex="-1" aria-labelledby="ayudappModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="ayudappModalLabel">Quiénes Somos</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="text-align: justify;">
+                    <h5 class="text-primary">AyudAPP</h5>
+                    <p>En la actualidad, muchos estudiantes enfrentan desafíos que afectan su rendimiento académico y permanencia en el sistema educativo. Entre estos desafíos se encuentra la falta de apoyo académico personalizado, limitaciones de tiempo, dificultad para encontrar ayudantes confiables y  falta de plataformas que hagan seguro el proceso. </p>
+                    <h5 class="text-primary mt-2">Nuestra Misión</h5>
+                    <p>Dar respuesta a estas problemáticas, ofreciendo una plataforma intuitiva que facilite la conexión entre estudiantes y ayudantes calificados.</p>
+                    <div class="mt-3 p-3 bg-light rounded">
+                        <h6 class="text-primary">Para mayor información contáctanos</h6>
+                        <p><i class="bi bi-envelope me-2"></i> codigosyalgoritmos@gmail.com</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Entendido</button>
+                </div>
+            </div>
+          </div>
+        </div>
 
       {% if messages %}
         <div class="main container mt-3">
