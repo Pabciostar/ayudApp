@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Usuario, Postulacion
 from .forms import DatosAdicionalesForm, PostulacionForm
+from datetime import datetime
 import google.auth.transport.requests
 import requests
 import os
@@ -174,7 +175,14 @@ def mensajeEstudianteAyudado_view(request):
     return render(request, 'mensajeEstudianteAyudante.html')
 
 def detallePostulacion_view(request):
-    return render(request, 'detallePostulacion.html')
+    id_postulacion = request.GET.get('id')
+    postulacion = get_object_or_404(Postulacion, id_postulacion=id_postulacion)
+    fecha_hora = datetime.strptime(str(postulacion.id_postulacion), '%y%m%d%H%M%S')
+
+    return render(request, 'detallePostulacion.html', {
+        'postulacion': postulacion,
+        'fecha_hora': fecha_hora,
+    })
 
 def editarPerfilAyudante_view(request):
     return render(request, 'editarPerfilAyudante.html')
