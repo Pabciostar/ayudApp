@@ -6,7 +6,7 @@ urlpatterns = [
     path('buscador/', views.buscador_view, name='buscador'),
     path('postulacionAyudante/', views.postulacionAyudante_view, name='postulacionAyudante'),
     path('detalleClase', views.detalleClase_view, name='detalleClase'),
-    path('perfilAyudante', views.perfilAyudante_view, name='perfilAyudante'),
+    path('perfilAyudante/', views.perfilAyudante_view, name='perfilAyudante_pagina'),
     path('panelAdministrador', views.panelAdministrador, name='panelAdministrador'),
     path('notificaciones', views.notificaciones_view, name='notificaciones'),
     path('notificacion', views.notificacion_view, name='notificacion'),
@@ -20,4 +20,5 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('datos_adicionales/', views.datos_adicionales, name='datos_adicionales'),
     path('completar_datos/', views.completar_datos, name='completar_datos'),
+    
 ]
