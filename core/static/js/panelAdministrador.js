@@ -18,6 +18,33 @@ function limpiarPanel() {
   panel.innerHTML = '';
 }
 
+// Función para mostrar mensajes en el modal
+function showSystemAlert(title, message, isSuccess = true) {
+  const modal = new bootstrap.Modal(document.getElementById('systemAlertModal'));
+  const modalTitle = document.getElementById('systemAlertModalTitle');
+  const modalBody = document.getElementById('systemAlertModalBody');
+  const modalHeader = document.querySelector('#systemAlertModal .modal-header');
+  
+  modalTitle.textContent = title;
+
+  const icon = isSuccess 
+    ? '<i class="bi bi-check-circle-fill me-2"></i>' 
+    : '<i class="bi bi-exclamation-triangle-fill me-2"></i>';
+  modalBody.innerHTML = `${icon} ${message}`;
+  
+  // Cambiar colores según sea éxito o error
+  if(isSuccess) {
+    modalHeader.classList.remove('bg-danger');
+    modalHeader.classList.add('bg-success', 'text-white');
+  } else {
+    modalHeader.classList.remove('bg-success');
+    modalHeader.classList.add('bg-danger', 'text-white');
+  }
+  
+  modal.show();
+}
+
+
 function mostrarUsuarios() {
   limpiarPanel();
   const panel = document.getElementById('panelInformacion');
@@ -90,13 +117,12 @@ function mostrarUsuarios() {
             }
           })
         )).then(() => {
-          alert('Cambios guardados exitosamente');
+          showSystemAlert('Éxito', 'Cambios guardados exitosamente', true);
           mostrarUsuarios(); // Recarga la tabla con los datos actualizados
         }).catch(error => {
           console.error(error);
-          alert('Hubo un error al guardar uno o más cambios');
+          showSystemAlert('Error', 'Hubo un error al guardar uno o más cambios', false);
         });
-        alert('Cambios guardados exitosamente');
       };
     }
   }, 100); // Espera breve para asegurar que el botón existe
