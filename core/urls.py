@@ -20,4 +20,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('datos_adicionales/', views.datos_adicionales, name='datos_adicionales'),
     path('completar_datos/', views.completar_datos, name='completar_datos'),
+    path('aceptarPostulacion/', views.aceptar_postulacion, name='aceptar_postulacion'),
+    path('rechazarPostulacion/', views.rechazar_postulacion, name='rechazar_postulacion'),
 ]

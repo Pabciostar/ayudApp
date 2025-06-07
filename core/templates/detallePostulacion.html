@@ -40,11 +40,19 @@
             </div>
 
             <div class="text-center mt-4">
-                <a href="#" class="btn btn-success">Aceptar Postulación</a>
-                <a href="#" class="btn btn-danger ms-2">Rechazar Postulación</a>
-                <a href="{% url 'panelAdministrador' %}" class="btn btn-secondary btn-volver">← Volver</a>
+              <button onclick="gestionarPostulacion('aceptar')" class="btn btn-success">Aceptar Postulación</button>
+              <button onclick="gestionarPostulacion('rechazar')" class="btn btn-danger ms-2">Rechazar Postulación</button>
+              <a href="{% url 'panelAdministrador' %}" class="btn btn-secondary btn-volver">← Volver</a>
             </div>
         </div>
     </div>
 </div>
+
+<div id="datosPostulacion"
+     data-id="{{ postulacion.id_postulacion }}"
+     data-csrf="{{ csrf_token }}"
+     data-redirect="{% url 'panelAdministrador' %}">
+</div>
+  
+<script src="{% static 'js/gestionPostulacion.js' %}"></script>
 {% endblock %}
