@@ -215,54 +215,51 @@ function mostrarClasesAgendadas() {
 }
 
 
-
 function mostrarPostulaciones() {
   const panel = document.getElementById('panelInformacion');
   limpiarPanel();
 
-  const postulaciones = [
-    {
-      usuario: 'Ana Martínez',
-      fechaPostulacion: '2025-03-12',
-      grado: 'Estudiante de ingeniería en informática'
-    },
-    {
-      usuario: 'Juana Oyarce',
-      fechaPostulacion: '2025-03-05',
-      grado: 'Estudiante de pedagogía en lenguaje'
-    },
-    {
-      usuario: 'Jorge Muñoz',
-      fechaPostulacion: '2025-02-28',
-      grado: 'Ingeniero Comercial'
-    }
-  ];
-
-  let tablaHTML = `
-      <h4>Postulaciones a ayudante</h4>
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Usuario</th>
-            <th>Fecha de postulación</th>
-            <th>Grado</th>
-            <th>Acción Clase</th>
-          </tr>
-        </thead>
-        <tbody>
-    `;
-
-  postulaciones.forEach(c => {
-    tablaHTML += `
-        <tr>
-          <td>${c.usuario}</td>
-          <td>${c.fechaPostulacion}</td>
-          <td>${c.grado}</td>
-          <td><a href="/detallePostulacion" class="btn btn-primary">Ver más</a></td>
-        </tr>
+  fetch('/api/postulaciones/')
+    .then(response => response.json())
+    .then(postulaciones => {
+      let tablaHTML = `
+        <h4>Postulaciones a Ayudante</h4>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>ID Usuario</th>
+              <th>Carrera</th>
+              <th>Fecha y Hora (ID)</th>
+              <th>Estado</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
       `;
-  });
 
-  tablaHTML += `</tbody></table>`;
-  panel.innerHTML = tablaHTML;
+      postulaciones.forEach(p => {
+        const rawId = p.id_postulacion.toString();
+        const year = "20" + rawId.substring(0, 2);
+        const month = rawId.substring(2, 4);
+        const day = rawId.substring(4, 6);
+        const hour = rawId.substring(6, 8);
+        const minute = rawId.substring(8, 10);
+        const second = rawId.substring(10, 12);
+        const fechaFormateada = `${day}/${month}/${year} ${hour}:${minute}:${second}`;
+
+
+        tablaHTML += `
+          <tr>
+            <td>${p.usuario_id_usuario}</td>
+            <td>${p.carrera}</td>
+            <td>${fechaFormateada}</td>
+            <td>${p.estado}</td>
+            <td><a href="/detallePostulacion?id=${p.id_postulacion}" class="btn btn-primary">Ver más</a></td>
+          </tr>
+        `;
+      });
+
+      tablaHTML += `</tbody></table>`;
+      panel.innerHTML = tablaHTML;
+    });
 }
