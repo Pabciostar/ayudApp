@@ -16,17 +16,17 @@
                     {% csrf_token %}
 
                     <div class="mb-3">
-                        <label for="nombres" class="form-label">Nombre</label>
+                        <label for="nombres" class="form-label">Nombres</label>
                         {{ form.nombres }}
                     </div>
 
                     <div class="mb-3">
-                        <label for="apellidos" class="form-label">Apellido</label>
+                        <label for="apellidos" class="form-label">Apellidos</label>
                         {{ form.apellidos }}
                     </div>
 
                     <div class="mb-3">
-                        <label for="nacimiento" class="form-label">Fecha de nacimiento</label>
+                        <label for="nacimiento" class="form-label">Fecha de Nacimiento</label>
                         {{ form.nacimiento }}
                     </div>
 
@@ -41,7 +41,14 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="sexo" class="form-label">Sexo</label>
+                        <label for="sexo">Sexo:</label>
+                        <select id="sexo" name="sexo" required>
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
+                            <option value="Otro">Otro</option>
+                            <option value="Preferio No Informar">Prefiero no informar</option>
+                        </select>
                         {{ form.sexo }}
                     </div>
 

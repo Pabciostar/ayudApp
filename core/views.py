@@ -1,13 +1,15 @@
 from django.conf import settings
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from google_auth_oauthlib.flow import Flow
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Usuario, Postulacion
+from django.views.decorators.csrf import csrf_exempt
+from .models import Usuario, Postulacion, Ayudante
 from .forms import DatosAdicionalesForm, PostulacionForm
+from datetime import datetime
 import google.auth.transport.requests
 import requests
 import os
@@ -174,7 +176,72 @@ def mensajeEstudianteAyudado_view(request):
     return render(request, 'mensajeEstudianteAyudante.html')
 
 def detallePostulacion_view(request):
-    return render(request, 'detallePostulacion.html')
+    id_postulacion = request.GET.get('id')
+    postulacion = get_object_or_404(Postulacion, id_postulacion=id_postulacion)
+    fecha_hora = datetime.strptime(str(postulacion.id_postulacion), '%y%m%d%H%M%S')
+
+    return render(request, 'detallePostulacion.html', {
+        'postulacion': postulacion,
+        'fecha_hora': fecha_hora,
+    })
+
+@csrf_exempt
+def aceptar_postulacion(request):
+    if request.method == "POST":
+        import json
+        data = json.loads(request.body)
+        id_postulacion = data.get("id_postulacion")
+
+        try:
+            postulacion = Postulacion.objects.get(id_postulacion=id_postulacion)
+            usuario = postulacion.usuario_id_usuario
+            
+            foto_bytes = bytes(postulacion.foto) if postulacion.foto else None
+
+            timestamp_validado = datetime.now().strftime('%y%m%d%H%M%S')
+
+            # Crear Ayudante si no existe
+            ayudante, created = Ayudante.objects.get_or_create(
+                id_ayudante=usuario,
+                defaults={
+                    'carrera': postulacion.carrera,
+                    'foto': foto_bytes,
+                    'cuentanos': postulacion.cuentanos,
+                    'disponibilidad': postulacion.disponibilidad,
+                    'experiencia': postulacion.experiencia,
+                    'ramos': postulacion.ramos,
+                    'valor': postulacion.valor,
+                    'terminos': postulacion.terminos,
+                    'validado': timestamp_validado,
+                })
+
+            # Cambiar rol del usuario
+            usuario.rol = 'ayudante'
+            usuario.save()
+
+            # Cambiar estado de la postulación
+            Postulacion.objects.filter(id_postulacion=id_postulacion).update(estado='aceptada')
+
+            return JsonResponse({"mensaje": "Postulación aceptada y ayudante creado"})
+        except Postulacion.DoesNotExist:
+            return JsonResponse({"error": "Postulación no encontrada"}, status=404)
+    return JsonResponse({"error": "Método no permitido"}, status=405)
+
+@csrf_exempt
+def rechazar_postulacion(request):
+    if request.method == "POST":
+        import json
+        data = json.loads(request.body)
+        id_postulacion = data.get("id_postulacion")
+
+        try:
+            postulacion = Postulacion.objects.get(id_postulacion=id_postulacion)
+            postulacion.estado = 'rechazada'
+            postulacion.save(update_fields=['estado'])
+            return JsonResponse({"mensaje": "Postulación rechazada"})
+        except Postulacion.DoesNotExist:
+            return JsonResponse({"error": "Postulación no encontrada"}, status=404)
+    return JsonResponse({"error": "Método no permitido"}, status=405)
 
 def editarPerfilAyudante_view(request):
     return render(request, 'editarPerfilAyudante.html')

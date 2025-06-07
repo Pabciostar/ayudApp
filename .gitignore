@@ -28,3 +28,5 @@ Thumbs.db
 
 #Archivos media
 /media/
+core/static/js/panelAdministrador.js
+core/templates/base.html

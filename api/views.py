@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets, status
-from core.models import Usuario, Ayudante
-from .serializers import UsuarioSerializer, AyudanteSerializer
+from core.models import Usuario, Ayudante, Postulacion
+from .serializers import UsuarioSerializer, AyudanteSerializer, PostulacionSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -24,6 +24,7 @@ def mi_rol(request):
     except Usuario.DoesNotExist:
         return Response({'rol': 'desconocido'}, status=404)
     
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def obtener_ayudante(request, id):
@@ -67,3 +68,8 @@ def ayudante_autenticado(request):
         return Response({'error': 'Usuario no encontrado'}, status=404)
     except Ayudante.DoesNotExist:
         return Response({'error': 'Ayudante no encontrado'}, status=404)
+
+
+class PostulacionViewSet(viewsets.ModelViewSet):
+    queryset = Postulacion.objects.all()
+    serializer_class = PostulacionSerializer

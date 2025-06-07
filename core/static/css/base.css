@@ -53,3 +53,31 @@ main {
     bottom: 0;
     width: 100%;
     }
+
+ /* Efecto hover para AyudAPP */
+.navbar-brand.ayudapp-hover {
+  position: relative;
+  transition: all 0.3s ease;
+  cursor: pontier;
+}
+.navbar-brand.ayudapp-hover:hover {
+  color: yellow !important; /* Color azul de Bootstrap */
+}
+.navbar-brand.ayudapp-hover::after {
+  content: "¡Conoce quiénes somos!";
+  position: absolute;
+  bottom: -25px;
+  left: 0;
+  background-color: #333;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.navbar-brand.ayudapp-hover:hover::after {
+  opacity: 1;
+}

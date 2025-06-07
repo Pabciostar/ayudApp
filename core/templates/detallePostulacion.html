@@ -2,59 +2,57 @@
 {% load static %}
 
 {% block css %}
-<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}"> {% endblock %}
+<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}">
+{% endblock %}
 
 {% block content %}
-
 <div id="marcoNotificaciones" class="container">
     <div id="contenedorNotificaciones" class="row mt-5 py-5">
         <div class="container mt-5">
-  <h3 class="mb-4">Detalle de Postulación</h3>
+            <h3 class="mb-4">Detalle de Postulación</h3>
 
-  <div class="mb-3">
-    <strong>Nombre completo:</strong> Ana Martínez
-  </div>
+            <div class="mb-3">
+                <strong>Nombre completo:</strong> {{ postulacion.usuario_id_usuario.nombres }} {{ postulacion.usuario_id_usuario.apellidos }}
+            </div>
 
-  <div class="mb-3">
-    <strong>RUT:</strong> 19.345.678-2
-  </div>
+            <div class="mb-3">
+                <strong>RUT:</strong> {{ postulacion.usuario_id_usuario.rut_usuario }}
+            </div>
 
-  <div class="mb-3">
-    <strong>Teléfono:</strong> +56 9 8765 4321
-  </div>
+            <div class="mb-3">
+                <strong>Carrera o especialidad:</strong> {{ postulacion.carrera }}
+            </div>
 
-  <div class="mb-3">
-    <strong>Carrera o especialidad:</strong> Ingeniería en Informática
-  </div>
+            <div class="mb-3">
+                <strong>¿Has sido ayudante antes?:</strong> {% if postulacion.experiencia == "Si" %}Sí{% else %}No{% endif %}
+            </div>
 
-  <div class="mb-3">
-    <strong>¿Has sido ayudante antes?:</strong> Sí
-  </div>
+            <div class="mb-3">
+                <strong>¿En qué ramos puedes ayudar?:</strong> {{ postulacion.ramos }}
+            </div>
 
-  <div class="mb-3">
-    <strong>¿En qué ramos puedes ayudar?:</strong> 
-    Álgebra, Programación, Estadística
-  </div>
+            <div class="mb-3">
+                <strong>Días en los que puede hacer clases:</strong> {{ postulacion.disponibilidad }}
+            </div>
 
-  <div class="mb-3">
-    <strong>Otros:</strong> Me gustaría ayudar en lógica computacional si hay demanda.
-  </div>
+            <div class="mb-3">
+                <strong>Motivación:</strong> {{ postulacion.cuentanos }}
+            </div>
 
-  <div class="mb-3">
-    <strong>Motivación:</strong> 
-    Siempre me ha gustado enseñar y creo que ser ayudante es una forma de reforzar mis conocimientos y ayudar a otros estudiantes a superar sus dificultades.
-  </div>
-
-  <div class="text-center mt-4">
-    <a href="#" class="btn btn-success">Aceptar Postulación</a>
-    <a href="#" class="btn btn-danger ms-2">Rechazar Postulación</a>
-    <a href="{% url 'panelAdministrador' %}" class="btn btn-secondary btn-volver">← Volver</a>
-  </div>
-</div>
+            <div class="text-center mt-4">
+              <button onclick="gestionarPostulacion('aceptar')" class="btn btn-success">Aceptar Postulación</button>
+              <button onclick="gestionarPostulacion('rechazar')" class="btn btn-danger ms-2">Rechazar Postulación</button>
+              <a href="{% url 'panelAdministrador' %}" class="btn btn-secondary btn-volver">← Volver</a>
+            </div>
+        </div>
     </div>
-
-
 </div>
 
-
+<div id="datosPostulacion"
+     data-id="{{ postulacion.id_postulacion }}"
+     data-csrf="{{ csrf_token }}"
+     data-redirect="{% url 'panelAdministrador' %}">
+</div>
+  
+<script src="{% static 'js/gestionPostulacion.js' %}"></script>
 {% endblock %}
