@@ -51,9 +51,11 @@
 
             </ul>
             <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <span class="nav-link disabled text-white fw-bold">Hola {{ user.first_name }}</span>
-            </li>
+              {% if user.is_authenticated %}
+                <li class="nav-item">
+                  <span class="nav-link disabled text-white fw-bold">Hola {{ user.first_name }}</span>
+                </li>
+              {% endif %}
             </ul>
           </div>
         </div>
