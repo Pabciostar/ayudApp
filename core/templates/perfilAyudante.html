@@ -3,76 +3,80 @@
 {% load custom_filters %}
 
 {% block css %}
-<link rel="stylesheet" href="{% static 'css/perfilAyudante.css' %}"> {% endblock %}
+<link rel="stylesheet" href="{% static 'css/perfilAyudante.css' %}">
+{% endblock %}
 
 {% block content %}
-<div id="perfil" class="container mt-5">
+<div id="perfil" class="container mt-3">
   <input type="hidden" id="user-id" value="{{ user_id }}">
-  <!-- Calificación -->
-  <div class="mb-4 text-center">
-    <h2 id="contenedorNombreAyudante" class="fw-bold" style="color: white"></h2>
-    <div class="text-warning fs-4">
-      ★★★★☆ (4.0)
+
+  <!-- Sección de nombre y clasificación -->
+  <div class="profile-header text-center mb-3">
+  
+  <!-- Sección de nombre, clasificación y foto -->
+  <div class="profile-header text-center mb-3">
+    <div class="name-rating-container mb-3">
+      <h2 id="contenedorNombreAyudante" class="fw-bold mb-1" style="color: white"></h2>
+      <div class="text-warning fs-4">
+          ★★★★☆ (4.0)
+      </div>
+    </div>
+    <!-- Foto de perfil centrada -->
+    <div class="profile-image-container">
+      <img id="fotoPerfil" class="img-fluid rounded-circle border border-3 profile-image" style="width: 250px; height: 250px;"
+           alt="Foto de perfil" src="{% static 'images/placeHolderPerfilAyudante.png' %}">
     </div>
   </div>
 
-  <div class="row">
-    <!-- Foto de perfil -->
-    <div class="col-md-5 text-center">
-      <img id="fotoPerfil" class="img-fluid rounded-circle border border-3" style="width: 300px; height: 300px;"
-        alt="Foto de perfil" src="{% static 'images/placeHolderPerfilAyudante.png' %}">
-    </div>
+  <div class="row justify-content-center">
+  <!-- Datos del ayudante -->
+  <div id="marcoInformación" class="row mt-5">
+    <div id="contenedorInformacionAyudante"></div>
+  </div>
 
-
-    <!-- Datos del ayudante -->
-    <div id="marcoInformación" class="row mt-5">
-      <div id="contenedorInformacionAyudante">
-
-      </div>
-    </div>
-
-    <div class="marcoInformación" class="row">
+  <!-- Botones -->
+  <div class="col-md-8 text-center mt-4 mb-5">
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
       <a href="{% url 'seleccionarFechaClase' %}" class="btn btn-primary">
-        📅 Agendar hora
+      📅 Agendar hora
       </a>
       <a href="{% url 'buscador' %}" class="btn btn-secondary">
-        ← Atrás
+      ← Atrás
       </a>
-      <a href="{% url 'editarPerfilAyudante' %}" class="btn btn-primary"> <i class="bi bi-pencil-square"></i> Editar
-        perfil</a>
+      <a href="{% url 'editarPerfilAyudante' %}" class="btn btn-primary">
+        <i class="bi bi-pencil-square"></i> Editar perfil</a>
     </div>
+  </div>
 
     <!-- Carrusel de referencias -->
-    <div class="row mt-5 mb-3">
-      <div class="col-12">
-        <h4 class="text-center mb-3">Referencias</h4>
-        <div id="referenciasCarrusel" class="carousel slide" data-bs-ride="false">
-          <div class="carousel-inner">
-            <div class="carousel-item active">
-              <div class="p-4 bg-secondary text-white rounded">
-                “Juan me ayudó a pasar cálculo 1, súper paciente y claro. ¡Lo recomiendo 100%!” – Camila G.
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div class="p-4 bg-secondary text-white rounded">
-                “Explica muy bien y da buenos ejemplos. Se nota que sabe.” – Pedro R.
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div class="p-4 bg-secondary text-white rounded">
-                “Me ayudó con mi proyecto de programación en Python. Excelente.” – Sofía M.
-              </div>
+    <div class="col-12 mt-5 mb-3">
+      <h4 class="text-center mb-3">Referencias</h4>
+      <div id="referenciasCarrusel" class="carousel slide" data-bs-ride="false">
+        <div class="carousel-inner text-center">
+          <div class="carousel-item active">
+            <div class="p-4 bg-secondary text-white rounded mx-auto" style="max-width: 1150px">
+              “Juan me ayudó a pasar cálculo 1, súper paciente y claro. ¡Lo recomiendo 100%!” – Camila G.
             </div>
           </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#referenciasCarrusel"
-            data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#referenciasCarrusel"
-            data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-          </button>
+          <div class="carousel-item">
+            <div class="p-4 bg-secondary text-white rounded mx-auto" style="max-width: 1150px">
+              “Explica muy bien y da buenos ejemplos. Se nota que sabe.” – Pedro R.
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="p-4 bg-secondary text-white rounded mx-auto" style="max-width: 1150px">
+              “Me ayudó con mi proyecto de programación en Python. Excelente.” – Sofía M.
+            </div>
+          </div>
         </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#referenciasCarrusel"
+          data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#referenciasCarrusel"
+          data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
       </div>
     </div>
   </div>

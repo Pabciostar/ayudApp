@@ -14,3 +14,57 @@
     align-items: center;
     justify-content: center;
 }
+
+/* Estilos para el perfil del ayudante */
+.profile-header {
+    margin-bottom: 1.5rem;
+}
+
+.name-rating-container {
+    margin-bottom: 1.5rem;
+}
+
+.profile-image-container {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.profile-image {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#contenedorNombreAyudante {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;  /* Reducido el margen inferior */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Estilos para el carrusel */
+.carousel-inner {
+    text-align: center;
+}
+
+.carousel-item div {
+    margin: 0 auto;
+}
+
+/* Ajustes para móviles */
+@media (max-width: 768px) {
+    .profile-image {
+        width: 200px;
+        height: 200px;
+    }
+    
+    #contenedorNombreAyudante {
+        font-size: 1.5rem;
+    }
+    
+    .carousel-item div {
+        padding: 1.5rem;
+    }
+}
