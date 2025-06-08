@@ -1,33 +1,37 @@
-const ayudantesFake = [
-    { nombre: "Juan Pérez", area: "Matemáticas" },
-    { nombre: "María González", area: "Física" },
-    { nombre: "Carlos Soto", area: "Programación" },
-    { nombre: "Valentina Rojas", area: "Estadística" },
-    { nombre: "Andrés Ramírez", area: "Química" }
-  ];
 
-  const input = document.getElementById("buscadorAyudantes");
-  const sugerencias = document.getElementById("sugerencias");
+let timeout = null;
 
-  input.addEventListener("input", function () {
-    const valor = this.value.toLowerCase();
-    sugerencias.innerHTML = "";
+document.getElementById("buscadorAyudantes").addEventListener("input", function () {
+  const query = this.value;
 
-    if (valor.length === 0) return;
-
-    const filtrados = ayudantesFake.filter(a =>
-      a.nombre.toLowerCase().includes(valor) || a.area.toLowerCase().includes(valor)
-    );
-
-    if (filtrados.length === 0) {
-      sugerencias.innerHTML = '<div class="list-group-item">No se encontraron ayudantes</div>';
-    } else {
-      filtrados.forEach(a => {
-        sugerencias.innerHTML += `
-          <a href="/perfilAyudante" class="list-group-item list-group-item-action">
-            <strong>${a.nombre}</strong> – ${a.area}
-          </a>
-        `;
-      });
+  clearTimeout(timeout);
+  timeout = setTimeout(() => {
+    if (query.length < 2) {
+      document.getElementById("sugerencias").innerHTML = "";
+      return;
     }
-  });
+
+    fetch(`/api/ayudantes?q=${encodeURIComponent(query)}`)
+      .then(response => response.json())
+      .then(data => {
+        const sugerencias = document.getElementById("sugerencias");
+        sugerencias.innerHTML = "";
+        console.log(data);
+        if (data.length === 0) {
+          sugerencias.innerHTML = "<div class='list-group-item'>No se encontraron resultados</div>";
+          return;
+        }
+
+        data.forEach(ayudante => {
+          const item = document.createElement("a");
+          item.className = "list-group-item list-group-item-action";
+          item.href = `/perfil/${ayudante.id}/`;
+          item.textContent = `${ayudante.usuario.nombres} ${ayudante.usuario.apellidos} - ${ayudante.carrera}`;
+          sugerencias.appendChild(item);
+        });
+      })
+      .catch(error => {
+        console.error("Error en la búsqueda:", error);
+      });
+  }, 200); 
+});
