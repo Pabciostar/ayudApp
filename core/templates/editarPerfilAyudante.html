@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_filters %}
 
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/perfilAyudante.css' %}"> {% endblock %}
@@ -7,9 +8,13 @@
 {% block content %}
 <div class="container mt-5">
     <div class="mb-4 text-center">
-        <h2 class="fw-bold" style="color: white">Juana Oyarce</h2>
+        <h2 id="nombreAyudante" class="fw-bold" style="color: white"></h2>
     </div>
-
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-success">{{ message }}</div>
+  {% endfor %}
+{% endif %}
     <div class="row">
 
 
@@ -25,34 +30,30 @@
                         <!-- Nombre -->
                         <div class="mb-3">
                             <label for="nombre" class="form-label">Nombre completo</label>
-                            <input type="text" class="form-control" id="nombre" name="nombre" value="Juana Oyarce" readonly>
+                            <input type="text" class="form-control" name="nombre" readonly>
                         </div>
-
                         <!-- Grado académico -->
                         <div class="mb-3">
                             <label for="grado" class="form-label">Grado académico</label>
-                            <input type="text" class="form-control" id="grado" name="grado"
-                                value="Estudiante de Ingeniería Civil en Informática, 4° año" readonly>
+                            <input type="text" class="form-control" name="grado" readonly>
                         </div>
 
                         <!-- Descripción -->
                         <div class="mb-3">
                             <label for="descripcion" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="descripcion" name="descripcion"
-                                rows="4">Apasionada por enseñar matemáticas, física y programación. Experiencia ayudando a estudiantes desde 2021.</textarea>
+                            <textarea class="form-control" name="descripcion"></textarea>
                         </div>
 
                         <!-- Valor por hora -->
                         <div class="mb-3">
                             <label for="valor" class="form-label">Valor por hora</label>
-                            <input type="text" class="form-control" id="valor" name="valor" value="$10.000 CLP">
+                            <input type="text" class="form-control" name="valor">
                         </div>
 
                         <!-- Disponibilidad -->
                         <div class="mb-3">
                             <label for="disponibilidad" class="form-label">Disponibilidad tentativa</label>
-                            <input type="text" class="form-control" id="disponibilidad" name="disponibilidad"
-                                value="Lunes a viernes de 17:00 a 21:00">
+                            <input type="text" class="form-control" name="disponibilidad">
                         </div>
 
                         <!-- Cambiar foto de perfil -->
@@ -60,18 +61,13 @@
                             <label for="foto_perfil" class="form-label">Cambiar foto de perfil</label>
                             <input class="form-control" type="file" id="foto_perfil" name="foto_perfil"
                                 accept="image/*">
-                            <div class="mt-2">
-                                <img src="{% static 'images/ayudante1.png' %}" class="img-fluid rounded-circle border border-3" style="width: 300px; height: 300px;" alt="Foto de perfil">
-                            </div>
+                            {% if ayudante.foto %}
+                            <img id="fotoPerfil" src="data:image/jpeg;base64,{{ ayudante.foto|b64encode }}"
+                                class="img-fluid rounded-circle border border-3" style="width: 300px; height: 300px;"
+                                alt="Foto de perfil">
+                            {% endif %}
                         </div>
 
-                        <!-- Añadir imágenes al panel -->
-                        <div class="mb-3">
-                            <label for="imagenes_panel" class="form-label">Añadir imágenes al panel</label>
-                            <input class="form-control" type="file" id="imagenes_panel" name="imagenes_panel"
-                                accept="image/*" multiple>
-                            <small class="form-text text-muted">Puedes seleccionar varias imágenes.</small>
-                        </div>
 
                         <!-- Botón guardar -->
                         <div class="d-grid gap-2">
@@ -91,4 +87,6 @@
 
     </div>
 </div>
+
+<script src="{% static 'js/editarPerfilAyudante.js' %}"></script>
 {% endblock %}

@@ -25,8 +25,10 @@ fetch("/api/ayudante/autenticado/")
       `;
 
       if (data.foto_base64) {
-        const img = document.querySelector("#marcoInformación img");
-        img.src = `data:image/jpeg;base64,${data.foto_base64}`;
+        const img = document.getElementById("fotoPerfil");
+        img.src = data.foto_base64.startsWith("data:image") 
+              ? data.foto_base64 
+              : `data:image/jpeg;base64,${data.foto_base64}`;
       }
     })
     .catch(error => {
