@@ -7,7 +7,9 @@ from google_auth_oauthlib.flow import Flow
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
-from .models import Usuario, Postulacion, Ayudante
+from django.utils import timezone
+from django.utils.timezone import make_aware
+from .models import Usuario, Postulacion, Ayudante, GoogleCalendarToken
 from .forms import DatosAdicionalesForm, PostulacionForm
 from datetime import datetime
 import google.auth.transport.requests
@@ -87,9 +89,27 @@ def oauth2callback(request):
 
     try:
         usuario = Usuario.objects.get(correo=email)
+
+        if Ayudante.objects.filter(id_ayudante=usuario).exists():
+
+            token_expiry = credentials.expiry
+            
+            if timezone.is_naive(token_expiry):
+                token_expiry = timezone.make_aware(token_expiry)
+            
+            GoogleCalendarToken.objects.update_or_create(
+                usuario=usuario,
+                defaults={
+                    'access_token': credentials.token,
+                    'refresh_token': credentials.refresh_token,
+                    'token_expiry': credentials.expiry,  # esto ya es datetime con timezone
+                    'updated_at': timezone.now()
+                }
+            )
         return redirect('buscador')
     except Usuario.DoesNotExist:
-        return redirect('completar_datos')
+        return redirect('completar_datos')    
+
     
 @login_required
 def datos_adicionales(request):

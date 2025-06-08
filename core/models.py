@@ -7,6 +7,7 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 from datetime import datetime
+from django.utils import timezone
 
 ROL_CHOICES = [
     ('estudiante', 'Estudiante'),
@@ -118,22 +119,6 @@ class ClaseAgendada(models.Model):
     class Meta:
         managed = False
         db_table = 'clase_agendada'
-
-
-class CoreUsuario(models.Model):
-    id_usuario = models.CharField(primary_key=True, max_length=20)
-    rut_usuario = models.CharField(max_length=20)
-    nombres = models.CharField(max_length=100)
-    apellidos = models.CharField(max_length=100)
-    nacimiento = models.DateField(blank=True, null=True)
-    telefono = models.CharField(max_length=20, blank=True, null=True)
-    correo = models.CharField(unique=True, max_length=254)
-    rol = models.CharField(max_length=50)
-    sexo = models.CharField(max_length=20, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'core_usuario'
 
 
 class DjangoAdminLog(models.Model):
@@ -262,3 +247,22 @@ class Usuario(models.Model):
     class Meta:
         managed = False
         db_table = 'usuario'
+
+
+class GoogleCalendarToken(models.Model):
+    id = models.AutoField(primary_key=True)
+    usuario = models.OneToOneField(
+        Usuario,
+        on_delete=models.CASCADE,
+        db_column='id_usuario',
+        unique=True
+    )
+    access_token = models.TextField()
+    refresh_token = models.TextField(blank=True, null=True)
+    token_expiry = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        managed = False 
+        db_table = 'googlecalendartoken'
