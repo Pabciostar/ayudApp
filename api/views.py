@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.db.models import Q
 
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
@@ -40,7 +41,26 @@ def obtener_ayudante(request, id):
 
 @api_view(['GET'])
 def lista_ayudantes(request):
-    ayudantes = Ayudante.objects.all()
+    query = request.GET.get('q', '').strip()
+
+    if query:
+        try:
+            valor = int(query)
+        except ValueError:
+            valor = None
+
+        filtros = Q(id_ayudante__nombres__icontains=query) | \
+                  Q(id_ayudante__apellidos__icontains=query) | \
+                  Q(carrera__icontains=query) | \
+                  Q(ramos__icontains=query) | \
+                  Q(valor__icontains=query)
+        if valor is not None:
+            filtros |= Q(valor=valor)
+
+        ayudantes = Ayudante.objects.filter(filtros)[:10]
+    else:
+        ayudantes = Ayudante.objects.all()[:10]
+
     serializer = AyudanteSerializer(ayudantes, many=True)
     return Response(serializer.data)
 
