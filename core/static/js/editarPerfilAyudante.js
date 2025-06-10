@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch(error => {
             console.error('Error:', error);
+            showModal('Error', 'No se pudo obtener la información del ayudante');
         });
 
 });
@@ -40,6 +41,16 @@ function getCookie(name) {
     return cookieValue;
 }
 
+// Función para mostrar el modal
+function showModal(title, message) {
+    const modalTitle = document.getElementById('systemAlertModalTitle');
+    const modalBody = document.getElementById('systemAlertModalBody');
+    const modal = new bootstrap.Modal(document.getElementById('systemAlertModal'));
+    
+    modalTitle.textContent = title;
+    modalBody.textContent = message;
+    modal.show();
+}
 
 document.querySelector("form").addEventListener("submit", function (e) {
     e.preventDefault();
@@ -62,11 +73,12 @@ document.querySelector("form").addEventListener("submit", function (e) {
         body: formData
     })
         .then(response => {
-            if (!response.ok) throw new Error("No se pudo actualizar");
+            if (!response.ok) throw new Error("No se pudo actualizar el perfil");
             return response.json();
         })
         .then(data => {
-            alert("¡Perfil actualizado!");
+            showModal('Éxito', '¡Perfil actualizado correctamente!');
+
 
             if (foto) {
                 const reader = new FileReader();
@@ -79,5 +91,8 @@ document.querySelector("form").addEventListener("submit", function (e) {
                 reader.readAsDataURL(foto);
             }
         })
-        .catch(error => console.error(error));
+        .catch(error => {
+            console.error(error);
+            showModal('Error', error.message || 'Ocurrió un error al actualizar el perfil');
+        });
 });
