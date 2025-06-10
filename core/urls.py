@@ -22,4 +22,5 @@ urlpatterns = [
     path('completar_datos/', views.completar_datos, name='completar_datos'),
     path('aceptarPostulacion/', views.aceptar_postulacion, name='aceptar_postulacion'),
     path('rechazarPostulacion/', views.rechazar_postulacion, name='rechazar_postulacion'),
+    path('perfilAyudante/<int:id>/', views.perfil_ayudante_html, name='perfil_ayudante_otro'),
 ]

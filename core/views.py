@@ -271,3 +271,6 @@ def registro_view(request):
 
 def seccionarFechaClase_view(request):
     return render(request, 'seleccionarFechaClase.html')
+
+def perfil_ayudante_html(request, id):
+    return render(request, 'perfilAyudante.html', {'ayudante_id': id})

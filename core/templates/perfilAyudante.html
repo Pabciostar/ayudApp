@@ -7,46 +7,47 @@
 {% endblock %}
 
 {% block content %}
-<div id="perfil" class="container mt-3">
-  <input type="hidden" id="user-id" value="{{ user_id }}">
 
-  <!-- Sección de nombre y clasificación -->
-  <div class="profile-header text-center mb-3">
-  
+<div id="perfil" class="container mt-3">
+  <input type="hidden" id="ayudante-id" value="{{ ayudante_id|default:'' }}">
+
+
+
   <!-- Sección de nombre, clasificación y foto -->
   <div class="profile-header text-center mb-3">
     <div class="name-rating-container mb-3">
       <h2 id="contenedorNombreAyudante" class="fw-bold mb-1" style="color: white"></h2>
       <div class="text-warning fs-4">
-          ★★★★☆ (4.0)
+        ★★★★☆ (4.0)
       </div>
     </div>
     <!-- Foto de perfil centrada -->
     <div class="profile-image-container">
-      <img id="fotoPerfil" class="img-fluid rounded-circle border border-3 profile-image" style="width: 250px; height: 250px;"
-           alt="Foto de perfil" src="{% static 'images/placeHolderPerfilAyudante.png' %}">
+      <img id="fotoPerfil" class="img-fluid rounded-circle border border-3 profile-image"
+        style="width: 250px; height: 250px;" alt="Foto de perfil"
+        src="{% static 'images/placeHolderPerfilAyudante.png' %}">
     </div>
   </div>
 
   <div class="row justify-content-center">
-  <!-- Datos del ayudante -->
-  <div id="marcoInformación" class="row mt-5">
-    <div id="contenedorInformacionAyudante"></div>
-  </div>
-
-  <!-- Botones -->
-  <div class="col-md-8 text-center mt-4 mb-5">
-    <div class="d-flex justify-content-center gap-3 flex-wrap">
-      <a href="{% url 'seleccionarFechaClase' %}" class="btn btn-primary">
-      📅 Agendar hora
-      </a>
-      <a href="{% url 'buscador' %}" class="btn btn-secondary">
-      ← Atrás
-      </a>
-      <a href="{% url 'editarPerfilAyudante' %}" class="btn btn-primary">
-        <i class="bi bi-pencil-square"></i> Editar perfil</a>
+    <!-- Datos del ayudante -->
+    <div id="marcoInformación" class="row mt-5">
+      <div id="contenedorInformacionAyudante"></div>
     </div>
-  </div>
+
+    <!-- Botones -->
+    <div class="col-md-8 text-center mt-4 mb-5">
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="{% url 'seleccionarFechaClase' %}" class="btn btn-primary">
+          📅 Agendar hora
+        </a>
+        <a href="{% url 'buscador' %}" class="btn btn-secondary">
+          ← Atrás
+        </a>
+        <a href="{% url 'editarPerfilAyudante' %}" class="btn btn-primary">
+          <i class="bi bi-pencil-square"></i> Editar perfil</a>
+      </div>
+    </div>
 
     <!-- Carrusel de referencias -->
     <div class="col-12 mt-5 mb-3">
@@ -69,12 +70,10 @@
             </div>
           </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#referenciasCarrusel"
-          data-bs-slide="prev">
+        <button class="carousel-control-prev" type="button" data-bs-target="#referenciasCarrusel" data-bs-slide="prev">
           <span class="carousel-control-prev-icon"></span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#referenciasCarrusel"
-          data-bs-slide="next">
+        <button class="carousel-control-next" type="button" data-bs-target="#referenciasCarrusel" data-bs-slide="next">
           <span class="carousel-control-next-icon"></span>
         </button>
       </div>
