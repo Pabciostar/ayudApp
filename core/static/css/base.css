@@ -61,14 +61,13 @@ main {
   cursor: pontier;
 }
 .navbar-brand.ayudapp-hover:hover {
-  color: yellow !important; /* Color azul de Bootstrap */
+  color: yellow
 }
 .navbar-brand.ayudapp-hover::after {
-  content: "¡Conoce quiénes somos!";
   position: absolute;
   bottom: -25px;
   left: 0;
-  background-color: #333;
+  background-color: #04738C;
   color: white;
   padding: 2px 8px;
   border-radius: 4px;
@@ -80,4 +79,10 @@ main {
 }
 .navbar-brand.ayudapp-hover:hover::after {
   opacity: 1;
+}
+
+#footerBase {
+    background-color: #04738C;
+    color: white;
+    font-size: 0.9rem;
 }
