@@ -7,7 +7,7 @@
 
 {% block content %}
 <div id="perfil" class="container mt-5">
-  <input type="hidden" id="user-id" value="{{ user_id }}">
+  <input type="hidden" id="ayudante-id" value="{{ ayudante_id|default:"" }}">
   <!-- Calificación -->
   <div class="mb-4 text-center">
     <h2 id="contenedorNombreAyudante" class="fw-bold" style="color: white"></h2>

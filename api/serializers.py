@@ -12,10 +12,12 @@ class UsuarioSerializer(serializers.ModelSerializer):
 class AyudanteSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer(source='id_ayudante', read_only=True)
     foto_base64 = serializers.SerializerMethodField()
+    id = serializers.SerializerMethodField()  # 👈 Campo id personalizado
 
     class Meta:
         model = Ayudante
         fields = [
+            'id',  # 👈 Necesario para construir URLs como /perfilAyudante/<id>/
             'usuario',
             'carrera',
             'foto_base64',
@@ -32,6 +34,10 @@ class AyudanteSerializer(serializers.ModelSerializer):
         if obj.foto:
             return f"data:image/jpeg;base64,{base64.b64encode(obj.foto).decode('utf-8')}"
         return None
+
+    def get_id(self, obj):
+        return obj.id_ayudante.pk 
+
     
 class PostulacionSerializer(serializers.ModelSerializer):
     usuario = serializers.StringRelatedField()

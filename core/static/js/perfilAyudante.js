@@ -1,5 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
-fetch("/api/ayudante/autenticado/")
+const ayudanteId = document.getElementById("ayudante-id").value;
+let url = "/api/ayudante/autenticado/";
+
+  if (ayudanteId) {
+    url = `/api/ayudantes/${ayudanteId}/`;
+    // ocultar botón "editar perfil"
+    const editarBtn = document.querySelector('a[href*="editarPerfilAyudante"]');
+    if (editarBtn) editarBtn.style.display = "none";
+  }
+
+  fetch(url)
     .then(response => {
       if (!response.ok) {
         throw new Error("No se pudo obtener el ayudante");

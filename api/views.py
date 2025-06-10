@@ -4,11 +4,12 @@ from core.models import Usuario, Ayudante, Postulacion
 from .serializers import UsuarioSerializer, AyudanteSerializer, PostulacionSerializer
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from rest_framework.parsers import MultiPartParser, FormParser
-from django.db.models import Q
+from django.db.models import Q, Func
+from django.db.models.functions import Lower
 
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
@@ -39,9 +40,15 @@ def obtener_ayudante(request, id):
     serializer = AyudanteSerializer(ayudante)
     return Response(serializer.data)
 
+
+class Unaccent(Func):
+    function = 'unaccent'
+    template = "%(function)s(%(expressions)s)"
+
+
 @api_view(['GET'])
 def lista_ayudantes(request):
-    query = request.GET.get('q', '').strip()
+    query = request.GET.get('q', '').strip().lower()
 
     if query:
         try:
@@ -49,18 +56,30 @@ def lista_ayudantes(request):
         except ValueError:
             valor = None
 
-        filtros = Q(id_ayudante__nombres__icontains=query) | \
-                  Q(id_ayudante__apellidos__icontains=query) | \
-                  Q(carrera__icontains=query) | \
-                  Q(ramos__icontains=query) | \
-                  Q(valor__icontains=query)
-        if valor is not None:
-            filtros |= Q(valor=valor)
+        palabras = query.split()
+        filtros = Q()
 
-        ayudantes = Ayudante.objects.filter(filtros)[:10]
+        for palabra in palabras:
+            filtros |= Q(carrera__unaccent__icontains=palabra)
+            filtros |= Q(ramos__unaccent__icontains=palabra)
+            filtros |= Q(valor__icontains=palabra)
+            filtros |= Q(id_ayudante__nombres__unaccent__icontains=palabra)
+            filtros |= Q(id_ayudante__apellidos__unaccent__icontains=palabra)
+
+        ayudantes = Ayudante.objects.annotate(
+            carrera_unaccent=Unaccent(Lower('carrera')),
+            ramos_unaccent=Unaccent(Lower('ramos')),
+            nombres_unaccent=Unaccent(Lower('id_ayudante__nombres')),
+            apellidos_unaccent=Unaccent(Lower('id_ayudante__apellidos'))
+        ).filter(
+            Q(carrera_unaccent__icontains=query) |
+            Q(ramos_unaccent__icontains=query) |
+            Q(nombres_unaccent__icontains=query) |
+            Q(apellidos_unaccent__icontains=query)
+        ).distinct()[:10]
+
     else:
         ayudantes = Ayudante.objects.all()[:10]
-
     serializer = AyudanteSerializer(ayudantes, many=True)
     return Response(serializer.data)
 
@@ -146,3 +165,14 @@ def perfilAyudante(request):
         return render(request, 'perfil_ayudante.html', {'error': 'Usuario no encontrado'})
     except Ayudante.DoesNotExist:
         return render(request, 'perfil_ayudante.html', {'error': 'Ayudante no encontrado'})
+    
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def perfil_publico_ayudante(request, id):
+    try:
+        ayudante = Ayudante.objects.get(pk=id)
+        serializer = AyudanteSerializer(ayudante)
+        return Response(serializer.data)
+    except Ayudante.DoesNotExist:
+        return Response({'error': 'Ayudante no encontrado'}, status=404)
