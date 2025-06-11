@@ -9,7 +9,8 @@
 {% block content %}
 
 <div id="perfil" class="container mt-3">
-  <input type="hidden" id="user-rol" value="{{ usuario.rol }}">
+  <input type="hidden" id="user-rol" value="{{ usuario_visitante.rol }}">
+  <input type="hidden" id="ayudante-id" value="{{ ayudante.id_ayudante.id_usuario }}">
 
 
 
@@ -84,4 +85,4 @@
   </div>
 
   <script src="{% static 'js/perfilAyudante.js' %}"></script>
-  {% endblock %}
+{% endblock %}

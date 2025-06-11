@@ -99,6 +99,8 @@ def oauth2callback(request):
     try:
         usuario = Usuario.objects.get(correo=email)
 
+        request.session['usuario_id'] = usuario.id_usuario
+
         if Ayudante.objects.filter(id_ayudante=usuario).exists():
 
             token_expiry = credentials.expiry
@@ -331,7 +333,20 @@ def registro_view(request):
     return render(request, 'registro.html')
 
 def perfil_ayudante_html(request, id):
-    return render(request, 'perfilAyudante.html', {'ayudante_id': id})
+    # 1) Saca el id de tu modelo Usuario desde la sesión
+    usuario_id = request.session.get('usuario_id')
+    usuario_visitante = get_object_or_404(Usuario, id_usuario=usuario_id)
+
+    # 2) Carga el ayudante cuyo perfil ves
+    ayudante = get_object_or_404(Ayudante, id_ayudante_id=id)
+    usuario_perfil = ayudante.id_ayudante  # instancia de Usuario
+
+    return render(request, "perfilAyudante.html", {
+        "usuario_visitante": usuario_visitante,
+        "usuario_perfil":    usuario_perfil,
+        "ayudante":          ayudante,
+    })
+
 
 @csrf_exempt
 @login_required
