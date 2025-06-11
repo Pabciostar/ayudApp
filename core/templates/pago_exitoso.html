@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1>¡Clase confirmada exitosamente!</h1>
+<p>Fecha: {{ clase.fecha }}</p>
+<p>Hora: {{ clase.hora }}</p>
+<p>Duración: {{ clase.duracion_min }} minutos</p>
+<p>Materia: {{ clase.materia_id_materia.nombre }}</p>
+<p>Ayudante: {{ clase.materia_id_materia.ayudante.user.get_full_name }}</p>
+
+<p>El evento fue creado en Google Calendar.</p>
+
+<a href="{% url 'buscador' %}">Volver al inicio</a>
+
+{% endblock %}

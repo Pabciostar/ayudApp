@@ -23,4 +23,8 @@ urlpatterns = [
     path('aceptarPostulacion/', views.aceptar_postulacion, name='aceptar_postulacion'),
     path('rechazarPostulacion/', views.rechazar_postulacion, name='rechazar_postulacion'),
     path('perfilAyudante/<int:id>/', views.perfil_ayudante_html, name='perfil_ayudante_otro'),
+    path('agendarClase/<int:id>/', views.agendarClase_view, name='agendar_clase'),
+    path('paypal-return/', views.paypal_return_view, name='paypal_return'),
+    path('paypal-cancel/', views.paypal_cancel_view, name='paypal_cancel'),
+    path('pagar/', views.pagar_clase_view, name='pago_clase')
 ]

@@ -115,6 +115,8 @@ class ClaseAgendada(models.Model):
     materia_id_materia = models.ForeignKey('Materia', models.DO_NOTHING, db_column='materia_id_materia')
     usuario_id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='usuario_id_usuario')
     transaccion_id_transaccion = models.ForeignKey('Transaccion', models.DO_NOTHING, db_column='transaccion_id_transaccion')
+    duracion_min = models.IntegerField(default=0)
+    id_ayudante = models.ForeignKey('Ayudante', models.DO_NOTHING, db_column='id_ayudante')
 
     class Meta:
         managed = False
@@ -226,7 +228,19 @@ class Postulacion(models.Model):
 
 class Transaccion(models.Model):
     id_transaccion = models.DecimalField(primary_key=True, max_digits=12, decimal_places=0)
+    estado = models.CharField(max_length=30, blank=True, null=True)
+    payment_id = models.CharField(max_length=100, unique=True)  # ID de PayPal
     voucher = models.CharField(max_length=30)
+    monto = models.DecimalField(max_digits=10, decimal_places=2)
+    moneda = models.CharField(max_length=10, default='USD')
+    usuario = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True, blank=True)
+    fecha = models.DateTimeField(auto_now_add=True)
+    
+
+    def save(self, *args, **kwargs):
+        if not self.id_transaccion:
+            self.id_transaccion = int(datetime.now().strftime('%y%m%d%H%M%S'))
+        super().save(*args, **kwargs)
 
     class Meta:
         managed = False
@@ -266,3 +280,17 @@ class GoogleCalendarToken(models.Model):
     class Meta:
         managed = False 
         db_table = 'googlecalendartoken'
+
+
+class Disponibilidad(models.Model):
+    id_disponibilidad = models.AutoField(primary_key=True)
+    ayudante = models.ForeignKey('Ayudante', on_delete=models.CASCADE, related_name='disponibilidades')
+    materia = models.ForeignKey(Materia, on_delete=models.CASCADE, null=True, blank=True)
+    fecha = models.DateField()
+    hora_inicio = models.TimeField()
+    duracion_min = models.IntegerField()
+    disponible = models.BooleanField(default=True)
+
+    class Meta:
+        managed = False
+        db_table = 'disponibilidad'

@@ -9,7 +9,7 @@
 {% block content %}
 
 <div id="perfil" class="container mt-3">
-  <input type="hidden" id="ayudante-id" value="{{ ayudante_id|default:'' }}">
+  <input type="hidden" id="user-rol" value="{{ usuario.rol }}">
 
 
 
@@ -38,13 +38,16 @@
     <!-- Botones -->
     <div class="col-md-8 text-center mt-4 mb-5">
       <div class="d-flex justify-content-center gap-3 flex-wrap">
-        <a href="{% url 'seleccionarFechaClase' %}" class="btn btn-primary">
+        <a href="{% url 'seleccionarFechaClase' %}" id="disponibilidad-btn" class="btn btn-primary">
+        📅 Configurar Disponibilidad
+        </a>
+        <a href="#" id="agendar-btn" class="btn btn-primary" style="display: none;">
           📅 Agendar hora
         </a>
         <a href="{% url 'buscador' %}" class="btn btn-secondary">
           ← Atrás
         </a>
-        <a href="{% url 'editarPerfilAyudante' %}" class="btn btn-primary">
+        <a href="{% url 'editarPerfilAyudante' %}" id="editar-btn" class="btn btn-primary">
           <i class="bi bi-pencil-square"></i> Editar perfil</a>
       </div>
     </div>

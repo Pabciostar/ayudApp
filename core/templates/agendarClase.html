@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}">
+{% endblock %}
+
+{% block content %}
+<div id="marcoNotificaciones" class="container">
+    <div id="contenedorNotificaciones" class="row mt-5 py-5">
+        <div class="p-4 col-md-6">
+            <h2 class="mb-4">Proceso de Agendar Clase</h2>
+
+            {% if clase_confirmada %}
+                <div class="alert alert-success">
+                    ✅ Clase agendada para el {{ clase_confirmada.fecha }} a las {{ clase_confirmada.hora }}.
+                </div>
+                <a href="{% url 'pagar_clase' clase_confirmada.id_clase %}" class="btn btn-success mt-3">
+                    💳 Pagar ahora
+                </a>
+            {% else %}
+                <p><strong>Ayudante:</strong> {{ ayudante.id_ayudante.nombres }} {{ ayudante.id_ayudante.apellidos }}</p>
+                <p><strong>Valor por clase:</strong> ${{ ayudante.valor }}</p>
+
+                <form action="" method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="materia" class="form-label">Materia</label>
+                        <select class="form-control" id="materia" name="materia_id" required>
+                            <option value="" disabled selected>Selecciona una materia</option>
+                            {% for materia in materias %}
+                                <option value="{{ materia.id_materia }}">{{ materia.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    {% if disponibilidades %}
+                        <div class="mb-3">
+                            <label for="disponibilidad" class="form-label">Horario disponible</label>
+                            <select class="form-control" id="disponibilidad" name="disponibilidad" required>
+                                <option value="" disabled selected>Selecciona horario</option>
+                                {% for disp in disponibilidades %}
+                                    <option value="{{ disp.fecha|date:'Y-m-d' }}|{{ disp.hora_inicio|time:'H:i' }}|{{ disp.duracion_min }}">
+                                        {{ disp.fecha|date:'Y-m-d' }} - {{ disp.hora_inicio|time:'H:i' }} ({{ disp.duracion_min }} min)
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            ⚠️ Este ayudante no ha definido horarios disponibles aún.
+                        </div>
+                    {% endif %}
+
+                    <!-- Campos ocultos que se rellenan con JavaScript -->
+                    <input type="hidden" id="fecha" name="fecha" required>
+                    <input type="hidden" id="hora" name="hora" required>
+                    <input type="hidden" id="duracion_min" name="duracion_min" required>
+
+                    <button type="submit" class="btn btn-success">💳 Pagar clase</button>
+                </form>
+                <a href="{% url 'buscador' %}" class="btn btn-secondary mt-2">← Volver</a>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/agendar_clase.js' %}"></script>
+{% endblock %}

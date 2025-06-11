@@ -2,17 +2,26 @@
 {% load static %}
 
 {% block css %}
-<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}"> {% endblock %}
+<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}">
+{% endblock %}
 
 {% block content %}
-
 <div id="marcoNotificaciones" class="container">
     <div id="contenedorNotificaciones" class="row mt-5 py-5">
-        <div class=" p-4">
-            <h2 class="mb-4">Agendar Clase</h2>
-            <form action="/agendar_clase/" method="POST">
-                <!-- Si estás usando Django, no olvides el token -->
+        <div class="p-4 col-md-6">
+            <h2 class="mb-4">Configurar horarios disponibles</h2>
+            <form action="{% url 'seleccionarFechaClase' %}" method="POST">
                 {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="materia" class="form-label">Materia</label>
+                    <select class="form-control" id="materia" name="materia_id" required>
+                        <option value="" disabled selected>Selecciona una materia</option>
+                        {% for materia in materias %}
+                            <option value="{{ materia.id_materia }}">{{ materia.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
                 <div class="mb-3">
                     <label for="fecha" class="form-label">Fecha de la clase</label>
@@ -24,17 +33,42 @@
                     <input type="time" class="form-control" id="hora" name="hora" required>
                 </div>
 
-                <button type="submit" class="btn btn-success">Agendar</button>
+                <div class="mb-3">
+                    <label for="duracion" class="form-label">Duración (minutos)</label>
+                    <input type="number" class="form-control" id="duracion" name="duracion_min" required>
+                </div>
 
+                <button type="submit" class="btn btn-success">Agendar</button>
             </form>
             <a href="{% url 'buscador' %}" class="btn btn-secondary mt-2">Volver</a>
         </div>
-
-
     </div>
-
-
 </div>
 
+<div id="marcoNotificaciones" class="container">
+    <div id="contenedorNotificaciones" class="row mt-5 py-5">
+        <div class="p-4 col-md-6">
+            <h2 class="mb-4">Listado de Clases disponibles</h2>
+            
+            {% if clases %}
+                <ul class="list-group">
+                    {% for clase in clases %}
+                        <li class="list-group-item">
+                            <strong>{{ clase.fecha }} {{ clase.hora_inicio }}</strong> ({{ clase.duracion_min }} min)<br>
+                            {% if clase.materia %}
+                                <span>Materia: {{ clase.materia.nombre }}</span><br>
+                            {% endif %}
+                            {% if clase.google_event_id %}
+                                <small>Agendada en Google Calendar</small><br>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No tienes clases agendadas.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
 
 {% endblock %}
