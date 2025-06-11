@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let url = "/api/ayudante/autenticado/";
   if (ayudanteId) {
     url = `/api/ayudantes/${ayudanteId}/`;
+    agendarBtn.href = `/agendarClase/${ayudanteId}/`;
   }
 
   fetch(url)

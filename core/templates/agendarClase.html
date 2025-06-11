@@ -13,7 +13,7 @@
 
             {% if clase_confirmada %}
                 <div class="alert alert-success">
-                    ✅ Clase agendada para el {{ clase_confirmada.fecha }} a las {{ clase_confirmada.hora }}.
+                    ✅ Clase agendada para el {{ clase_confirmada.fecha }} a las {{ clase_confirmada.hora_inicio }}.
                 </div>
                 <a href="{% url 'pagar_clase' clase_confirmada.id_clase %}" class="btn btn-success mt-3">
                     💳 Pagar ahora
@@ -27,7 +27,7 @@
 
                     <div class="mb-3">
                         <label for="materia" class="form-label">Materia</label>
-                        <select class="form-control" id="materia" name="materia_id" required>
+                        <select class="form-control" id="materia" name="id_materia" required>
                             <option value="" disabled selected>Selecciona una materia</option>
                             {% for materia in materias %}
                                 <option value="{{ materia.id_materia }}">{{ materia.nombre }}</option>
@@ -55,7 +55,7 @@
 
                     <!-- Campos ocultos que se rellenan con JavaScript -->
                     <input type="hidden" id="fecha" name="fecha" required>
-                    <input type="hidden" id="hora" name="hora" required>
+                    <input type="hidden" id="hora_inicio" name="hora_inicio" required>
                     <input type="hidden" id="duracion_min" name="duracion_min" required>
 
                     <button type="submit" class="btn btn-success">💳 Pagar clase</button>
