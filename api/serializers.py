@@ -1,7 +1,7 @@
 import base64
 from rest_framework import serializers
 
-from core.models import Usuario, Ayudante, ClaseAgendada, Postulacion
+from core.models import Usuario, Ayudante, ClaseAgendada, Postulacion, Notificacion
 from datetime import datetime
 
 class UsuarioSerializer(serializers.ModelSerializer):
@@ -53,3 +53,9 @@ class PostulacionSerializer(serializers.ModelSerializer):
             return fecha.strftime("%d/%m/%Y %H:%M")
         except:
             return "Formato inválido"
+
+
+class NotificacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notificacion
+        fields = '__all__'

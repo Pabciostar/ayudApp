@@ -8,24 +8,11 @@
 
 <div id="marcoNotificaciones" class="container">
     <div id="contenedorNotificaciones" class="row mt-5 py-5">
-        <div class="mensaje-contenedor">
-    <div class="mensaje-header">
-      <h2>Clase confirmada para el lunes</h2>
-      <div class="mensaje-meta">De: Sistema • 10 mayo 2025</div>
-    </div>
-
-    <div class="mensaje-cuerpo">
-      Estimado/a usuario/a,<br><br>
-      Te informamos que tu clase con el ayudante <strong>Juan Pérez</strong> ha sido confirmada para el día <strong>lunes 13 de mayo</strong> a las <strong>17:00 hrs</strong>. Puedes conectarte mediante el enlace de Google Meet que te será enviado media hora antes.<br><br>
-      ¡Gracias por usar AyudApp!
-    </div>
-
-    <a href="{% url 'notificaciones' %}" class="btn btn-secondary btn-volver">← Volver a notificaciones</a>
-  </div>
+        
     </div>
 
 
 </div>
 
-
+<script src="{% static 'js/notificacion.js' %}"></script>
 {% endblock %}
