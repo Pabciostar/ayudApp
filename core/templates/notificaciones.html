@@ -5,42 +5,12 @@
 <link rel="stylesheet" href="{% static 'css/notificaciones.css' %}"> {% endblock %}
 
 {% block content %}
-
+<div id="data-usuario" data-usuario-id="{{ usuario_id }}"></div>
 <div id="marcoNotificaciones" class="container">
     <div id="contenedorNotificaciones" class="row mt-5 py-5">
-        <h2 class="text-white mb-4">Notificaciones</h2>
 
-        <a href="{% url 'notificacion' %}" class="notification-card d-block">
-            <div class="notification-title">Clase confirmada</div>
-            <div class="notification-meta">De: Sistema • 10 mayo 2025</div>
-        </a>
-
-        <a href="#" class="notification-card d-block">
-            <div class="notification-title">Solicitud de cambio de hora</div>
-            <div class="notification-meta">De: Juan Pérez • 9 mayo 2025</div>
-        </a>
-
-        <a href="#" class="notification-card d-block">
-            <div class="notification-title">Pago realizado</div>
-            <div class="notification-meta">De: Sistema • 8 mayo 2025</div>
-        </a>
-
-        <a href="#" class="notification-card d-block">
-            <div class="notification-title">Nueva calificación recibida</div>
-            <div class="notification-meta">De: María López • 7 mayo 2025</div>
-        </a>
-
-        <div class="row">
-            <div class="col-xs-12 col-sm-5 mb-xs-15">
-                <a href="{% url 'buscador' %}" class="btn btn-secondary mr-5">
-                    ← Atrás
-                </a>
-            </div>
-        </div>
     </div>
-
-
 </div>
 
-
+<script src="{% static 'js/notificaciones.js' %}"></script>
 {% endblock %}

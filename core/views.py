@@ -22,6 +22,7 @@ import google.auth.transport.requests
 import requests
 import os
 import json
+from .utils import crear_notificacion
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # Solo para pruebas locales (HTTP)
 
@@ -198,6 +199,14 @@ def postulacionAyudante_view(request):
             postulacion.usuario_id_usuario = usuario
             postulacion.save()
             messages.success(request, "Postulación enviada correctamente.")
+
+            crear_notificacion(
+            asunto="Postulación recibida",
+            remitente="Admin",
+            destinatario=str(usuario.id_usuario),
+            cuerpo=f"Su postulación fue enviada exitosamente",
+            clase_agendada=None
+        )
             return redirect('buscador')
     else:
         form = PostulacionForm()
@@ -214,10 +223,15 @@ def panelAdministrador(request):
     return render(request, 'panelAdministrador.html')
 
 def notificaciones_view(request):
-    return render(request, 'notificaciones.html')
+    usuario = Usuario.objects.get(correo=request.user.email)
+    return render(request, 'notificaciones.html', {
+        'usuario_id': usuario.id_usuario
+    })
 
-def notificacion_view(request):
-    return render(request, 'notificacion.html')
+def detalle_notificacion_view(request, id_notificacion):
+    return render(request, 'notificacion.html', {
+        'id_notificacion': id_notificacion
+    })
 
 def mensajeEstudianteAyudado_view(request):
     return render(request, 'mensajeEstudianteAyudante.html')
@@ -266,8 +280,17 @@ def aceptar_postulacion(request):
             usuario.rol = 'ayudante'
             usuario.save()
 
+
             # Cambiar estado de la postulación
             Postulacion.objects.filter(id_postulacion=id_postulacion).update(estado='aceptada')
+
+            crear_notificacion(
+                asunto="Postulación aceptada",
+                remitente="Admin",  
+                destinatario= str(usuario),  
+                cuerpo="Su postulación ha sido aceptada",
+                clase_agendada=None
+            )
 
             return JsonResponse({"mensaje": "Postulación aceptada y ayudante creado"})
         except Postulacion.DoesNotExist:
@@ -283,9 +306,20 @@ def rechazar_postulacion(request):
 
         try:
             postulacion = Postulacion.objects.get(id_postulacion=id_postulacion)
+            usuario = postulacion.usuario_id_usuario
             postulacion.estado = 'rechazada'
             postulacion.save(update_fields=['estado'])
+
+            crear_notificacion(
+                asunto="Postulación rechazada",
+                remitente="Admin",  
+                destinatario= str(usuario),  
+                cuerpo="Su postulación ha sido aceptada",
+                clase_agendada=None
+            )
+
             return JsonResponse({"mensaje": "Postulación rechazada"})
+        
         except Postulacion.DoesNotExist:
             return JsonResponse({"error": "Postulación no encontrada"}, status=404)
     return JsonResponse({"error": "Método no permitido"}, status=405)
@@ -298,6 +332,7 @@ def registro_view(request):
 
 def perfil_ayudante_html(request, id):
     return render(request, 'perfilAyudante.html', {'ayudante_id': id})
+
 
 @csrf_exempt
 @login_required

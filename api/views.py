@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
-from rest_framework import viewsets, status
-from core.models import Usuario, Ayudante, Postulacion
-from .serializers import UsuarioSerializer, AyudanteSerializer, PostulacionSerializer
+from rest_framework import viewsets, status, generics
+from core.models import Usuario, Ayudante, Postulacion, Notificacion
+from .serializers import UsuarioSerializer, AyudanteSerializer, PostulacionSerializer, NotificacionSerializer
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -176,3 +176,17 @@ def perfil_publico_ayudante(request, id):
         return Response(serializer.data)
     except Ayudante.DoesNotExist:
         return Response({'error': 'Ayudante no encontrado'}, status=404)
+    
+
+class NotificacionesPorUsuarioAPIView(generics.ListAPIView):
+    serializer_class = NotificacionSerializer
+
+    def get_queryset(self):
+        user_id = self.kwargs['user_id']
+        return Notificacion.objects.filter(destinatario=user_id).order_by('-fecha')
+
+
+class DetalleNotificacionAPIView(generics.RetrieveAPIView):
+    queryset = Notificacion.objects.all()
+    serializer_class = NotificacionSerializer
+    lookup_field = 'id_notificacion'

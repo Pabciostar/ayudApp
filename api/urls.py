@@ -1,6 +1,5 @@
 from rest_framework.routers import DefaultRouter
-from .views import UsuarioViewSet, obtener_ayudante, lista_ayudantes, idAyudante, ayudante_autenticado, PostulacionViewSet, perfil_publico_ayudante
-from .views import UsuarioViewSet, PostulacionViewSet
+from .views import UsuarioViewSet, obtener_ayudante, lista_ayudantes, idAyudante, ayudante_autenticado, PostulacionViewSet, NotificacionesPorUsuarioAPIView, DetalleNotificacionAPIView, perfil_publico_ayudante
 from django.urls import path
 from .views import mi_rol
 
@@ -17,5 +16,8 @@ urlpatterns = router.urls + [
     path('ayudantes/', lista_ayudantes, name='lista_ayudantes'),
     path('perfilAyudante/', idAyudante, name='perfilAyudante_api'),
     path('ayudante/autenticado/', ayudante_autenticado, name='ayudante_autenticado'),
-    path('perfil-ayudante/<int:id>/', perfil_publico_ayudante, name='perfil_publico_ayudante')
+    path('perfil-ayudante/<int:id>/', perfil_publico_ayudante, name='perfil_publico_ayudante'),
+    path('notificaciones/<str:user_id>/', NotificacionesPorUsuarioAPIView.as_view(), name='api_notificaciones_usuario'),
+    path('<int:id_notificacion>/', DetalleNotificacionAPIView.as_view(), name='api_detalle_notificacion'),
+
 ]
