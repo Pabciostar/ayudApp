@@ -15,7 +15,7 @@
 
                 <div class="mb-3">
                     <label for="materia" class="form-label">Materia</label>
-                    <select class="form-control" id="materia" name="materia_id" required>
+                    <select class="form-control" id="materia" name="id_materia" required>
                         <option value="" disabled selected>Selecciona una materia</option>
                         {% for materia in materias %}
                             <option value="{{ materia.id_materia }}">{{ materia.nombre }}</option>
@@ -30,7 +30,7 @@
 
                 <div class="mb-3">
                     <label for="hora" class="form-label">Hora de la clase</label>
-                    <input type="time" class="form-control" id="hora" name="hora" required>
+                    <input type="time" class="form-control" id="hora" name="hora_inicio" required>
                 </div>
 
                 <div class="mb-3">
@@ -54,12 +54,10 @@
                 <ul class="list-group">
                     {% for clase in clases %}
                         <li class="list-group-item">
-                            <strong>{{ clase.fecha }} {{ clase.hora_inicio }}</strong> ({{ clase.duracion_min }} min)<br>
-                            {% if clase.materia %}
-                                <span>Materia: {{ clase.materia.nombre }}</span><br>
-                            {% endif %}
-                            {% if clase.google_event_id %}
-                                <small>Agendada en Google Calendar</small><br>
+                            <strong>Fecha :{{ clase.fecha|date:"d/m/Y" }} Hora: {{ clase.hora_inicio|time:"H:i" }}</strong> Duración: ({{ clase.duracion_min }} min)<br>
+                            
+                            {% if clase.id_materia %}
+                                <span>Materia: {{ clase.id_materia.nombre }}</span><br>
                             {% endif %}
                         </li>
                     {% endfor %}
