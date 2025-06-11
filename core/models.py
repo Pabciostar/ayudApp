@@ -1,10 +1,3 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 from datetime import datetime
 from django.utils import timezone
@@ -20,6 +13,7 @@ ESTADO_CHOICES = [
         ('aceptada', 'Aceptada'),
         ('rechazada', 'Rechazada'),
     ]
+
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
@@ -108,19 +102,33 @@ class Ayudante(models.Model):
 
 
 class ClaseAgendada(models.Model):
-    id_clase = models.DecimalField(primary_key=True, max_digits=12, decimal_places=0)
+    id_clase = models.BigIntegerField(primary_key=True)
     fecha = models.DateField()
     hora = models.TimeField()
     valor = models.DecimalField(max_digits=7, decimal_places=0)
     materia_id_materia = models.ForeignKey('Materia', models.DO_NOTHING, db_column='materia_id_materia')
     usuario_id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='usuario_id_usuario')
     transaccion_id_transaccion = models.ForeignKey('Transaccion', models.DO_NOTHING, db_column='transaccion_id_transaccion')
-    duracion_min = models.IntegerField(default=0)
-    id_ayudante = models.ForeignKey('Ayudante', models.DO_NOTHING, db_column='id_ayudante')
+    duracion_min = models.IntegerField(blank=True, null=True)
+    id_ayudante = models.ForeignKey(Ayudante, models.DO_NOTHING, db_column='id_ayudante')
 
     class Meta:
         managed = False
         db_table = 'clase_agendada'
+
+
+class Disponibilidad(models.Model):
+    id_disponibilidad = models.AutoField(primary_key=True)
+    id_ayudante = models.ForeignKey(Ayudante, models.DO_NOTHING, related_name='disponibilidades', db_column='id_ayudante')
+    id_materia = models.ForeignKey('Materia', models.DO_NOTHING, db_column='id_materia')
+    fecha = models.DateField()
+    hora_inicio = models.TimeField()
+    duracion_min = models.IntegerField(blank=True, null=True)
+    disponible = models.BooleanField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'disponibilidad'
 
 
 class DjangoAdminLog(models.Model):
@@ -172,11 +180,25 @@ class Evaluacion(models.Model):
     id_evaluacion = models.DecimalField(primary_key=True, max_digits=5, decimal_places=0)
     valoracion = models.DecimalField(max_digits=1, decimal_places=0)
     comentario = models.CharField(max_length=100, blank=True, null=True)
-    clase_agendada_id_clase = models.ForeignKey(ClaseAgendada, models.DO_NOTHING, db_column='clase_agendada_id_clase')
+    clase_agendada_id_clase = models.DecimalField(max_digits=12, decimal_places=0)
 
     class Meta:
         managed = False
         db_table = 'evaluacion'
+
+
+class Googlecalendartoken(models.Model):
+    id = models.AutoField(primary_key=True)
+    id_usuario = models.OneToOneField('Usuario', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
+    access_token = models.TextField()
+    refresh_token = models.TextField(blank=True, null=True)
+    token_expiry = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        managed = False
+        db_table = 'googlecalendartoken'
 
 
 class Materia(models.Model):
@@ -196,7 +218,7 @@ class Notificacion(models.Model):
     remitente = models.CharField(max_length=30)
     destinatario = models.CharField(max_length=50)
     cuerpo = models.CharField(max_length=300)
-    clase_agendada_id_clase = models.ForeignKey(ClaseAgendada, models.DO_NOTHING, db_column='clase_agendada_id_clase')
+    clase_agendada_id_clase = models.DecimalField(max_digits=12, decimal_places=0)
 
     class Meta:
         managed = False
@@ -213,13 +235,14 @@ class Postulacion(models.Model):
     ramos = models.CharField(max_length=50)
     valor = models.DecimalField(max_digits=7, decimal_places=0)
     terminos = models.CharField(max_length=2)
-    estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='pendiente')
     usuario_id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='usuario_id_usuario')
+    estado = models.TextField()
 
     def save(self, *args, **kwargs):
         if not self.id_postulacion:
             self.id_postulacion = int(datetime.now().strftime('%y%m%d%H%M%S'))
         super().save(*args, **kwargs)
+
 
     class Meta:
         managed = False
@@ -228,14 +251,13 @@ class Postulacion(models.Model):
 
 class Transaccion(models.Model):
     id_transaccion = models.DecimalField(primary_key=True, max_digits=12, decimal_places=0)
-    estado = models.CharField(max_length=30, blank=True, null=True)
-    payment_id = models.CharField(max_length=100, unique=True)  # ID de PayPal
     voucher = models.CharField(max_length=30)
-    monto = models.DecimalField(max_digits=10, decimal_places=2)
-    moneda = models.CharField(max_length=10, default='USD')
-    usuario = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True, blank=True)
-    fecha = models.DateTimeField(auto_now_add=True)
-    
+    id_payment = models.CharField(unique=True, max_length=100, blank=True, null=True)
+    estado = models.CharField(max_length=30, blank=True, null=True)
+    monto = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    moneda = models.CharField(max_length=10, blank=True, null=True)
+    id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
+    fecha = models.DateField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.id_transaccion:
@@ -261,36 +283,3 @@ class Usuario(models.Model):
     class Meta:
         managed = False
         db_table = 'usuario'
-
-
-class GoogleCalendarToken(models.Model):
-    id = models.AutoField(primary_key=True)
-    usuario = models.OneToOneField(
-        Usuario,
-        on_delete=models.CASCADE,
-        db_column='id_usuario',
-        unique=True
-    )
-    access_token = models.TextField()
-    refresh_token = models.TextField(blank=True, null=True)
-    token_expiry = models.DateTimeField(blank=True, null=True)
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
-
-    class Meta:
-        managed = False 
-        db_table = 'googlecalendartoken'
-
-
-class Disponibilidad(models.Model):
-    id_disponibilidad = models.AutoField(primary_key=True)
-    ayudante = models.ForeignKey('Ayudante', on_delete=models.CASCADE, related_name='disponibilidades')
-    materia = models.ForeignKey(Materia, on_delete=models.CASCADE, null=True, blank=True)
-    fecha = models.DateField()
-    hora_inicio = models.TimeField()
-    duracion_min = models.IntegerField()
-    disponible = models.BooleanField(default=True)
-
-    class Meta:
-        managed = False
-        db_table = 'disponibilidad'

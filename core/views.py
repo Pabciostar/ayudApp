@@ -12,7 +12,7 @@ from django.utils.timezone import make_aware
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
-from .models import Usuario, Postulacion, Ayudante, GoogleCalendarToken, Disponibilidad, Materia, ClaseAgendada, Transaccion
+from .models import Usuario, Postulacion, Ayudante, Googlecalendartoken, Disponibilidad, Materia, ClaseAgendada, Transaccion
 from .forms import DatosAdicionalesForm, PostulacionForm
 from datetime import datetime, timedelta, time
 from .paypal_client import PayPalClient
@@ -106,8 +106,8 @@ def oauth2callback(request):
             if timezone.is_naive(token_expiry):
                 token_expiry = timezone.make_aware(token_expiry)
             
-            GoogleCalendarToken.objects.update_or_create(
-                usuario=usuario,
+            Googlecalendartoken.objects.update_or_create(
+                id_usuario=usuario,
                 defaults={
                     'access_token': credentials.token,
                     'refresh_token': credentials.refresh_token,
@@ -121,7 +121,7 @@ def oauth2callback(request):
 
 
 def get_calendar_service(usuario):
-    token = GoogleCalendarToken.objects.get(usuario=usuario)
+    token = Googlecalendartoken.objects.get(id_usuario=usuario)
     creds = Credentials(
         token=token.access_token,
         refresh_token=token.refresh_token,
@@ -333,7 +333,6 @@ def registro_view(request):
 def perfil_ayudante_html(request, id):
     return render(request, 'perfilAyudante.html', {'ayudante_id': id})
 
-
 @csrf_exempt
 @login_required
 def seccionarFechaClase_view(request):
@@ -350,14 +349,14 @@ def seccionarFechaClase_view(request):
     materias = Materia.objects.filter(ayudante_id_ayudante=ayudante)
 
     if request.method == 'POST':
-        materia_id = request.POST.get('materia_id')
+        materia_id = request.POST.get('id_materia')
         fecha_str = request.POST.get('fecha')
-        hora_str = request.POST.get('hora')
+        hora_str = request.POST.get('hora_inicio')
         duracion = request.POST.get('duracion_min')
-        
+    
         if not fecha_str or not hora_str or not duracion or not materia_id:
             return render(request, 'seleccionarFechaClase.html', {
-                'clases': Disponibilidad.objects.filter(ayudante=ayudante),
+                'clases': Disponibilidad.objects.filter(id_ayudante=ayudante),  # Cambiado ayudante -> id_ayudante
                 'materias': materias,
                 'error': 'Todos los campos son obligatorios'
             })
@@ -369,25 +368,25 @@ def seccionarFechaClase_view(request):
             hora_inicio_dt = datetime.strptime(hora_str, "%H:%M").time()
             hora_inicio = datetime.combine(fecha, hora_inicio_dt)
 
-
             disponibilidad = Disponibilidad.objects.create(
-                ayudante=ayudante,
-                materia=materia, 
+                id_ayudante=ayudante,  
+                id_materia=materia,     # Cambiado materia -> id_materia
                 fecha=fecha,
                 hora_inicio=hora_inicio.time(),
-                duracion_min=duracion
+                duracion_min=duracion,
+                disponible=True
             )
             disponibilidad.save()
 
             return redirect('seleccionarFechaClase')
         except Exception as e:
             return render(request, 'seleccionarFechaClase.html', {
-                'clases': Disponibilidad.objects.filter(ayudante=ayudante),
+                'clases': Disponibilidad.objects.filter(id_ayudante=ayudante),
                 'materias': materias,
                 'error': f'Error al guardar: {str(e)}'
             })
 
-    clases = Disponibilidad.objects.filter(ayudante=ayudante).order_by('fecha', 'hora_inicio')
+    clases = Disponibilidad.objects.filter(id_ayudante=ayudante).order_by('fecha', 'hora_inicio')
     return render(request, 'seleccionarFechaClase.html', {
         'clases': clases,
         'materias': materias
@@ -400,14 +399,14 @@ def agendarClase_view(request, id_ayudante):
         ayudante = get_object_or_404(Ayudante, pk=id_ayudante)
         materias = Materia.objects.filter(ayudante_id_ayudante=ayudante)
         disponibilidades = Disponibilidad.objects.filter(
-            ayudante=ayudante,
+            id_ayudante=ayudante,
             disponible=True
         ).order_by('fecha', 'hora_inicio')
 
         if request.method == 'POST':
-            materia_id = request.POST.get('materia_id')
+            materia_id = request.POST.get('id_materia')
             fecha = request.POST.get('fecha')
-            hora = request.POST.get('hora')
+            hora = request.POST.get('hora_inicio')
             duracion_min = request.POST.get('duracion_min')
 
             if not all([materia_id, fecha, hora, duracion_min]):
@@ -420,11 +419,11 @@ def agendarClase_view(request, id_ayudante):
 
             # Guardar datos en la sesión temporalmente
             request.session['datos_clase'] = {
-                'materia_id': materia_id,
+                'id_materia': materia_id,
                 'fecha': fecha,
-                'hora': hora,
+                'hora_inicio': hora,
                 'duracion_min': duracion_min,
-                'ayudante_id': ayudante.pk
+                'id_ayudante': ayudante.pk
             }
 
             return redirect('pago_clase')
@@ -452,8 +451,8 @@ def pagar_clase_view(request):
     if not datos:
         return render(request, 'error.html', {'mensaje': 'No se encontraron datos de clase.'})
 
-    materia = get_object_or_404(Materia, pk=datos['materia_id'])
-    ayudante = get_object_or_404(Ayudante, pk=datos['ayudante_id'])
+    materia = get_object_or_404(Materia, pk=datos['id_materia'])
+    ayudante = get_object_or_404(Ayudante, pk=datos['id_ayudante'])
     usuario = get_object_or_404(Usuario, correo=request.user.email)
     monto = float(ayudante.valor)
     moneda = 'USD'
@@ -485,15 +484,15 @@ def pagar_clase_view(request):
 
     if payment.create():
         transaccion = Transaccion.objects.create(
-            payment_id=payment.id,
+            id_payment=payment.id,
             estado=payment.state,
             monto=monto,
             moneda=moneda,
-            usuario=usuario
+            id_usuario=usuario
         )
 
         # Guardar ID transacción temporalmente
-        request.session['transaccion_id'] = transaccion.id_transaccion
+        request.session['id_transaccion'] = transaccion.id_transaccion
 
         for link in payment.links:
             if link.rel == "approval_url":
@@ -512,24 +511,24 @@ def paypal_return_view(request):
     payer_id = request.GET.get('PayerID')
 
     datos = request.session.get('datos_clase')
-    transaccion_id = request.session.get('transaccion_id')
+    id_transaccion = request.session.get('id_transaccion')
 
-    if not datos or not transaccion_id:
+    if not datos or not id_transaccion:
         return render(request, 'error.html', {'mensaje': 'Faltan datos para finalizar la clase.'})
 
     payment = Payment.find(payment_id)
 
     if payment.execute({"payer_id": payer_id}):
-        transaccion = get_object_or_404(Transaccion, pk=transaccion_id)
+        transaccion = get_object_or_404(Transaccion, pk=id_transaccion)
         transaccion.estado = 'approved'
         transaccion.save()
 
         usuario = get_object_or_404(Usuario, correo=request.user.email)
-        ayudante = get_object_or_404(Ayudante, pk=datos['ayudante_id'])
-        materia = get_object_or_404(Materia, pk=datos['materia_id'])
+        ayudante = get_object_or_404(Ayudante, pk=datos['id_ayudante'])
+        materia = get_object_or_404(Materia, pk=datos['id_materia'])
 
         fecha_obj = datetime.strptime(datos['fecha'], "%Y-%m-%d").date()
-        hora_obj = datetime.strptime(datos['hora'], "%H:%M").time()
+        hora_obj = datetime.strptime(datos['hora_inicio'], "%H:%M").time()
 
         clase = ClaseAgendada.objects.create(
             id_clase=int(datetime.now().strftime('%y%m%d%H%M%S')),
@@ -548,7 +547,7 @@ def paypal_return_view(request):
 
         # Limpiar sesión
         request.session.pop('datos_clase', None)
-        request.session.pop('transaccion_id', None)
+        request.session.pop('id_transaccion', None)
 
         # Mostrar éxito y datos
         return render(request, 'pago_exitoso.html', {'clase': clase})
@@ -559,7 +558,7 @@ def paypal_return_view(request):
 def crear_evento_google(clase):
     try:
         ayudante = clase.id_ayudante.id_ayudante
-        cred = GoogleCalendarToken.objects.get(usuario=ayudante.id_ayudante)
+        cred = Googlecalendartoken.objects.get(usuario=ayudante)
 
         credentials = Credentials(
             token=cred.access_token,
@@ -583,7 +582,7 @@ def crear_evento_google(clase):
 
         # Buscar la disponibilidad relacionada
         disponibilidad = Disponibilidad.objects.filter(
-            ayudante=ayudante,
+            id_ayudante=ayudante,
             fecha=clase.fecha,
             hora_inicio=clase.hora
         ).first()
