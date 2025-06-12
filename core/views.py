@@ -598,6 +598,8 @@ def paypal_return_view(request):
         request.session.pop('datos_clase', None)
         request.session.pop('id_transaccion', None)
 
+        crear_notificacion("Se agendó una nueva clase", "Administrador", usuario.id_usuario, f"Se ha agendado exitosamente una clase para el día {fecha_obj}, sobre la materia de {materia}. Recuerda conectarte a tiempo.", clase.id_clase)
+        crear_notificacion("Se agendó una nueva clase", "Administrador", clase.id_ayudante, f"Se ha agendado exitosamente una clase para el día {fecha_obj}, sobre la materia de {materia}. Recuerda conectarte a tiempo.", clase.id_clase)
         # Mostrar éxito y datos
         return render(request, 'pago_exitoso.html', {'clase': clase})
     else:
