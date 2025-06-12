@@ -26,5 +26,6 @@ urlpatterns = [
     path('agendarClase/<int:id>/', views.agendarClase_view, name='agendar_clase'),
     path('paypal-return/', views.paypal_return_view, name='paypal_return'),
     path('paypal-cancel/', views.paypal_cancel_view, name='paypal_cancel'),
-    path('pagar/', views.pagar_clase_view, name='pago_clase')
+    path('pagar/', views.pagar_clase_view, name='pago_clase'),
+    path('eliminar_disponibilidad/<int:id_disponibilidad>/', views.eliminar_disponibilidad_view, name='eliminar_disponibilidad'),
 ]

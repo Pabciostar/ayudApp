@@ -11,8 +11,9 @@
         <div class="texto-overlay p-4">
             <h1>Bienvenido a AyudApp</h1>
             <p>Conecta con los mejores ayudantes para tus estudios.</p>
-            <a href="{% url 'login' %}" class="btn btn-secondary">acceder</a>
-            <a href="{% url 'registro' %}" class="btn btn-secondary">registrarse</a>
+            <a href="{% url 'login' %}" class="btn btn-secondary d-inline-flex align-items-center w-auto" style="max-width: 250px; padding: 6px 12px;">
+                <img src="{% static 'images/web_neutral_rd_na@3x.png' %}" alt="Google" style="height: 20px; margin-right: 8px;">Acceder con Google
+            </a>
         </div>
     </div>
 </div>

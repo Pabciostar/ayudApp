@@ -9,10 +9,24 @@ ROL_CHOICES = [
 ]
 
 ESTADO_CHOICES = [
-        ('pendiente', 'Pendiente'),
-        ('aceptada', 'Aceptada'),
-        ('rechazada', 'Rechazada'),
-    ]
+    ('pendiente', 'Pendiente'),
+    ('aceptada', 'Aceptada'),
+    ('rechazada', 'Rechazada'),
+]
+
+ESTADOCLASE_CHOICES = [
+    ('confirmada', 'Confirmada'),
+    ('realizada', 'Realizada'),
+    ('cancelada', 'Cancelada'),
+]
+
+SEXO_CHOICES = [
+    ('', 'Seleccione una opción...'),
+    ('Masculino', 'Masculino'),
+    ('Femenino', 'Femenino'),
+    ('Otro', 'Otro'),
+    ('Prefiero No Informar', 'Prefiero No Informar'),
+]
 
 
 class AuthGroup(models.Model):
@@ -111,6 +125,7 @@ class ClaseAgendada(models.Model):
     transaccion_id_transaccion = models.ForeignKey('Transaccion', models.DO_NOTHING, db_column='transaccion_id_transaccion')
     duracion_min = models.IntegerField(blank=True, null=True)
     id_ayudante = models.ForeignKey(Ayudante, models.DO_NOTHING, db_column='id_ayudante')
+    estado = models.CharField(max_length=10, choices=ESTADOCLASE_CHOICES, default='confirmada')
 
     class Meta:
         managed = False
@@ -236,7 +251,7 @@ class Postulacion(models.Model):
     valor = models.DecimalField(max_digits=7, decimal_places=0)
     terminos = models.CharField(max_length=2)
     usuario_id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='usuario_id_usuario')
-    estado = models.TextField()
+    estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='pendiente')
 
     def save(self, *args, **kwargs):
         if not self.id_postulacion:
@@ -270,15 +285,15 @@ class Transaccion(models.Model):
 
 
 class Usuario(models.Model):
-    id_usuario = models.CharField(primary_key=True, max_length=8)
+    id_usuario = models.AutoField(primary_key=True)
     rut_usuario = models.CharField(max_length=10)
     nombres = models.CharField(max_length=30)
     apellidos = models.CharField(max_length=30)
     nacimiento = models.DateField()
     telefono = models.CharField(max_length=11)
     correo = models.CharField(max_length=50)
-    rol = models.CharField(max_length=15)
-    sexo = models.CharField(max_length=20)
+    rol = models.CharField(max_length=15, choices=ROL_CHOICES, default='estudiante')
+    sexo = models.CharField(max_length=30, choices=SEXO_CHOICES, blank=True)
 
     class Meta:
         managed = False

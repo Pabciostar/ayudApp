@@ -6,51 +6,26 @@
 {% endblock %}
 
 {% block content %}
-
 <div id="marcoNotificaciones" class="container">
     <div id="contenedorNotificaciones" class="row mt-5 py-5">
         <div class="container">
             <div class="p-4">
                 <h2>Registro de Usuario</h2>
+
                 <form method="POST">
                     {% csrf_token %}
 
-                    <div class="mb-3">
-                        <label for="nombres" class="form-label">Nombres</label>
-                        {{ form.nombres }}
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="apellidos" class="form-label">Apellidos</label>
-                        {{ form.apellidos }}
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="nacimiento" class="form-label">Fecha de Nacimiento</label>
-                        {{ form.nacimiento }}
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="rut_usuario" class="form-label">RUT</label>
-                        {{ form.rut_usuario }}
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="telefono" class="form-label">Teléfono</label>
-                        {{ form.telefono }}
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="sexo">Sexo:</label>
-                        <select id="sexo" name="sexo" required>
-                            <option value="" disabled selected>Seleccione una opción</option>
-                            <option value="Masculino">Masculino</option>
-                            <option value="Femenino">Femenino</option>
-                            <option value="Otro">Otro</option>
-                            <option value="Preferio No Informar">Prefiero no informar</option>
-                        </select>
-                        {{ form.sexo }}
-                    </div>
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger small">
+                                    {{ field.errors|striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
 
                     <button type="submit" class="btn btn-primary mt-2">Registrarse</button>
                 </form>
@@ -60,5 +35,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}

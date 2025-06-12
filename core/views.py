@@ -12,6 +12,7 @@ from django.utils.timezone import make_aware
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
+from django.db.models import Q
 from .models import Usuario, Postulacion, Ayudante, Googlecalendartoken, Disponibilidad, Materia, ClaseAgendada, Transaccion
 from .forms import DatosAdicionalesForm, PostulacionForm
 from datetime import datetime, timedelta, time
@@ -152,7 +153,6 @@ def datos_adicionales(request):
         if form.is_valid():
             usuario = form.save(commit=False)
             usuario.correo = request.user.email
-            usuario.id_usuario = usuario.rut_usuario.replace('.', '').split('-')[0]
             usuario.rol = 'estudiante'  # Rol fijo
             usuario.save()
             messages.success(request, 'Tus datos fueron registrados exitosamente.')
@@ -412,11 +412,34 @@ def seccionarFechaClase_view(request):
                 'error': f'Error al guardar: {str(e)}'
             })
 
-    clases = Disponibilidad.objects.filter(id_ayudante=ayudante).order_by('fecha', 'hora_inicio')
+    clases_agendadas = ClaseAgendada.objects.filter(id_ayudante=ayudante)
+    clases_agendadas_q = Q()
+    
+    for clase in clases_agendadas:
+        clases_agendadas_q |= Q(fecha=clase.fecha, hora_inicio=clase.hora)
+
+    clases = Disponibilidad.objects.filter(id_ayudante=ayudante)
+
+    if clases_agendadas_q:
+        clases = clases.exclude(clases_agendadas_q)
+    
+    clases = clases.order_by('fecha', 'hora_inicio')
+    
     return render(request, 'seleccionarFechaClase.html', {
         'clases': clases,
         'materias': materias
     })
+
+@login_required
+def eliminar_disponibilidad_view(request, id_disponibilidad):
+    try:
+        usuario = Usuario.objects.get(correo=request.user.email)
+        ayudante = Ayudante.objects.get(id_ayudante=usuario)
+        disponibilidad = get_object_or_404(Disponibilidad, id_disponibilidad=id_disponibilidad, id_ayudante=ayudante)
+        disponibilidad.delete()
+        return redirect('seleccionarFechaClase')
+    except (Usuario.DoesNotExist, Ayudante.DoesNotExist):
+        return render(request, 'error.html', {'mensaje': 'No tienes permiso para eliminar esta disponibilidad.'})
 
 @login_required
 def agendarClase_view(request, id):
