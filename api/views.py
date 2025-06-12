@@ -187,11 +187,22 @@ class NotificacionesPorUsuarioAPIView(generics.ListAPIView):
         user_id = self.kwargs['user_id']
         return Notificacion.objects.filter(destinatario=user_id).order_by('-fecha')
 
+@api_view(['GET'])
+def notificaciones_por_usuario(request, user_id):
+    notificaciones = Notificacion.objects.filter(destinatario=user_id).order_by('-fecha')
+    serializer = NotificacionSerializer(notificaciones, many=True)
+    return Response(serializer.data)
 
-class DetalleNotificacionAPIView(generics.RetrieveAPIView):
-    queryset = Notificacion.objects.all()
-    serializer_class = NotificacionSerializer
-    lookup_field = 'id_notificacion'
+
+@api_view(['GET'])
+def detalle_notificacion(request, id_notificacion):
+    try:
+        notificacion = Notificacion.objects.get(id_notificacion=id_notificacion)
+    except Notificacion.DoesNotExist:
+        return Response({'error': 'Notificación no encontrada'}, status=404)
+
+    serializer = NotificacionSerializer(notificacion)
+    return Response(serializer.data)
 
 
 @api_view(['GET'])
