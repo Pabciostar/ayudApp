@@ -23,6 +23,7 @@ import requests
 import os
 import json
 from .utils import crear_notificacion
+from .decorators import rol_requerido
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # Solo para pruebas locales (HTTP)
 

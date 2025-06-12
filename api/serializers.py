@@ -59,3 +59,8 @@ class NotificacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notificacion
         fields = '__all__'
+
+
+class MejorAyudanteSerializer(serializers.Serializer):
+    id = serializers.CharField()
+    promedio = serializers.FloatField()

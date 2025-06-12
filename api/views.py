@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from rest_framework import viewsets, status, generics
-from core.models import Usuario, Ayudante, Postulacion, Notificacion
-from .serializers import UsuarioSerializer, AyudanteSerializer, PostulacionSerializer, NotificacionSerializer
+from core.models import Usuario, Ayudante, Postulacion, Notificacion, Evaluacion, ClaseAgendada
+from .serializers import MejorAyudanteSerializer, UsuarioSerializer, AyudanteSerializer, PostulacionSerializer, NotificacionSerializer
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -10,6 +10,7 @@ from django.contrib import messages
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.db.models import Q, Func
 from django.db.models.functions import Lower
+from collections import defaultdict
 
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
@@ -190,3 +191,42 @@ class DetalleNotificacionAPIView(generics.RetrieveAPIView):
     queryset = Notificacion.objects.all()
     serializer_class = NotificacionSerializer
     lookup_field = 'id_notificacion'
+
+
+@api_view(['GET'])
+def mejores_ayudantes_view(request):
+    evaluaciones = Evaluacion.objects.all()
+
+
+    valoraciones_por_ayudante = defaultdict(list)
+
+    for evaluacion in evaluaciones:
+        clase_evaluada = evaluacion.clase_agendada_id_clase
+        if clase_evaluada:
+            clase_agendada = ClaseAgendada.objects.get(id_clase=clase_evaluada)
+            ayudante = clase_agendada.id_ayudante
+            valoraciones_por_ayudante[ayudante.id_ayudante].append(float(evaluacion.valoracion))
+
+    # Calculamos promedios
+    promedios = {
+        aid: sum(valores) / len(valores)
+        for aid, valores in valoraciones_por_ayudante.items()
+        if valores
+    }
+
+    # Obtenemos los 9 mejores ayudantes
+    ids_ordenados = sorted(promedios.keys(), key=lambda x: promedios[x], reverse=True)[:9]
+    ayudantes = Ayudante.objects.filter(id_ayudante__in=ids_ordenados)
+
+    # Aquí puedes crear una lista con datos extra (nombre, foto, etc.)
+    resultado = [
+        {
+            'id': a.id_ayudante,
+            'promedio': round(promedios[a.id_ayudante], 1)
+        }
+        for a in ayudantes
+    ]
+
+    serializer = MejorAyudanteSerializer(resultado, many=True)
+        
+    return Response(serializer.data, status=status.HTTP_200_OK)
