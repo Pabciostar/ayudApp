@@ -663,6 +663,9 @@ def crear_evento_google(clase):
                 'dateTime': fecha_fin.isoformat(),
                 'timeZone': 'America/Santiago',
             },
+            'attendees': [
+                {'email': clase.usuario_id_usuario.correo},
+            ],
             'conferenceData': {
                 'createRequest': {
                     'requestId': f"clase-{clase.id_clase}",  # Debe ser único por evento
