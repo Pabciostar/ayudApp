@@ -3,6 +3,7 @@
 
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/notificaciones.css' %}">
+<link rel="stylesheet" href="{% static 'css/agendarClase.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -58,7 +59,7 @@
                     <input type="hidden" id="hora_inicio" name="hora_inicio" required>
                     <input type="hidden" id="duracion_min" name="duracion_min" required>
 
-                    <button type="submit" class="btn btn-success">💳 Pagar clase</button>
+                    <button type="submit" class="paypal-btn">💳 Pagar con PayPal</button>
                 </form>
                 <a href="{% url 'buscador' %}" class="btn btn-secondary mt-2">← Volver</a>
             {% endif %}
