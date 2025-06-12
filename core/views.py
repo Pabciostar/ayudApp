@@ -39,7 +39,11 @@ def login_with_google(request):
                 "token_uri": "https://oauth2.googleapis.com/token"
             }
         },
-       scopes=['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid', 'https://www.googleapis.com/auth/calendar']
+       scopes=['https://www.googleapis.com/auth/userinfo.email', 
+               'https://www.googleapis.com/auth/userinfo.profile', 
+               'openid', 
+               'https://www.googleapis.com/auth/calendar',
+               'https://www.googleapis.com/auth/calendar.events']
        )
 
     flow.redirect_uri = settings.GOOGLE_REDIRECT_URI
@@ -74,7 +78,11 @@ def oauth2callback(request):
                 "token_uri": "https://oauth2.googleapis.com/token"
             }
         },
-        scopes=['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid', 'https://www.googleapis.com/auth/calendar'],
+        scopes=['https://www.googleapis.com/auth/userinfo.email', 
+                'https://www.googleapis.com/auth/userinfo.profile', 
+                'openid', 
+                'https://www.googleapis.com/auth/calendar',
+                'https://www.googleapis.com/auth/calendar.events'],
         state=session_state
     )
     flow.redirect_uri = settings.GOOGLE_REDIRECT_URI
@@ -132,7 +140,7 @@ def get_calendar_service(usuario):
         token_uri='https://oauth2.googleapis.com/token',
         client_id=settings.GOOGLE_CLIENT_ID,
         client_secret=settings.GOOGLE_CLIENT_SECRET,
-        scopes=['https://www.googleapis.com/auth/calendar'],
+        scopes=['https://www.googleapis.com/auth/calendar.events'],
     )
     if creds.expired and creds.refresh_token:
         creds.refresh(Request())
@@ -592,7 +600,10 @@ def paypal_return_view(request):
         )
 
         # Crear evento en Google Calendar
-        crear_evento_google(clase)
+        enlace_meet = crear_evento_google(clase)
+        if enlace_meet:
+            clase.link_meet = enlace_meet
+            clase.save()
 
         # Limpiar sesión
         request.session.pop('datos_clase', None)
@@ -618,7 +629,7 @@ def crear_evento_google(clase):
             token_uri="https://oauth2.googleapis.com/token",
             client_id=settings.GOOGLE_CLIENT_ID,
             client_secret=settings.GOOGLE_CLIENT_SECRET,
-            scopes=['https://www.googleapis.com/auth/calendar']
+            scopes=['https://www.googleapis.com/auth/calendar.events']
         )
 
         if credentials.expired and credentials.refresh_token:
@@ -652,12 +663,23 @@ def crear_evento_google(clase):
                 'dateTime': fecha_fin.isoformat(),
                 'timeZone': 'America/Santiago',
             },
+            'conferenceData': {
+                'createRequest': {
+                    'requestId': f"clase-{clase.id_clase}",  # Debe ser único por evento
+                    'conferenceSolutionKey': {'type': 'hangoutsMeet'}
+                }
+            }
         }
+        
 
-        service.events().insert(calendarId='primary', body=evento).execute()
+        evento_creado = service.events().insert(calendarId='primary', body=evento, conferenceDataVersion=1).execute()
+        enlace_meet = evento_creado.get('hangoutLink', None)
 
+        print("Enlace de Google Meet:", enlace_meet)
+        return enlace_meet 
     except Exception as e:
         print("Error al crear evento en Google Calendar:", e)
+        return None
 
 
 @csrf_exempt
