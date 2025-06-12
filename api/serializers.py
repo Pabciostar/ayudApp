@@ -66,8 +66,6 @@ class MejorAyudanteSerializer(serializers.Serializer):
 
 
 class ClaseAgendadaSerializer(serializers.ModelSerializer):
-    nombre_ayudante = serializers.CharField(source='id_ayudante.usuario_id_usuario.nombre')  # Ajusta según tu modelo
-
     class Meta:
         model = ClaseAgendada
         fields = '__all__'

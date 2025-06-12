@@ -233,13 +233,21 @@ def mejores_ayudantes_view(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class ClasesAgendadasPorUsuario(generics.ListAPIView):
-    serializer_class = ClaseAgendadaSerializer
-    permission_classes = [IsAuthenticated]
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def clases_agendadas_por_usuario_ayudante(request, usuario_id):
+    try:
+        clases_estudiante = ClaseAgendada.objects.filter(usuario_id_usuario=usuario_id)
 
-    def get_queryset(self):
-        usuario_id = self.kwargs['usuario_id']
-        return ClaseAgendada.objects.filter(usuario_id_usuario=usuario_id)
+        clases_ayudante = ClaseAgendada.objects.filter(id_ayudante__id_ayudante=usuario_id)
+
+        clases = (clases_estudiante | clases_ayudante).distinct()
+
+        serializer = ClaseAgendadaSerializer(clases, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
