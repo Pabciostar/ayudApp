@@ -126,6 +126,7 @@ class ClaseAgendada(models.Model):
     duracion_min = models.IntegerField(blank=True, null=True)
     id_ayudante = models.ForeignKey(Ayudante, models.DO_NOTHING, db_column='id_ayudante')
     estado = models.CharField(max_length=10, choices=ESTADOCLASE_CHOICES, default='confirmada')
+    link_meet = models.CharField(max_length=100)
 
     class Meta:
         managed = False
