@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    const notificacionId = "{{ id_notificacion }}";
+    const contenedor = document.getElementById("marcoNotificaciones");
+    const notificacionId = contenedor.dataset.id;
     const response = await fetch(`/api/notificacion/${notificacionId}/`);
     const notif = await response.json();
 
