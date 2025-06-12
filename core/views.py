@@ -409,10 +409,10 @@ def seccionarFechaClase_view(request):
     })
 
 @login_required
-def agendarClase_view(request, id_ayudante):
+def agendarClase_view(request, id):
     try:
         usuario = get_object_or_404(Usuario, correo=request.user.email)
-        ayudante = get_object_or_404(Ayudante, pk=id_ayudante)
+        ayudante = get_object_or_404(Ayudante, id_ayudante_id=id)
         materias = Materia.objects.filter(ayudante_id_ayudante=ayudante)
         disponibilidades = Disponibilidad.objects.filter(
             id_ayudante=ayudante,
@@ -422,10 +422,10 @@ def agendarClase_view(request, id_ayudante):
         if request.method == 'POST':
             materia_id = request.POST.get('id_materia')
             fecha = request.POST.get('fecha')
-            hora = request.POST.get('hora_inicio')
+            hora_inicio = request.POST.get('hora_inicio')
             duracion_min = request.POST.get('duracion_min')
 
-            if not all([materia_id, fecha, hora, duracion_min]):
+            if not all([materia_id, fecha, hora_inicio, duracion_min]):
                 return render(request, 'agendarClase.html', {
                     'ayudante': ayudante,
                     'materias': materias,
@@ -437,7 +437,7 @@ def agendarClase_view(request, id_ayudante):
             request.session['datos_clase'] = {
                 'id_materia': materia_id,
                 'fecha': fecha,
-                'hora_inicio': hora,
+                'hora_inicio': hora_inicio,
                 'duracion_min': duracion_min,
                 'id_ayudante': ayudante.pk
             }
@@ -573,8 +573,9 @@ def paypal_return_view(request):
    
 def crear_evento_google(clase):
     try:
-        ayudante = clase.id_ayudante.id_ayudante
-        cred = Googlecalendartoken.objects.get(usuario=ayudante)
+        ayudante = clase.id_ayudante
+        usuario_ayudante = ayudante.id_ayudante
+        cred = Googlecalendartoken.objects.get(id_usuario=usuario_ayudante)
 
         credentials = Credentials(
             token=cred.access_token,

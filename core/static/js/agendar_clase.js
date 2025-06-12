@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const select = document.getElementById('disponibilidad');
     const inputFecha = document.getElementById('fecha');
-    const inputHora = document.getElementById('hora');
+    const inputHora = document.getElementById('hora_inicio');
     const inputDuracion = document.getElementById('duracion_min');
     const form = document.querySelector('form');
 
@@ -11,15 +11,15 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log("Valor seleccionado:", this.value)
 
             if (this.value) {
-                const [fecha, hora, duracion] = this.value.split('|');
+                const [fecha, hora_inicio, duracion_min] = this.value.split('|');
 
                 console.log("Fecha:", fecha);
-                console.log("Hora:", hora);
-                console.log("Duración:", duracion);
+                console.log("Hora:", hora_inicio);
+                console.log("Duración:", duracion_min);
 
                 inputFecha.value = fecha;
-                inputHora.value = hora;
-                inputDuracion.value = duracion;
+                inputHora.value = hora_inicio;
+                inputDuracion.value = duracion_min;
             }
         });
     }
@@ -40,10 +40,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             console.log("Valor del select en el submit:", select.value);
 
-            const [fecha, hora, duracion] = select.value.split('|');
-            console.log("Valores divididos:", { fecha, hora, duracion});
+            const [fecha, hora_inicio, duracion_min] = select.value.split('|');
+            console.log("Valores divididos:", { fecha, hora_inicio, duracion_min});
 
-            if (!fecha || !hora || !duracion) {
+            if (!fecha || !hora_inicio || !duracion_min) {
                 console.error("Faltan datos en el horario. Valor original:", select.value);
                 Swal.fire({
                     icon: 'error',
@@ -58,8 +58,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 title: '¿Confirmar agendamiento?',
                 html: `
                     <p><strong>Fecha:</strong> ${fecha}</p>
-                    <p><strong>Hora:</strong> ${hora}</p>
-                    <p><strong>Duración:</strong> ${duracion} minutos</p>
+                    <p><strong>Hora:</strong> ${hora_inicio}</p>
+                    <p><strong>Duración:</strong> ${duracion_min} minutos</p>
                 `,
                 showCancelButton: true,
                 confirmButtonText: 'Sí, agendar',
