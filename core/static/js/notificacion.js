@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             </div>
     `;
 
-    if (notif.asunto === "Califica tu clase") {
+    if (notif.asunto === "¿Cómo fue tu clase?") {
         contenidoHTML += `
             <hr>
             <form id="formularioCalificacion" class="mt-3">

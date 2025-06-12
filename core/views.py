@@ -345,8 +345,8 @@ def registro_view(request):
 
 def perfil_ayudante_html(request, id):
     # 1) Saca el id de tu modelo Usuario desde la sesión
-    usuario_id = request.session.get('usuario_id')
-    usuario_visitante = get_object_or_404(Usuario, id_usuario=usuario_id)
+    correo_usuario = request.user.email
+    usuario_visitante = get_object_or_404(Usuario, correo=correo_usuario)
 
     # 2) Carga el ayudante cuyo perfil ves
     ayudante = get_object_or_404(Ayudante, id_ayudante_id=id)
