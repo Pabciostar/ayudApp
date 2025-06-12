@@ -3,8 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const response = await fetch(`/api/notificacion/${notificacionId}/`);
     const notif = await response.json();
 
-    const contenedor = document.getElementById("contenedorNotificacion");
-    contenedor.innerHTML = `
+    let contenidoHTML = `
         <div class="mensaje-contenedor">
             <div class="mensaje-header">
                 <h2>${notif.asunto}</h2>
@@ -13,7 +12,36 @@ document.addEventListener("DOMContentLoaded", async () => {
             <div class="mensaje-cuerpo">
                 ${notif.cuerpo}
             </div>
-            <a href="/notificaciones/" class="btn btn-secondary btn-volver">← Volver a notificaciones</a>
+    `;
+
+    if (notif.asunto === "Califica tu clase") {
+        contenidoHTML += `
+            <hr>
+            <form id="formularioCalificacion" class="mt-3">
+                <div class="mb-3">
+                    <label for="nota" class="form-label">Coloca tu nota (1 a 5):</label>
+                    <select id="nota" name="nota" class="form-select" required>
+                        <option value="" selected disabled>Selecciona una nota</option>
+                        <option value="1">1 - Muy mala</option>
+                        <option value="2">2 - Mala</option>
+                        <option value="3">3 - Regular</option>
+                        <option value="4">4 - Buena</option>
+                        <option value="5">5 - Excelente</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="comentario" class="form-label">Escribe una pequeña reseña:</label>
+                    <textarea id="comentario" name="comentario" class="form-control" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Enviar calificación</button>
+            </form>
+        `;
+    }
+
+    contenidoHTML += `
+        <a href="/notificaciones/" class="btn btn-secondary btn-volver mt-3">← Volver a notificaciones</a>
         </div>
     `;
+
+    contenedor.innerHTML = contenidoHTML;
 });

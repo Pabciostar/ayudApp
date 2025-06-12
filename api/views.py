@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from rest_framework import viewsets, status, generics
 from core.models import Usuario, Ayudante, Postulacion, Notificacion, Evaluacion, ClaseAgendada
-from .serializers import MejorAyudanteSerializer, UsuarioSerializer, AyudanteSerializer, PostulacionSerializer, NotificacionSerializer
+from .serializers import EvaluacionSerializer, MejorAyudanteSerializer, UsuarioSerializer, AyudanteSerializer, PostulacionSerializer, NotificacionSerializer, ClaseAgendadaSerializer
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.db.models import Q, Func
+from decimal import Decimal  
 from django.db.models.functions import Lower
 from collections import defaultdict
 
@@ -230,3 +231,31 @@ def mejores_ayudantes_view(request):
     serializer = MejorAyudanteSerializer(resultado, many=True)
         
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ClasesAgendadasPorUsuario(generics.ListAPIView):
+    serializer_class = ClaseAgendadaSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        usuario_id = self.kwargs['usuario_id']
+        return ClaseAgendada.objects.filter(usuario_id_usuario=usuario_id)
+
+
+@api_view(['POST'])
+def guardar_evaluacion(request):
+    data = dict(request.data)
+    
+    try:
+        data['valoracion'] = Decimal(data['valoracion'])
+        data['clase_agendada_id_clase'] = Decimal(data['clase_agendada_id_clase'])
+    except Exception as e:
+        return Response({'error': 'Datos inválidos'}, status=400)
+    
+    if Evaluacion.objects.filter(clase_agendada_id_clase=data['clase_agendada_id_clase']).exists():
+        return Response({'error': 'Esta clase ya fue evaluada'}, status=400)
+    serializer = EvaluacionSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

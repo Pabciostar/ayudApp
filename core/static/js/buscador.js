@@ -45,3 +45,43 @@ input.addEventListener("input", () => {
 });
 
 
+document.addEventListener('DOMContentLoaded', function () {
+    const usuario_id = document.getElementById("id_usuario")?.value || null;
+    const contenedor = document.getElementById('contenedorClasesAgendadas');
+
+    fetch(`/api/clases-agendadas/${usuario_id}/`)
+        .then(response => response.json())
+        .then(data => {
+            const lista = document.createElement('ul');
+            lista.className = 'list-group';
+
+            if (data.length === 0) {
+                lista.innerHTML = '<li class="list-group-item">No hay clases agendadas.</li>';
+            } else {
+                data.forEach(clase => {
+                    const fecha = new Date(clase.fecha + 'T' + clase.hora);
+                    const opcionesFecha = { weekday: 'long', hour: '2-digit', minute: '2-digit' };
+                    const fechaFormateada = fecha.toLocaleDateString('es-CL', opcionesFecha);
+
+                    const item = document.createElement('li');
+                    item.className = 'list-group-item';
+                    item.innerHTML = `
+                        ${clase.nombre_ayudante} - ${fechaFormateada}
+                        <button type="button" class="btn btn-primary">
+                            <a href="/detalle-clase/${clase.id_clase}/" class="link-light">Ver más</a>
+                        </button>
+                    `;
+                    lista.appendChild(item);
+                });
+            }
+
+            contenedor.innerHTML = ''; // Limpia el contenido anterior
+            contenedor.appendChild(document.createElement('h5')).textContent = 'Clases Agendadas';
+            contenedor.appendChild(lista);
+        })
+        .catch(error => {
+            console.error('Error al cargar clases agendadas:', error);
+        });
+});
+
+

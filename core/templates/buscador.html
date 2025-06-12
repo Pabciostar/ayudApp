@@ -5,21 +5,15 @@
 <link rel="stylesheet" href="{% static 'css/buscador.css' %}"> {% endblock %}
 
 {% block content %}
+<input type="hidden" id="id_usuario" value="{{ id_usuario }}">
 <div id="contendorPrincipalBuscador" class="container-fluid">
   <div class="row">
 
     <!-- Columna 1: Clases agendadas -->
     <div class="col-md-3">
-      <h5>Clases Agendadas</h5>
-      <ul class="list-group">
-        <li class="list-group-item">Juan Morales - Lunes 16:00 <button type="button" class="btn btn-primary"><a
-              href="{% url 'detalleClase' %}" class="link-light">Ver más</a></button></li>
-        <li class="list-group-item">Romina Reyes - Martes 12:00 <button type="button" class="btn btn-primary"><a
-              href="{% url 'detalleClase' %}" class="link-light">Ver más</a></button></li>
-        <li class="list-group-item">Camilo Muñoz - Jueves 17:00 <button type="button" class="btn btn-primary"><a
-              href="{% url 'detalleClase' %}" class="link-light">Ver más</a></button></li>
-        <!-- Puedes agregar más dinámicamente desde Django -->
-      </ul>
+      <div id="contenedorClasesAgendadas">
+
+      </div>
 
       <div class="p-3 mt-4 rounded shadow" style="background-color: #82D9D0">
         <h5>¡Gana dinero!</h5>

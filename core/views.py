@@ -180,7 +180,17 @@ def inicio(request):
 
 @login_required
 def buscador_view(request):
-    return render(request, 'buscador.html')
+    try:
+        usuario = Usuario.objects.get(correo=request.user.email)
+    except Usuario.DoesNotExist:
+        messages.error(request, "No se pudo encontrar tu información como usuario.")
+        return redirect('completar_datos')
+    
+    id_usuario = usuario.id_usuario
+    
+    return render(request, 'buscador.html', {
+        'id_usuario': id_usuario
+    })
 
 @login_required
 def postulacionAyudante_view(request):

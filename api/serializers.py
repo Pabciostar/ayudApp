@@ -1,7 +1,7 @@
 import base64
 from rest_framework import serializers
 
-from core.models import Usuario, Ayudante, ClaseAgendada, Postulacion, Notificacion
+from core.models import Usuario, Ayudante, ClaseAgendada, Postulacion, Notificacion, Evaluacion
 from datetime import datetime
 
 class UsuarioSerializer(serializers.ModelSerializer):
@@ -12,12 +12,12 @@ class UsuarioSerializer(serializers.ModelSerializer):
 class AyudanteSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer(source='id_ayudante', read_only=True)
     foto_base64 = serializers.SerializerMethodField()
-    id = serializers.SerializerMethodField()  # 👈 Campo id personalizado
+    id = serializers.SerializerMethodField()  
 
     class Meta:
         model = Ayudante
         fields = [
-            'id',  # 👈 Necesario para construir URLs como /perfilAyudante/<id>/
+            'id',  
             'usuario',
             'carrera',
             'foto_base64',
@@ -48,7 +48,6 @@ class PostulacionSerializer(serializers.ModelSerializer):
 
     def get_fecha_hora(self, obj):
         try:
-            # Suponiendo que el ID tiene formato ddMMyyHHMMSS (25 mayo 2020 14:00:05)
             fecha = datetime.strptime(str(obj.id_postulacion), "%d%m%y%H%M%S")
             return fecha.strftime("%d/%m/%Y %H:%M")
         except:
@@ -64,3 +63,16 @@ class NotificacionSerializer(serializers.ModelSerializer):
 class MejorAyudanteSerializer(serializers.Serializer):
     id = serializers.CharField()
     promedio = serializers.FloatField()
+
+
+class ClaseAgendadaSerializer(serializers.ModelSerializer):
+    nombre_ayudante = serializers.CharField(source='id_ayudante.usuario_id_usuario.nombre')  # Ajusta según tu modelo
+
+    class Meta:
+        model = ClaseAgendada
+        fields = '__all__'
+
+class EvaluacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Evaluacion
+        fields = '__all__'
