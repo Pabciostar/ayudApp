@@ -13,6 +13,7 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
 from django.db.models import Q
+from django.views.decorators.http import require_GET
 from .models import Usuario, Postulacion, Ayudante, Googlecalendartoken, Disponibilidad, Materia, ClaseAgendada, Transaccion
 from .forms import DatosAdicionalesForm, PostulacionForm
 from datetime import datetime, timedelta, time
@@ -453,17 +454,74 @@ def eliminar_disponibilidad_view(request, id_disponibilidad):
     except (Usuario.DoesNotExist, Ayudante.DoesNotExist):
         return render(request, 'error.html', {'mensaje': 'No tienes permiso para eliminar esta disponibilidad.'})
 
+
+@require_GET
+@login_required
+def obtener_disponibilidades(request, id_ayudante):
+    materia_id = request.GET.get('id_materia')
+
+    if not materia_id:
+        return JsonResponse({'error': 'Materia no especificada'}, status=400)
+
+    ayudante = get_object_or_404(Ayudante, id_ayudante_id=id_ayudante)
+
+    disponibilidades = Disponibilidad.objects.filter(
+        id_ayudante=ayudante,
+        disponible=True,
+        id_materia_id=materia_id
+    )
+
+    clases_agendadas = ClaseAgendada.objects.filter(
+        id_ayudante=ayudante,
+        estado='confirmada'
+    )
+
+    clases_agendadas_q = Q()
+    for clase in clases_agendadas:
+        clases_agendadas_q |= Q(fecha=clase.fecha, hora_inicio=clase.hora)
+
+    if clases_agendadas_q:
+        disponibilidades = disponibilidades.exclude(clases_agendadas_q)
+
+    data = [{
+        'id': d.id_disponibilidad,
+        'fecha': d.fecha.strftime('%Y-%m-%d'),
+        'hora_inicio': d.hora_inicio.strftime('%H:%M'),
+        'duracion': d.duracion_min
+    } for d in disponibilidades.order_by('fecha', 'hora_inicio')]
+
+    return JsonResponse({'disponibilidades': data})
+
 @login_required
 def agendarClase_view(request, id):
     try:
         usuario = get_object_or_404(Usuario, correo=request.user.email)
         ayudante = get_object_or_404(Ayudante, id_ayudante_id=id)
         materias = Materia.objects.filter(ayudante_id_ayudante=ayudante)
+
         disponibilidades = Disponibilidad.objects.filter(
             id_ayudante=ayudante,
             disponible=True
-        ).order_by('fecha', 'hora_inicio')
+        )
 
+        clases_agendadas = ClaseAgendada.objects.filter(
+            id_ayudante=ayudante,
+            estado='confirmada'
+            )
+        
+        # Generar condiciones de exclusión
+        clases_agendadas_q = Q()
+
+        for clase in clases_agendadas:
+            clases_agendadas_q |= Q(fecha=clase.fecha, hora_inicio=clase.hora)
+
+        # Excluir disponibilidades ya usadas
+        if clases_agendadas_q:
+            disponibilidades = disponibilidades.exclude(clases_agendadas_q)
+
+        # Finalmente ordenar
+        disponibilidades = disponibilidades.order_by('fecha', 'hora_inicio')
+        
         if request.method == 'POST':
             materia_id = request.POST.get('id_materia')
             fecha = request.POST.get('fecha')
@@ -494,7 +552,6 @@ def agendarClase_view(request, id):
             'materias': materias,
             'disponibilidades': disponibilidades
         })
-
     except Exception as e:
         return render(request, 'error.html', {'mensaje': f'Error: {e}'})
 

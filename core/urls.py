@@ -29,4 +29,5 @@ urlpatterns = [
     path('paypal-cancel/', views.paypal_cancel_view, name='paypal_cancel'),
     path('pagar/', views.pagar_clase_view, name='pago_clase'),
     path('eliminar_disponibilidad/<int:id_disponibilidad>/', views.eliminar_disponibilidad_view, name='eliminar_disponibilidad'),
+    path('disponibilidades/<int:id_ayudante>/', views.obtener_disponibilidades, name='obtener_disponibilidades'),
 ]
