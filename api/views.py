@@ -1,7 +1,16 @@
 from django.shortcuts import redirect, render
 from rest_framework import viewsets, status, generics
-from core.models import Usuario, Ayudante, Postulacion, Notificacion, Evaluacion, ClaseAgendada
-from .serializers import EvaluacionSerializer, MejorAyudanteSerializer, UsuarioSerializer, AyudanteSerializer, PostulacionSerializer, NotificacionSerializer, ClaseAgendadaSerializer
+from core.models import Usuario, Ayudante, Postulacion, Notificacion, Evaluacion, ClaseAgendada, Materia
+from .serializers import ( 
+    EvaluacionSerializer, 
+    MejorAyudanteSerializer, 
+    UsuarioSerializer, 
+    AyudanteSerializer, 
+    PostulacionSerializer, 
+    NotificacionSerializer, 
+    ClaseAgendadaSerializer,
+    MateriaSerializer,
+)
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -289,3 +298,7 @@ def detalle_clase_api(request, id_clase):
 
     serializer = ClaseAgendadaSerializer(clase)
     return Response(serializer.data)
+
+class MateriaViewSet(viewsets.ModelViewSet):
+    queryset = Materia.objects.all()
+    serializer_class = MateriaSerializer

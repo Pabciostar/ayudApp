@@ -263,3 +263,168 @@ function mostrarPostulaciones() {
       panel.innerHTML = tablaHTML;
     });
 }
+
+function listarMaterias() {
+  limpiarPanel();
+  const panel = document.getElementById('panelInformacion');
+
+  fetch('/api/materias/')
+    .then(r => r.json())
+    .then(materias => {
+      return fetch('/api/ayudantes/')
+        .then(r => r.json())
+        .then(ayudantes => ({ materias, ayudantes }));
+    })
+    .then(({ materias, ayudantes }) => {
+      let html = `
+        <h3>Materias Registradas</h3>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>ID Materia</th>
+              <th>Nombre</th>
+              <th>Ayudante</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      materias.forEach(materia => {
+        const nombreAyudante = materia.nombre_ayudante || 'Desconocido';
+
+        html += `
+          <tr>
+            <td>${materia.id_materia}</td>
+            <td>${materia.nombre}</td>
+            <td>${nombreAyudante}</td>
+            <td>
+              <button class="btn btn-sm btn-primary me-1" onclick="cargarFormularioEditarMateria('${materia.id_materia}', '${materia.nombre}', '${materia.id_ayudante}')">Editar</button>
+              <button class="btn btn-sm btn-danger" onclick="eliminarMateria('${materia.id_materia}')">Eliminar</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      html += `
+          </tbody>
+        </table>
+
+        <h4 id="tituloFormulario">Agregar Nueva Materia</h4>
+        <form id="formMateria" class="row g-3 mt-2">
+          <div class="col-md-4">
+            <input type="text" class="form-control" id="idMateria" placeholder="ID Materia" required>
+          </div>
+          <div class="col-md-4">
+            <input type="text" class="form-control" id="nombreMateria" placeholder="Nombre Materia" required>
+          </div>
+          <div class="col-md-4">
+            <select id="idAyudanteMateria" class="form-select" required>
+              <option value="">Selecciona un ayudante</option>
+              ${ayudantes.map(a => `<option value="${a.id}">${a.usuario.nombres} ${a.usuario.apellidos}</option>`).join('')}
+            </select>
+          </div>
+          <div class="col-12 mt-2">
+            <button type="submit" class="btn btn-success" id="btnSubmit">Agregar Materia</button>
+            <button type="button" class="btn btn-secondary" id="btnCancelarEdicion" style="display: none;">Cancelar</button>
+          </div>
+        </form>
+      `;
+
+      panel.innerHTML = html;
+
+      let editando = false;
+
+      document.getElementById('formMateria').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const idMateria = document.getElementById('idMateria').value;
+        const nombre = document.getElementById('nombreMateria').value;
+        const idAyudante = document.getElementById('idAyudanteMateria').value;
+
+        if (!idAyudante) {
+          showSystemAlert('Error', 'Debes seleccionar un ayudante válido.', false);
+          return;
+        }
+
+        const url = `/api/materias/${idMateria}/`;
+        const metodo = editando ? 'PATCH' : 'POST';
+        const mensajeExito = editando ? 'Materia actualizada correctamente' : 'Materia agregada correctamente';
+
+        fetch(editando ? url : '/api/materias/', {
+          method: metodo,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+          },
+          body: JSON.stringify({
+            id_materia: idMateria,
+            nombre: nombre,
+            id_ayudante: idAyudante  // ya mapeado al serializer
+          })
+        })
+          .then(response => {
+            if (!response.ok) throw new Error('Error al guardar materia');
+            return response.json();
+          })
+          .then(() => {
+            showSystemAlert('Éxito', mensajeExito, true);
+            listarMaterias();
+          })
+          .catch(error => {
+            console.error(error);
+            showSystemAlert('Error', 'No se pudo guardar la materia', false);
+          });
+      });
+
+      document.getElementById('btnCancelarEdicion').addEventListener('click', resetFormularioMateria);
+
+      window.cargarFormularioEditarMateria = (id, nombre, idAyudante) => {
+        editando = true;
+        document.getElementById('idMateria').value = id;
+        document.getElementById('idMateria').disabled = true;
+        document.getElementById('nombreMateria').value = nombre;
+        document.getElementById('idAyudanteMateria').value = idAyudante;
+        document.getElementById('btnSubmit').textContent = 'Guardar Cambios';
+        document.getElementById('btnCancelarEdicion').style.display = 'inline-block';
+        document.getElementById('tituloFormulario').textContent = 'Editar Materia';
+      };
+
+      function resetFormularioMateria() {
+        editando = false;
+        document.getElementById('formMateria').reset();
+        document.getElementById('idMateria').disabled = false;
+        document.getElementById('btnSubmit').textContent = 'Agregar Materia';
+        document.getElementById('btnCancelarEdicion').style.display = 'none';
+        document.getElementById('tituloFormulario').textContent = 'Agregar Nueva Materia';
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      showSystemAlert('Error', 'No se pudieron cargar las materias o ayudantes', false);
+    });
+}
+
+
+function eliminarMateria(idMateria) {
+  if (!confirm(`¿Estás seguro de eliminar la materia "${idMateria}"?`)) return;
+
+  fetch(`/api/materias/${idMateria}/`, {
+    method: 'DELETE',
+    headers: {
+      'X-CSRFToken': getCookie('csrftoken')
+    }
+  })
+  .then(response => {
+    if (response.ok) {
+      showSystemAlert('Materia eliminada', 'La materia fue eliminada correctamente', true);
+      listarMaterias();
+    } else {
+      throw new Error('Error al eliminar');
+    }
+  })
+  .catch(error => {
+    console.error(error);
+    showSystemAlert('Error', 'No se pudo eliminar la materia', false);
+  });
+}
