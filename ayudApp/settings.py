@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'rest_framework',
+    'background_task',
 ]
 
 MIDDLEWARE = [
@@ -102,6 +103,18 @@ REST_FRAMEWORK = {
     ]
 }
 
+LOGGING = {
+    'version': 1,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
 
 
 # Password validation
@@ -164,3 +177,5 @@ PAYPAL_MODE = config('PAYPAL_MODE')
 PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
 PAYPAL_CLIENT_SECRET = config('PAYPAL_CLIENT_SECRET')
 PAYPAL_WEBHOOK_ID = config('PAYPAL_WEBHOOK_ID')
+
+

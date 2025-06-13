@@ -24,37 +24,41 @@ def verificar_y_enviar_recordatorios():
     clases = ClaseAgendada.objects.all()
     for clase in clases:
         fecha_hora_clase = datetime.combine(clase.fecha, clase.hora)
-        diferencia = (fecha_hora_clase - ahora).total_seconds()
-        
-        if 3540 <= diferencia <= 3660:
-            notificacion_existente = Notificacion.objects.filter(
-                asunto="Recordatorio: tu clase comienza en 1 hora",
-                clase_agendada=clase.id_clase,
-                destinatario=clase.usuario_id_usuario
+
+        # Recordatorio antes de la clase (faltando 59~61 minutos)
+        diferencia_antes = (fecha_hora_clase - ahora).total_seconds()
+        if 3540 <= diferencia_antes <= 3660:
+            ya_enviada = Notificacion.objects.filter(
+                asunto="Recordatorio",
+                remitente="administrador",
+                destinatario=clase.usuario_id_usuario,
+                clase_agendada=clase.id_clase
             ).exists()
 
-        if not notificacion_existente:
-            crear_notificacion(
-                asunto="Recordatorio: tu clase comienza en 1 hora",
-                remitente = "administrador",
-                destinatario= clase.usuario_id_usuario,
-                cuerpo=f"La clase con el ayudante {clase.id_ayudante} comienza a las {clase.hora}",
-                clase_agendada = clase.id_clase
-            )
-        
+            if not ya_enviada:
+                crear_notificacion(
+                    asunto="Recordatorio",
+                    remitente="administrador",
+                    destinatario=clase.usuario_id_usuario,
+                    cuerpo=f"La clase con el ayudante {clase.id_ayudante} comienza a las {clase.hora}",
+                    clase_agendada=clase.id_clase
+                )
 
-        # Enviar recordatorio 1 hora después
+        # Recordatorio después de la clase (pasada 1 hora)
         diferencia_despues = (ahora - fecha_hora_clase).total_seconds()
         if 3540 <= diferencia_despues <= 3660:
-             notificacion_existente = Notificacion.objects.filter(
+            ya_enviada = Notificacion.objects.filter(
                 asunto="¿Cómo fue tu clase?",
-                clase_agendada=clase.id_clase,
-                destinatario=clase.usuario_id_usuario
+                remitente="administrador",
+                destinatario=clase.usuario_id_usuario,
+                clase_agendada=clase.id_clase
             ).exists()
-             
-        if not notificacion_existente:
-            crear_notificacion(
-                asunto="¿Cómo fue tu clase?",
-                cuerpo=f"Tu clase con el ayudante {clase.id_ayudante} terminó hace una hora. ¿Te gustaría evaluarla?",
-                destinatario=clase.usuario_id_usuario
-            )
+
+            if not ya_enviada:
+                crear_notificacion(
+                    asunto="¿Cómo fue tu clase?",
+                    remitente="administrador",
+                    destinatario=clase.usuario_id_usuario,
+                    cuerpo=f"Tu clase con el ayudante {clase.id_ayudante} terminó hace una hora. ¿Te gustaría evaluarla?",
+                    clase_agendada=clase.id_clase
+                )
