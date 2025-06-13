@@ -36,115 +36,35 @@
 
       <h5 class="titulo-centrado">RECOMENDACIONES</h5>
       <div id="ayudantesCarousel" class="carousel slide position-relative" data-bs-ride="false">
-        <!-- Indicadores -->
-        <div class="carousel-indicators line-indicators">
-        <button type="button" data-bs-target="#ayudantesCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
-        <button type="button" data-bs-target="#ayudantesCarousel" data-bs-slide-to="1"></button>
-        </div>
+        <div class="carousel-indicators line-indicators" id="indicadores-ayudantes"></div>
+        <div class="carousel-inner" id="carrusel-ayudantes"></div>
 
-        <div class="carousel-inner">
-          <!-- Primer grupo de tarjetas -->
-          <div class="carousel-item active">
-            <div class="row justify-content-center">
-              <!-- Tarjeta 1 -->
-              <div class="col-md-4 mb-3">
-                <div class="card">
-                  <div class="square-image-container">
-                    <img src="{% static 'images/ayudante1.png' %}" class="img-fluid square-image" alt="Ayudante">
-                  </div>
-                  <div class="card-body">
-                    <h5 class="card-title">Juana Oyarce</h5>
-                    <p class="card-text">Descripción breve del ayudante.</p>
-                    <button type="button" class="btn btn-primary">
-                      <a href="{% url 'perfilAyudante_pagina' %}" class="link-light">Ver más</a>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <!-- Tarjeta 2 -->
-              <div class="col-md-4 mb-3">
-                <div class="card">
-                  <div class="square-image-container">
-                    <img src="{% static 'images/ayudante2.png' %}" class="img-fluid square-image" alt="Ayudante">
-                  </div>
-                  <div class="card-body">
-                    <h5 class="card-title">Martina Naranjo</h5>
-                    <p class="card-text">Descripción breve del ayudante.</p>
-                    <button type="button" class="btn btn-primary">
-                      <a href="{% url 'detalleClase' %}" class="link-light">Ver más</a>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <!-- Tarjeta 3 -->
-              <div class="col-md-4 mb-3">
-                <div class="card">
-                  <div class="square-image-container">
-                  <img src="{% static 'images/ayudante3.png' %}" class="img-fluid square-image" alt="Ayudante">
-                  </div>
-                  <div class="card-body">
-                    <h5 class="card-title">Humberto Marinao</h5>
-                    <p class="card-text">Descripción breve del ayudante.</p>
-                    <button type="button" class="btn btn-primary">
-                      <a href="{% url 'detalleClase' %}" class="link-light">Ver más</a>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Segundo grupo de tarjetas -->
-          <div class="carousel-item">
-            <div class="row justify-content-center">
-              <!-- Tarjeta 4 -->
-              <div class="col-md-4 mb-3">
-                <div class="card">
-                  <div class="square-image-container">
-                    <img src="{% static 'images/ayudante4.png' %}" class="img-fluid square-image" alt="Ayudante">
-                  </div>
-                  <div class="card-body">
-                    <h5 class="card-title">Esteban Aguilera</h5>
-                    <p class="card-text">Descripción breve del ayudante.</p>
-                    <button type="button" class="btn btn-primary">
-                      <a href="{% url 'detalleClase' %}" class="link-light">Ver más</a>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <!-- Tarjeta 5 -->
-              <div class="col-md-4 mb-3">
-                <div class="card">
-                  <div class="square-image-container">
-                    <img src="{% static 'images/ayudante5.png' %}" class="img-fluid square-image" alt="Ayudante">
-                  </div>
-                  <div class="card-body">
-                    <h5 class="card-title">Ignacio Sanhueza</h5>
-                    <p class="card-text">Descripción breve del ayudante.</p>
-                    <button type="button" class="btn btn-primary">
-                      <a href="{% url 'detalleClase' %}" class="link-light">Ver más</a>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <!-- Puedes agregar una tercera tarjeta vacía para mantener la alineación -->
-              <div class="col-md-4 mb-3"></div>
-            </div>
-          </div>
-        </div>
-        <button class="carousel-control-prev custom-control" type="button" data-bs-target="#ayudantesCarousel" data-bs-slide="prev">
+        <button class="carousel-control-prev custom-control" type="button" data-bs-target="#ayudantesCarousel"
+          data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next custom-control" type="button" data-bs-target="#ayudantesCarousel" data-bs-slide="next">
+        <button class="carousel-control-next custom-control" type="button" data-bs-target="#ayudantesCarousel"
+          data-bs-slide="next">
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>
       </div>
-
+      <button class="carousel-control-prev custom-control" type="button" data-bs-target="#ayudantesCarousel"
+        data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next custom-control" type="button" data-bs-target="#ayudantesCarousel"
+        data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
     </div>
 
   </div>
+
+</div>
 </div>
 
 <script src="{% static 'js/buscador.js' %}"></script>

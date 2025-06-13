@@ -86,4 +86,75 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("/api/mejores-ayudantes/")
+    .then(response => response.json())
+    .then(data => crearCarruselAyudantes(data))
+    .catch(error => console.error("Error al cargar ayudantes:", error));
+});
 
+function crearCarruselAyudantes(ayudantes) {
+  const carrusel = document.getElementById("carrusel-ayudantes");
+  const indicadores = document.getElementById("indicadores-ayudantes");
+
+  carrusel.innerHTML = "";
+  indicadores.innerHTML = "";
+
+  const grupos = agruparPorTres(ayudantes);
+
+  grupos.forEach((grupo, index) => {
+    // Crear el item del carrusel
+    const item = document.createElement("div");
+    item.classList.add("carousel-item");
+    if (index === 0) item.classList.add("active");
+
+    const fila = document.createElement("div");
+    fila.classList.add("row", "justify-content-center");
+
+    grupo.forEach(ayudante => {
+      const tarjeta = document.createElement("div");
+      tarjeta.classList.add("col-md-4", "mb-3");
+
+      tarjeta.innerHTML = `
+        <div class="card">
+          <div class="square-image-container">
+            <img src="${ayudante.imagen_url}" class="img-fluid square-image" alt="Ayudante" style="width: 250px; height: 250px;">
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">${ayudante.nombre}</h5>
+            <p class="card-text">${ayudante.ramos}</p>
+            <p class="card-text">descripción: ${ayudante.descripcion}</p>
+            <button type="button" class="btn btn-primary">
+              <a href="/perfilAyudante/${ayudante.id}" class="link-light">Ver más</a>
+            </button>
+          </div>
+        </div>
+      `;
+
+      fila.appendChild(tarjeta);
+    });
+
+    item.appendChild(fila);
+    carrusel.appendChild(item);
+
+    // Crear indicador
+    const indicador = document.createElement("button");
+    indicador.type = "button";
+    indicador.setAttribute("data-bs-target", "#ayudantesCarousel");
+    indicador.setAttribute("data-bs-slide-to", index);
+    if (index === 0) {
+      indicador.classList.add("active");
+      indicador.setAttribute("aria-current", "true");
+    }
+    indicadores.appendChild(indicador);
+  });
+}
+
+// Agrupa de 3 en 3
+function agruparPorTres(lista) {
+  const grupos = [];
+  for (let i = 0; i < lista.length; i += 3) {
+    grupos.push(lista.slice(i, i + 3));
+  }
+  return grupos;
+}

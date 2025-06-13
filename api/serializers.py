@@ -61,8 +61,12 @@ class NotificacionSerializer(serializers.ModelSerializer):
 
 
 class MejorAyudanteSerializer(serializers.Serializer):
-    id = serializers.CharField()
+    id = serializers.IntegerField()
+    nombre = serializers.CharField()
+    descripcion = serializers.CharField()
+    ramos = serializers.CharField()
     promedio = serializers.FloatField()
+    imagen_url = serializers.CharField(allow_null=True)
 
 
 class ClaseAgendadaSerializer(serializers.ModelSerializer):

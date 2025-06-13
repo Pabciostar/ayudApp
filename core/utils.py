@@ -27,7 +27,7 @@ def verificar_y_enviar_recordatorios():
 
         # Recordatorio antes de la clase (faltando 59~61 minutos)
         diferencia_antes = (fecha_hora_clase - ahora).total_seconds()
-        if 3540 <= diferencia_antes <= 3660:
+        if 110 <= diferencia_antes <= 130:
             ya_enviada = Notificacion.objects.filter(
                 asunto="Recordatorio",
                 remitente="administrador",
@@ -46,7 +46,7 @@ def verificar_y_enviar_recordatorios():
 
         # Recordatorio después de la clase (pasada 1 hora)
         diferencia_despues = (ahora - fecha_hora_clase).total_seconds()
-        if 3540 <= diferencia_despues <= 3660:
+        if 110 <= diferencia_despues <= 130:
             ya_enviada = Notificacion.objects.filter(
                 asunto="¿Cómo fue tu clase?",
                 remitente="administrador",

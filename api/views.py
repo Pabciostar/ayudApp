@@ -1,3 +1,4 @@
+import base64
 from django.shortcuts import redirect, render
 from rest_framework import viewsets, status, generics
 from core.models import Usuario, Ayudante, Postulacion, Notificacion, Evaluacion, ClaseAgendada
@@ -204,6 +205,12 @@ def detalle_notificacion(request, id_notificacion):
     serializer = NotificacionSerializer(notificacion)
     return Response(serializer.data)
 
+def obtener_imagen_base64(foto_binaria):
+    if foto_binaria:
+        base64_str = base64.b64encode(foto_binaria).decode('utf-8')
+        return f"data:image/jpeg;base64,{base64_str}"
+    return None
+
 
 @api_view(['GET'])
 def mejores_ayudantes_view(request):
@@ -232,13 +239,16 @@ def mejores_ayudantes_view(request):
 
     # Aquí puedes crear una lista con datos extra (nombre, foto, etc.)
     resultado = [
-        {
-            'id': a.id_ayudante,
-            'promedio': round(promedios[a.id_ayudante], 1)
-        }
-        for a in ayudantes
-    ]
-
+    {
+        'id': a.id_ayudante.id_usuario,
+        'nombre': f"{a.id_ayudante.nombres} {a.id_ayudante.apellidos}",
+        'descripcion': f"{a.cuentanos}",
+        'ramos': f"{a.ramos}",
+        'promedio': round(promedios[a.id_ayudante], 1),
+        'imagen_url': obtener_imagen_base64(a.foto)
+    }
+    for a in ayudantes
+]
     serializer = MejorAyudanteSerializer(resultado, many=True)
         
     return Response(serializer.data, status=status.HTTP_200_OK)
