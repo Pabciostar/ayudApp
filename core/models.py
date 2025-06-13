@@ -127,6 +127,7 @@ class ClaseAgendada(models.Model):
     id_ayudante = models.ForeignKey(Ayudante, models.DO_NOTHING, db_column='id_ayudante')
     estado = models.CharField(max_length=10, choices=ESTADOCLASE_CHOICES, default='confirmada')
     link_meet = models.CharField(max_length=100)
+    evento_google_id = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
         managed = False

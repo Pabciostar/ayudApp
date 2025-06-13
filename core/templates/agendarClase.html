@@ -41,9 +41,11 @@
                             <label for="disponibilidad" class="form-label">Horario disponible</label>
                             <select class="form-control" id="disponibilidad" name="disponibilidad" required>
                                 <option value="" disabled selected>Selecciona horario</option>
-                                {% for disp in disponibilidades %}
-                                    <option value="{{ disp.fecha|date:'Y-m-d' }}|{{ disp.hora_inicio|time:'H:i' }}|{{ disp.duracion_min }}">
-                                        {{ disp.fecha|date:'Y-m-d' }} - {{ disp.hora_inicio|time:'H:i' }} ({{ disp.duracion_min }} min)
+                                {% for d in disponibilidades %}
+                                    <option 
+                                        value="{{ d.fecha|date:'Y-m-d' }}|{{ d.hora_inicio|time:'H:i' }}|{{ d.duracion_min }}"
+                                        data-materia-id="{{ d.id_materia.id_materia }}">
+                                        {{ d.fecha|date:'Y-m-d' }} - {{ d.hora_inicio|time:'H:i' }} ({{ d.duracion_min }} min)
                                     </option>
                                 {% endfor %}
                             </select>
@@ -69,4 +71,5 @@
 </div>
 
 <script src="{% static 'js/agendar_clase.js' %}"></script>
+<script src="{% static 'js/filtrar_disponibilidades.js' %}"></script>
 {% endblock %}

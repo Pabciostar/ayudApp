@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/detalleClase.css' %}"> {% endblock %}
+
+{% block content %}
+    <div id="contenedorprincipal">
+        <div id="marcoDetalle"> 
+            <div class="container">
+                <h3 class="mb-4">Su pago ha sido cancelado</h3>
+
+                <p>Para volver a repetir el proceso vuelva al buscador</p>
+            
+                <a href="{% url 'buscador' %}" class="btn btn-outline-light">Volver al buscador</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

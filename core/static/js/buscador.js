@@ -55,10 +55,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const lista = document.createElement('ul');
             lista.className = 'list-group';
 
-            if (data.length === 0) {
+            const clasesConfirmadas = data.filter(clase => clase.estado === "confirmada");
+
+            if (clasesConfirmadas.length === 0) {
                 lista.innerHTML = '<li class="list-group-item">No hay clases agendadas.</li>';
             } else {
-                data.forEach(clase => {
+                clasesConfirmadas.forEach(clase => {
                     const fecha = new Date(clase.fecha + 'T' + clase.hora);
                     const opcionesFecha = { weekday: 'long', hour: '2-digit', minute: '2-digit' };
                     const fechaFormateada = fecha.toLocaleDateString('es-CL', opcionesFecha);
@@ -74,7 +76,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             contenedor.innerHTML = ''; // Limpia el contenido anterior
-            contenedor.appendChild(document.createElement('h5')).textContent = 'Clases Agendadas';
+            const titulo = document.createElement('h5');
+            titulo.textContent = 'Clases Agendadas';
+            contenedor.appendChild(titulo);
             contenedor.appendChild(lista);
         })
         .catch(error => {
