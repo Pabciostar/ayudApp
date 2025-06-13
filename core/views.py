@@ -621,7 +621,10 @@ def pagar_clase_view(request):
 
 
 def paypal_cancel_view(request):
+    request.session.pop('datos_clase', None)
+    request.session.pop('id_transaccion', None)
     return render(request, 'pago_cancelado.html')
+  
 
 @login_required
 def paypal_return_view(request):
@@ -738,6 +741,8 @@ def crear_evento_google(clase):
 
         evento_creado = service.events().insert(calendarId='primary', body=evento, conferenceDataVersion=1).execute()
         enlace_meet = evento_creado.get('hangoutLink', None)
+        clase.evento_google_id = evento_creado.get('id')
+        clase.save()
 
         print("Enlace de Google Meet:", enlace_meet)
         return enlace_meet 
@@ -794,3 +799,70 @@ def detalleClase_detalle_view(request, id):
     ayudante = get_object_or_404(Ayudante, id_ayudante =clase.id_ayudante)
     usuario_ayudante = ayudante.id_ayudante 
     return render(request, 'detalleClase.html', {'clase': clase, 'usuario_ayudante': usuario_ayudante})
+
+@login_required
+@csrf_exempt
+def cancelar_clase_view(request, id_clase):
+    clase = get_object_or_404(ClaseAgendada, id_clase=id_clase)
+
+    usuario = get_object_or_404(Usuario, correo=request.user.email)
+
+    # Validar si el usuario es estudiante o ayudante asignado a la clase
+    if not (clase.usuario_id_usuario == usuario or clase.id_ayudante.id_ayudante == usuario):
+        return render(request, 'error.html', {'mensaje': 'No tienes permiso para cancelar esta clase.'})
+
+    if request.method == 'POST':
+        # Cambiar estado a cancelado
+        clase.estado = 'cancelada'
+        clase.save()
+
+        # Cancelar evento en Google Calendar
+        try:
+            cred = Googlecalendartoken.objects.get(id_usuario=clase.id_ayudante.id_ayudante)
+
+            credentials = Credentials(
+                token=cred.access_token,
+                refresh_token=cred.refresh_token,
+                token_uri="https://oauth2.googleapis.com/token",
+                client_id=settings.GOOGLE_CLIENT_ID,
+                client_secret=settings.GOOGLE_CLIENT_SECRET,
+                scopes=['https://www.googleapis.com/auth/calendar']
+            )
+
+            if credentials.expired and credentials.refresh_token:
+                credentials.refresh(Request())
+                cred.access_token = credentials.token
+                cred.token_expiry = credentials.expiry
+                cred.updated_at = timezone.now()
+                cred.save()
+
+            service = build("calendar", "v3", credentials=credentials)
+
+            # Buscar el evento por ID único usado en crear_evento_google
+            if clase.evento_google_id:
+                service.events().delete(calendarId='primary', eventId=clase.evento_google_id).execute()
+
+        except Exception as e:
+            print("Error al cancelar en Google Calendar:", e)
+
+        # Notificar (opcional)
+        crear_notificacion(
+            "Clase Cancelada",
+            "Administrador",
+            clase.usuario_id_usuario.id_usuario,
+            f"La clase con {clase.id_ayudante.id_ayudante.nombres} ha sido cancelada.",
+            clase.id_clase
+        )
+
+        crear_notificacion(
+            "Clase Cancelada",
+            "Administrador",
+            clase.id_ayudante.id_ayudante.id_usuario,
+            f"La clase con {clase.usuario_id_usuario.nombres} ha sido cancelada.",
+            clase.id_clase
+        )
+
+        messages.success(request, 'La clase fue cancelada correctamente.')
+        return redirect('detalleClase_detalle', id=clase.id_clase)
+
+    return render(request, 'error.html', {'mensaje': 'Método no permitido.'})

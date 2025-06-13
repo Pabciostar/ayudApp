@@ -30,4 +30,5 @@ urlpatterns = [
     path('pagar/', views.pagar_clase_view, name='pago_clase'),
     path('eliminar_disponibilidad/<int:id_disponibilidad>/', views.eliminar_disponibilidad_view, name='eliminar_disponibilidad'),
     path('disponibilidades/<int:id_ayudante>/', views.obtener_disponibilidades, name='obtener_disponibilidades'),
+    path('cancelar-clase/<int:id_clase>/', views.cancelar_clase_view, name='cancelar_clase'),
 ]

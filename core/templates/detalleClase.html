@@ -28,9 +28,11 @@
       </p>
 
       <div class="d-grid gap-2 mt-4">
-        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalCancelarClase">
-          Cancelar Clase
-        </button>
+        {% if clase.estado != 'cancelada' %}
+          <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalCancelarClase">
+            Cancelar Clase
+          </button>
+        {% endif %}
         <a href="{% url 'buscador' %}" class="btn btn-outline-light">Volver</a>
       </div>
     </div>
@@ -51,7 +53,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-        <form method="post">
+        <form method="post" action="{% url 'cancelar_clase' clase.id_clase %}">
           {% csrf_token %}
           <button type="submit" class="btn btn-danger">Sí, cancelar</button>
         </form>
