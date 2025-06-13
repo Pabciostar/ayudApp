@@ -1,11 +1,26 @@
 from rest_framework.routers import DefaultRouter
-from .views import UsuarioViewSet, obtener_ayudante, lista_ayudantes, idAyudante, ayudante_autenticado, PostulacionViewSet, detalle_notificacion, perfil_publico_ayudante,mejores_ayudantes_view, clases_agendadas_por_usuario_ayudante, notificaciones_por_usuario, detalle_clase_api
+from .views import (
+    UsuarioViewSet, 
+    obtener_ayudante, 
+    lista_ayudantes, 
+    idAyudante, 
+    ayudante_autenticado, 
+    PostulacionViewSet, 
+    detalle_notificacion, 
+    perfil_publico_ayudante,
+    mejores_ayudantes_view, 
+    clases_agendadas_por_usuario_ayudante, 
+    notificaciones_por_usuario, 
+    detalle_clase_api,
+    MateriaViewSet,
+)
 from django.urls import path
 from .views import mi_rol
 
 router = DefaultRouter()
 router.register(r'usuarios', UsuarioViewSet)
 router.register(r'postulaciones', PostulacionViewSet)
+router.register(r'materias', MateriaViewSet)
 
 urlpatterns = router.urls
 

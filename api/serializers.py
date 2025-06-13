@@ -1,7 +1,7 @@
 import base64
 from rest_framework import serializers
 
-from core.models import Usuario, Ayudante, ClaseAgendada, Postulacion, Notificacion, Evaluacion
+from core.models import Usuario, Ayudante, ClaseAgendada, Postulacion, Notificacion, Evaluacion, Materia
 from datetime import datetime
 
 class UsuarioSerializer(serializers.ModelSerializer):
@@ -78,3 +78,19 @@ class EvaluacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Evaluacion
         fields = '__all__'
+
+
+class MateriaSerializer(serializers.ModelSerializer):
+    id_ayudante = serializers.PrimaryKeyRelatedField(
+        source='ayudante_id_ayudante',
+        queryset=Ayudante.objects.all()
+    )
+    nombre_ayudante = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Materia
+        fields = ['id_materia', 'nombre', 'id_ayudante', 'nombre_ayudante']
+
+    def get_nombre_ayudante(self, obj):
+        usuario = obj.ayudante_id_ayudante.id_ayudante
+        return f"{usuario.nombres} {usuario.apellidos}"
