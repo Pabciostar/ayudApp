@@ -10,26 +10,32 @@
     <div class="container">
       <h3 class="mb-4">Detalle de la Clase Agendada</h3>
 
-      <p><strong>Ayudante:</strong> María González</p>
-      <p><strong>Fecha:</strong> 14 de mayo, 2025</p>
-      <p><strong>Hora:</strong> 17:00 hrs</p>
-      <p><strong>Ramo:</strong> Álgebra Lineal</p>
-      <p><strong>Estado:</strong> <span class="badge bg-success">Confirmada</span></p>
-      <p><strong>Google Meet:</strong> <a href="https://meet.google.com/abc-defg-hij" target="_blank"
-          class="link-light">Enlace a la clase</a></p>
+      <p><strong>Ayudante:</strong> {{ usuario_ayudante.nombres }} {{ usuario_ayudante.apellidos }}</p>
+      <p><strong>Fecha:</strong> {{ clase.fecha|date:"j \d\e F, Y" }}</p>
+      <p><strong>Hora:</strong> {{ clase.hora|time:"H:i" }} hrs</p>
+      <p><strong>Ramo:</strong> {{ clase.materia_id_materia.nombre }}</p>
+      <p><strong>Estado:</strong>
+        {% if clase.estado == 'confirmada' %}
+          <span class="badge bg-success">Confirmada</span>
+        {% elif clase.estado == 'pendiente' %}
+          <span class="badge bg-warning text-dark">Pendiente</span>
+        {% elif clase.estado == 'cancelada' %}
+          <span class="badge bg-danger">Cancelada</span>
+        {% endif %}
+      </p>
+      <p><strong>Google Meet:</strong>
+        <a href="{{ clase.link_meet }}" target="_blank" class="link-light">Enlace a la clase</a>
+      </p>
 
       <div class="d-grid gap-2 mt-4">
-        <a href="{% url 'seleccionarFechaClase' %}" class="btn btn-light">Solicitar cambio de fecha</a>
-        <a href="{% url 'mensajeEstudianteAyudante' %}" class="btn btn-light">Enviar mensaje al ayudante</a>
         <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalCancelarClase">
           Cancelar Clase
         </button>
-        <button class="btn btn-outline-light"><a href="{% url 'buscador' %}" target="_blank"
-            class="link-light">Volver</a></button>
+        <button class="btn btn-outline-light">
+          <a href="{% url 'buscador' %}" target="_blank" class="link-light">Volver</a>
+        </button>
       </div>
     </div>
-
-
   </div>
 </div>
 

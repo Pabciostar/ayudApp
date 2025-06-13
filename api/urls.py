@@ -1,5 +1,5 @@
 from rest_framework.routers import DefaultRouter
-from .views import UsuarioViewSet, obtener_ayudante, lista_ayudantes, idAyudante, ayudante_autenticado, PostulacionViewSet, detalle_notificacion, perfil_publico_ayudante,mejores_ayudantes_view, clases_agendadas_por_usuario_ayudante, notificaciones_por_usuario
+from .views import UsuarioViewSet, obtener_ayudante, lista_ayudantes, idAyudante, ayudante_autenticado, PostulacionViewSet, detalle_notificacion, perfil_publico_ayudante,mejores_ayudantes_view, clases_agendadas_por_usuario_ayudante, notificaciones_por_usuario, detalle_clase_api
 from django.urls import path
 from .views import mi_rol
 
@@ -21,4 +21,5 @@ urlpatterns = router.urls + [
     path('notificacion/<int:id_notificacion>/', detalle_notificacion, name='api_detalle_notificacion'),
     path('mejores-ayudantes/', mejores_ayudantes_view, name='mejores_ayudantes'),
     path('clases-agendadas/<int:usuario_id>/', clases_agendadas_por_usuario_ayudante, name='clases-agendadas'),
+    path('detalleClase/<int:id_clase>/', detalle_clase_api, name='detalle_clase_api'),
 ]

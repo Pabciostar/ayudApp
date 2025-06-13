@@ -67,9 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     item.className = 'list-group-item';
                     item.innerHTML = `
                         ${clase.nombre_ayudante} - ${fechaFormateada}
-                        <button type="button" class="btn btn-primary">
-                            <a href="/detalle-clase/${clase.id_clase}/" class="link-light">Ver más</a>
-                        </button>
+                        <a href="/detalleClase/${clase.id_clase}/" class="btn btn-primary">Ver más</a>
                     `;
                     lista.appendChild(item);
                 });

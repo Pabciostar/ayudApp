@@ -278,3 +278,14 @@ def guardar_evaluacion(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def detalle_clase_api(request, id_clase):
+    try:
+        clase = ClaseAgendada.objects.get(id_clase=id_clase)
+    except ClaseAgendada.DoesNotExist:
+        return Response({'error': 'Clase no encontrada'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = ClaseAgendadaSerializer(clase)
+    return Response(serializer.data)

@@ -237,6 +237,10 @@ def postulacionAyudante_view(request):
 def detalleClase_view(request):
     return render(request, 'detalleClase.html')
 
+def detalleClase_detalle_view(request, id):
+    clase = get_object_or_404(ClaseAgendada, id_clase=id)
+    return render(request, 'detalleClase.html', {'clase': clase})
+
 def perfilAyudante_view(request):
     return render(request, 'perfilAyudante.html')
 
@@ -610,7 +614,7 @@ def paypal_return_view(request):
         request.session.pop('id_transaccion', None)
 
         crear_notificacion("Se agendó una nueva clase", "Administrador", usuario.id_usuario, f"Se ha agendado exitosamente una clase para el día {fecha_obj}, sobre la materia de {materia}. Recuerda conectarte a tiempo.", clase.id_clase)
-        crear_notificacion("Se agendó una nueva clase", "Administrador", ayudante.id_ayudante, f"Se ha agendado exitosamente una clase para el día {fecha_obj}, sobre la materia de {materia}. Recuerda conectarte a tiempo.", clase.id_clase)
+        crear_notificacion("Se agendó una nueva clase", "Administrador", ayudante.id_ayudante.id_usuario, f"Se ha agendado exitosamente una clase para el día {fecha_obj}, sobre la materia de {materia}. Recuerda conectarte a tiempo.", clase.id_clase)
         # Mostrar éxito y datos
         return render(request, 'pago_exitoso.html', {'clase': clase})
     else:
@@ -727,3 +731,9 @@ def paypal_webhook(request):
             return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
     return JsonResponse({"status": "method not allowed"}, status=405)
+
+def detalleClase_detalle_view(request, id):
+    clase = get_object_or_404(ClaseAgendada, id_clase=id)
+    ayudante = get_object_or_404(Ayudante, id_ayudante =clase.id_ayudante)
+    usuario_ayudante = ayudante.id_ayudante 
+    return render(request, 'detalleClase.html', {'clase': clase, 'usuario_ayudante': usuario_ayudante})
