@@ -19,12 +19,13 @@ from .forms import DatosAdicionalesForm, PostulacionForm
 from datetime import datetime, timedelta, time
 from .paypal_client import PayPalClient
 from paypalrestsdk import Payment
+from decimal import Decimal
 import paypalrestsdk
 import google.auth.transport.requests
 import requests
 import os
 import json
-from .utils import crear_notificacion
+from .utils import crear_notificacion, obtener_tasa_clp_usd, obtener_tasa_usd_a_clp
 from .decorators import rol_requerido
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # Solo para pruebas locales (HTTP)
@@ -572,8 +573,14 @@ def pagar_clase_view(request):
     materia = get_object_or_404(Materia, pk=datos['id_materia'])
     ayudante = get_object_or_404(Ayudante, pk=datos['id_ayudante'])
     usuario = get_object_or_404(Usuario, correo=request.user.email)
-    monto = float(ayudante.valor)
+    monto = Decimal(ayudante.valor)
     moneda = 'USD'
+
+    tasa = obtener_tasa_clp_usd()
+    if tasa is None:
+        return render(request, 'pago_cancelado.html', {'error': 'No se pudo obtener la tasa de cambio'})
+    
+    valor_usd = (monto * tasa).quantize(Decimal('0.01'))
 
     payment = Payment({
         "intent": "sale",
@@ -587,13 +594,13 @@ def pagar_clase_view(request):
                 "items": [{
                     "name": f"Clase con {ayudante.id_ayudante.nombres}",
                     "sku": "001",
-                    "price": str(monto),
+                    "price": str(valor_usd),
                     "currency": moneda,
                     "quantity": 1
                 }]
             },
             "amount": {
-                "total": str(monto),
+                "total": str(valor_usd),
                 "currency": moneda
             },
             "description": "Pago de clase agendada"
@@ -604,7 +611,7 @@ def pagar_clase_view(request):
         transaccion = Transaccion.objects.create(
             id_payment=payment.id,
             estado=payment.state,
-            monto=monto,
+            monto=valor_usd,
             moneda=moneda,
             id_usuario=usuario
         )
@@ -651,12 +658,18 @@ def paypal_return_view(request):
         fecha_obj = datetime.strptime(datos['fecha'], "%Y-%m-%d").date()
         hora_obj = datetime.strptime(datos['hora_inicio'], "%H:%M").time()
 
+        tasa_usd_a_clp = obtener_tasa_usd_a_clp()
+        if tasa_usd_a_clp is None:
+            return render(request, 'error_pago.html', {'error': 'No se pudo obtener la tasa de cambio desde mindicador.cl'})
+
+        valor_en_clp = (transaccion.monto * tasa_usd_a_clp).quantize(Decimal('0.01'))
+
         clase = ClaseAgendada.objects.create(
             id_clase=int(datetime.now().strftime('%y%m%d%H%M%S')),
             fecha=fecha_obj,
             hora=hora_obj,
             duracion_min=int(datos['duracion_min']),
-            valor=transaccion.monto,
+            valor=valor_en_clp,
             materia_id_materia=materia,
             usuario_id_usuario=usuario,
             transaccion_id_transaccion=transaccion,

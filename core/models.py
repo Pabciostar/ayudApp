@@ -267,7 +267,7 @@ class Postulacion(models.Model):
 
 
 class Transaccion(models.Model):
-    id_transaccion = models.DecimalField(primary_key=True, max_digits=12, decimal_places=0)
+    id_transaccion = models.DecimalField(primary_key=True, max_digits=12, decimal_places=2)
     voucher = models.CharField(max_length=30)
     id_payment = models.CharField(unique=True, max_length=100, blank=True, null=True)
     estado = models.CharField(max_length=30, blank=True, null=True)

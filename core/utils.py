@@ -1,7 +1,10 @@
 from django.db import models
 from .models import Notificacion, ClaseAgendada
 from datetime import date, datetime, timedelta
-from decimal import Decimal
+from decimal import Decimal, getcontext
+import requests
+
+
 
 def crear_notificacion(asunto, remitente, destinatario, cuerpo, clase_agendada=None):
     ultima_id = Notificacion.objects.aggregate(max_id=models.Max('id_notificacion'))['max_id'] or 0
@@ -62,3 +65,32 @@ def verificar_y_enviar_recordatorios():
                     cuerpo=f"Tu clase con el ayudante {clase.id_ayudante} terminó hace una hora. ¿Te gustaría evaluarla?",
                     clase_agendada=clase.id_clase
                 )
+
+
+getcontext().prec = 10  # Puedes ajustarla según lo que necesites
+
+def obtener_tasa_clp_usd():
+    url = "https://mindicador.cl/api/dolar"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+
+        # Tasa USD/CLP, la invertimos para CLP → USD
+        valor_dolar = Decimal(str(data['serie'][0]['valor']))  # Ej: 913.65 CLP = 1 USD
+        tasa = Decimal('1') / valor_dolar  # CLP a USD
+        return tasa.quantize(Decimal('0.000001'))  # Redondeamos a 6 decimales
+    except Exception as e:
+        print(f"Error al obtener tasa de cambio desde mindicador.cl: {e}")
+        return None
+    
+def obtener_tasa_usd_a_clp():
+    url = "https://mindicador.cl/api/dolar"
+    try:
+        response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
+        response.raise_for_status()
+        data = response.json()
+        return Decimal(str(data['serie'][0]['valor']))  # USD → CLP como Decimal
+    except Exception as e:
+        print(f"Error al obtener tasa de cambio USD→CLP: {e}")
+        return None
