@@ -270,14 +270,14 @@ class Postulacion(models.Model):
 
 
 class Transaccion(models.Model):
-    id_transaccion = models.DecimalField(primary_key=True, max_digits=12, decimal_places=2)
+    id_transaccion = id_transaccion = models.BigIntegerField(primary_key=True)
     voucher = models.CharField(max_length=30)
     id_payment = models.CharField(unique=True, max_length=100, blank=True, null=True)
     estado = models.CharField(max_length=30, blank=True, null=True)
     monto = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     moneda = models.CharField(max_length=10, blank=True, null=True)
     id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='id_usuario', blank=True, null=True)
-    fecha = models.DateField(blank=True, null=True)
+    fecha = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         if not self.id_transaccion:

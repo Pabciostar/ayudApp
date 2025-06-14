@@ -1,7 +1,7 @@
 import base64
 from django.shortcuts import redirect, render
 from rest_framework import viewsets, status, generics
-from core.models import Usuario, Ayudante, Postulacion, Notificacion, Evaluacion, ClaseAgendada, Materia
+from core.models import Usuario, Ayudante, Postulacion, Notificacion, Evaluacion, ClaseAgendada, Materia, Transaccion
 from .serializers import ( 
     EvaluacionSerializer, 
     MejorAyudanteSerializer, 
@@ -11,6 +11,7 @@ from .serializers import (
     NotificacionSerializer, 
     ClaseAgendadaSerializer,
     MateriaSerializer,
+    TransaccionSerializer
 )
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.response import Response
@@ -314,3 +315,17 @@ def detalle_clase_api(request, id_clase):
 class MateriaViewSet(viewsets.ModelViewSet):
     queryset = Materia.objects.all()
     serializer_class = MateriaSerializer
+
+class TransaccionViewSet(viewsets.ModelViewSet):
+    queryset = Transaccion.objects.all()
+    serializer_class = TransaccionSerializer
+
+@api_view(['GET'])
+def clases_agendadas(request):
+    clases = ClaseAgendada.objects.select_related('transaccion_id_transaccion', 'id_ayudante__id_ayudante', 'usuario_id_usuario').all()
+    serializer = ClaseAgendadaSerializer(clases, many=True)
+    return Response(serializer.data)
+
+class EvaluacionViewSet(viewsets.ModelViewSet):
+    queryset = Evaluacion.objects.all()
+    serializer_class = EvaluacionSerializer

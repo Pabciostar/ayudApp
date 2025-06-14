@@ -1,8 +1,8 @@
 import base64
 from rest_framework import serializers
-
-from core.models import Usuario, Ayudante, ClaseAgendada, Postulacion, Notificacion, Evaluacion, Materia
-from datetime import datetime
+from core.models import Usuario, Ayudante, ClaseAgendada, Postulacion, Notificacion, Evaluacion, Materia, Transaccion
+from django.utils.timezone import make_aware
+from datetime import datetime, time, date
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -73,6 +73,7 @@ class ClaseAgendadaSerializer(serializers.ModelSerializer):
     # Asumiendo que 'id_materia' es un ForeignKey en ClaseAgendada al modelo Materia
     nombre_materia = serializers.CharField(source='materia_id_materia.nombre', read_only=True) 
     nombre_ayudante = serializers.SerializerMethodField() # Ya lo tenías, lo mantengo
+    calificacion = serializers.SerializerMethodField()
 
     class Meta:
         model = ClaseAgendada
@@ -85,6 +86,10 @@ class ClaseAgendadaSerializer(serializers.ModelSerializer):
         if obj.id_ayudante and obj.id_ayudante.id_ayudante:
             return f"{obj.id_ayudante.id_ayudante.nombres} {obj.id_ayudante.id_ayudante.apellidos}"
         return None
+    
+    def get_calificacion(self, obj):
+        evaluacion = Evaluacion.objects.filter(clase_agendada_id_clase=obj.id_clase).first()
+        return evaluacion.valoracion if evaluacion else None
 
 class EvaluacionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -106,3 +111,16 @@ class MateriaSerializer(serializers.ModelSerializer):
     def get_nombre_ayudante(self, obj):
         usuario = obj.ayudante_id_ayudante.id_ayudante
         return f"{usuario.nombres} {usuario.apellidos}"
+    
+class TransaccionSerializer(serializers.ModelSerializer):
+    fecha = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Transaccion
+        fields = '__all__'
+
+    def get_fecha(self, obj):
+        if isinstance(obj.fecha, date) and not isinstance(obj.fecha, datetime):
+            # convertir a datetime si viene como date
+            return make_aware(datetime.combine(obj.fecha, time.min))
+        return obj.fecha

@@ -13,6 +13,9 @@ from .views import (
     notificaciones_por_usuario, 
     detalle_clase_api,
     MateriaViewSet,
+    TransaccionViewSet,
+    clases_agendadas,
+    EvaluacionViewSet
 )
 from django.urls import path
 from .views import mi_rol
@@ -21,9 +24,10 @@ router = DefaultRouter()
 router.register(r'usuarios', UsuarioViewSet)
 router.register(r'postulaciones', PostulacionViewSet)
 router.register(r'materias', MateriaViewSet)
+router.register(r'transaccion', TransaccionViewSet)
+router.register(r'evaluacion', EvaluacionViewSet)
 
 urlpatterns = router.urls
-
 
 urlpatterns = router.urls + [
     path('mi-rol/', mi_rol),
@@ -37,4 +41,5 @@ urlpatterns = router.urls + [
     path('mejores-ayudantes/', mejores_ayudantes_view, name='mejores_ayudantes'),
     path('clases-agendadas/<int:usuario_id>/', clases_agendadas_por_usuario_ayudante, name='clases-agendadas'),
     path('detalleClase/<int:id_clase>/', detalle_clase_api, name='detalle_clase_api'),
+    path('clases-agendadas/', clases_agendadas, name='clases_agendadas_global'),
 ]

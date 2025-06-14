@@ -130,60 +130,25 @@ function mostrarUsuarios() {
 
 
 
-function mostrarClasesAgendadas() {
+async function mostrarClasesAgendadas() {
   const panel = document.getElementById('panelInformacion');
   limpiarPanel();
 
-  const clases = [
-    {
-      ayudante: 'Ana Martínez',
-      estudiante: 'Pedro Torres',
-      fechaAgendamiento: '2025-05-01',
-      fechaClase: '2025-05-03',
-      estado: 'Realizada',
-      calificacion: '4.0',
-      valor: 20000
-    },
-    {
-      ayudante: 'Luis González',
-      estudiante: 'Sofía Rojas',
-      fechaAgendamiento: '2025-04-28',
-      fechaClase: '2025-05-02',
-      estado: 'Pagada',
-      calificacion: 'No aplica',
-      valor: 15000
-    },
-    {
-      ayudante: 'María López',
-      estudiante: 'Carlos Pérez',
-      fechaAgendamiento: '2025-05-04',
-      fechaClase: '2025-05-06',
-      estado: 'Realizada',
-      calificacion: '5.0',
-      valor: 18000
-    },
-    {
-      ayudante: 'Daniela Reyes',
-      estudiante: 'Fernanda Díaz',
-      fechaAgendamiento: '2025-05-02',
-      fechaClase: '2025-05-05',
-      estado: 'Confirmada',
-      calificacion: 'No aplica',
-      valor: 22000
-    }
-  ];
+  try {
+    const response = await fetch('/api/clases-agendadas/'); // Ajusta URL según tu ruta real
+    const clases = await response.json();
 
-  let tablaHTML = `
+    let tablaHTML = `
       <h4>Clases Agendadas</h4>
       <table class="table table-striped">
         <thead>
           <tr>
             <th>Ayudante</th>
-            <th>Estudiante</th>
+            <th>Estudiante (ID)</th>
             <th>Fecha Agendamiento</th>
             <th>Fecha Clase</th>
             <th>Estado</th>
-            <th>Calificacion</th>
+            <th>Calificación</th>
             <th>Valor</th>
             <th>Comisión (15%)</th>
             <th>Pago al Ayudante (85%)</th>
@@ -192,26 +157,36 @@ function mostrarClasesAgendadas() {
         <tbody>
     `;
 
-  clases.forEach(c => {
-    const comision = (c.valor * 0.15).toFixed(0);
-    const pago = (c.valor * 0.85).toFixed(0);
-    tablaHTML += `
+    clases.forEach(c => {
+      const fechaAgendamiento = c.transaccion_id_transaccion?.fecha?.split('T')[0] || 'No disponible';
+      const calificacion = (c.calificacion !== null && c.calificacion !== undefined)
+        ? c.calificacion.toFixed(1)
+        : 'No aplica';
+      const comision = (c.valor * 0.15).toFixed(0);
+      const pago = (c.valor * 0.85).toFixed(0);
+
+      tablaHTML += `
         <tr>
-          <td>${c.ayudante}</td>
-          <td>${c.estudiante}</td>
-          <td>${c.fechaAgendamiento}</td>
-          <td>${c.fechaClase}</td>
+          <td>${c.nombre_ayudante || 'Sin nombre'}</td>
+          <td>${c.usuario_id_usuario}</td>
+          <td>${fechaAgendamiento}</td>
+          <td>${c.fecha}</td>
           <td>${c.estado}</td>
-          <td>${c.calificacion}</td>
+          <td>${calificacion}</td>
           <td>$${c.valor}</td>
           <td>$${comision}</td>
           <td>$${pago}</td>
         </tr>
       `;
-  });
+    });
 
-  tablaHTML += `</tbody></table>`;
-  panel.innerHTML = tablaHTML;
+    tablaHTML += `</tbody></table>`;
+    panel.innerHTML = tablaHTML;
+
+  } catch (error) {
+    console.error('Error al cargar clases agendadas:', error);
+    panel.innerHTML = `<p>Error al cargar las clases agendadas.</p>`;
+  }
 }
 
 
