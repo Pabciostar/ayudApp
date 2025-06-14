@@ -11,5 +11,4 @@ def tarea_enviar_recordatorios():
     logger.info("Recordatorio enviado: %s", datetime.now())
     verificar_y_enviar_recordatorios()
 
-    # Reprogramarse para ejecutarse nuevamente en 1 minuto
     tarea_enviar_recordatorios(schedule=10)
