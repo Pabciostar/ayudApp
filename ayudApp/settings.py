@@ -148,6 +148,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+TIME_ZONE = 'America/Santiago'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Static files (CSS, JavaScript, Images)

@@ -223,6 +223,9 @@ class Materia(models.Model):
     nombre = models.CharField(max_length=30)
     ayudante_id_ayudante = models.ForeignKey(Ayudante, models.DO_NOTHING, db_column='ayudante_id_ayudante')
 
+    def __str__(self):
+        return self.nombre
+
     class Meta:
         managed = False
         db_table = 'materia'
