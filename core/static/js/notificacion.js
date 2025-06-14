@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     contenidoHTML += `
-        <a href="/notificaciones/" class="btn btn-secondary btn-volver mt-3">← Volver a notificaciones</a>
+        <a href="/notificaciones" class="btn btn-secondary btn-volver mt-3">← Volver a notificaciones</a>
         </div>
     `;
 
