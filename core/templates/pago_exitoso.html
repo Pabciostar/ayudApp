@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/notificaciones.css' %}">
@@ -16,7 +17,9 @@
                 <li class="list-group-item"><strong>Duración:</strong> {{ clase.duracion_min }} minutos</li>
                 <li class="list-group-item"><strong>Materia:</strong> {{ clase.materia_id_materia.nombre }}</li>
                 <li class="list-group-item"><strong>Ayudante:</strong> {{ clase.id_ayudante.id_ayudante.nombres }} {{ clase.id_ayudante.id_ayudante.apellidos }}</li>
+                <li class="list-group-item"><strong>Valor pagado:</strong> ${{ clase.valor|floatformat:0|intcomma }} CLP <span class="text-muted">*</span></li>
             </ul>
+            <p class="text-muted mb-3" style="font-size: 0.9rem;">* Valor convertido desde USD a CLP al momento del pago.</p>
 
             <p class="alert alert-info text-center">El evento fue creado en Google Calendar.</p>
 

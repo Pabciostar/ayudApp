@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'core',
     'rest_framework',
     'background_task',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
@@ -147,6 +148,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+TIME_ZONE = 'America/Santiago'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Static files (CSS, JavaScript, Images)
@@ -166,16 +168,22 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-SESSION_COOKIE_AGE = 1800
+#Se agrega en segundos
+SESSION_COOKIE_AGE = 3600
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
 SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
 CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
+
+#Crendeciales google
 GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
 GOOGLE_REDIRECT_URI = config('GOOGLE_REDIRECT_URI')
+
+#Credenciales Paypal
 PAYPAL_MODE = config('PAYPAL_MODE')
 PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
 PAYPAL_CLIENT_SECRET = config('PAYPAL_CLIENT_SECRET')
 PAYPAL_WEBHOOK_ID = config('PAYPAL_WEBHOOK_ID')
+
 
 
