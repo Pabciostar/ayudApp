@@ -272,6 +272,8 @@ def clases_agendadas_por_usuario_ayudante(request, usuario_id):
         clases_ayudante = ClaseAgendada.objects.filter(id_ayudante__id_ayudante=usuario_id)
 
         clases = (clases_estudiante | clases_ayudante).distinct()
+        
+        clases = clases.select_related('materia_id_materia')
 
         serializer = ClaseAgendadaSerializer(clases, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

@@ -62,13 +62,20 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 clasesConfirmadas.forEach(clase => {
                     const fecha = new Date(clase.fecha + 'T' + clase.hora);
-                    const opcionesFecha = { weekday: 'long', hour: '2-digit', minute: '2-digit' };
+                    const opcionesFecha = { 
+                        year: '2-digit', 
+                        month: '2-digit', 
+                        day: '2-digit',
+                        hour: '2-digit', 
+                        minute: '2-digit',
+                        hour12: true // Para mostrar p.m. o a.m.
+                    };
                     const fechaFormateada = fecha.toLocaleDateString('es-CL', opcionesFecha);
 
                     const item = document.createElement('li');
                     item.className = 'list-group-item';
                     item.innerHTML = `
-                        ${clase.nombre_ayudante} - ${fechaFormateada}
+                        ${clase.nombre_materia} - ${fechaFormateada}
                         <a href="/detalleClase/${clase.id_clase}/" class="btn btn-primary">Ver más</a>
                     `;
                     lista.appendChild(item);

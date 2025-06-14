@@ -70,9 +70,21 @@ class MejorAyudanteSerializer(serializers.Serializer):
 
 
 class ClaseAgendadaSerializer(serializers.ModelSerializer):
+    # Asumiendo que 'id_materia' es un ForeignKey en ClaseAgendada al modelo Materia
+    nombre_materia = serializers.CharField(source='materia_id_materia.nombre', read_only=True) 
+    nombre_ayudante = serializers.SerializerMethodField() # Ya lo tenías, lo mantengo
+
     class Meta:
         model = ClaseAgendada
-        fields = '__all__'
+        fields = '__all__' # Asegúrate que 'id_materia' esté incluido en tus fields
+        # Si prefieres especificar todos los campos para mayor control:
+        # fields = ['id_clase', 'usuario_id_usuario', 'id_ayudante', 'id_materia', 'nombre_materia', 'fecha', 'hora', 'estado']
+    
+    def get_nombre_ayudante(self, obj):
+        # Asegurarse de que el ayudante exista antes de intentar acceder a sus atributos de usuario
+        if obj.id_ayudante and obj.id_ayudante.id_ayudante:
+            return f"{obj.id_ayudante.id_ayudante.nombres} {obj.id_ayudante.id_ayudante.apellidos}"
+        return None
 
 class EvaluacionSerializer(serializers.ModelSerializer):
     class Meta:
