@@ -1,0 +1,264 @@
+/* ===================================
+   RESET Y GENERALES
+=================================== */
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+main {
+  width: 100%;
+  display: block;
+}
+
+section {
+  width: 100%;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* ===================================
+   VARIABLES (PALETA DE COLORES)
+=================================== */
+:root {
+  --color-primary: #04738C;
+  --color-secondary: #82D9D0;
+  --color-accent: #048C8C;
+  --color-dark: #025A7C;
+  --color-light: #f8f9fa;
+  --text-light: #fff;
+  --text-dark: #333;
+}
+
+/* ===================================
+   HERO SECTION
+=================================== */
+.hero-section {
+  position: relative;
+  background: linear-gradient(135deg, var(--color-dark), #11B5B0);
+  color: var(--text-light);
+  text-align: center;
+  padding: 100px 20px;
+  background-image: url('/static/img/landing-hero.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 1;
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+.hero-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 30px;
+}
+
+.btn-cta {
+  background-color: var(--color-secondary);
+  color: black;
+  font-weight: bold;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.btn-cta:hover {
+  background-color: var(--color-accent);
+  color: var(--text-light);
+}
+
+/* ===================================
+   FEATURES SECTION
+=================================== */
+.features-section {
+  background-color: var(--color-light);
+}
+
+.features-section .row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.feature {
+  margin-bottom: 2rem;
+  max-width: 600px;
+  text-align: center;
+  transition: transform 0.2s ease-in-out;
+}
+
+.feature:hover {
+  transform: translateY(-5px);
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  color: var(--color-primary);
+  margin-bottom: 10px;
+}
+
+.feature-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.feature-desc {
+  font-size: 1rem;
+  color: var(--text-dark);
+}
+
+@media (min-width: 768px) {
+  .features-section .row {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .feature {
+    flex: 1;
+    margin-bottom: 0;
+  }
+}
+
+/* ===================================
+   PRICING SECTION
+=================================== */
+.pricing-section {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  padding: 80px 20px;
+  color: var(--text-light);
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-section .text-content h2 {
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  font-weight: bold;
+}
+
+.pricing-section .text-content p {
+  font-size: 1.1rem;
+  max-width: 500px;
+}
+
+.pricing-section .btn {
+  background-color: var(--text-light);
+  color: var(--color-primary);
+  font-weight: bold;
+  border-radius: 30px;
+  padding: 12px 28px;
+  transition: background 0.3s ease, color 0.3s ease;
+  border: none;
+}
+
+.pricing-section .btn:hover {
+  background-color: var(--color-accent);
+  color: var(--text-light);
+}
+
+/* ===================================
+   STEPS SECTION
+=================================== */
+.steps-section {
+  background-color: #fff;
+}
+
+.step-box {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 25px 15px;
+  margin: 10px auto;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.step-box:hover {
+  transform: scale(1.05);
+}
+
+.step-text {
+  font-size: 1rem;
+  color: var(--text-dark);
+}
+
+.step-icon {
+  font-size: 2.2rem;
+  color: var(--color-primary);
+  margin-bottom: 10px;
+}
+
+.step-number {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--color-secondary);
+}
+
+@media (min-width: 768px) {
+  .steps-section .row {
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 1rem;
+  }
+
+  .step-box {
+    width: 100%;
+    max-width: 200px;
+  }
+}
+
+/* ===================================
+   TABS
+=================================== */
+.nav-pills .nav-link {
+  background-color: var(--color-secondary);
+  color: var(--text-light);
+  border-radius: 20px;
+  margin: 0 5px;
+  font-weight: bold;
+  transition: all 0.2s ease-in-out;
+}
+
+.nav-pills .nav-link.active {
+  background-color: var(--color-primary);
+}
+
+/* ===================================
+   ANIMACIONES
+=================================== */
+.fade-section {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

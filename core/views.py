@@ -28,6 +28,9 @@ import json
 from .utils import crear_notificacion, obtener_tasa_clp_usd, obtener_tasa_usd_a_clp
 from .decorators import rol_requerido
 
+def landing_view(request):
+    return render(request, 'landing.html')
+
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # Solo para pruebas locales (HTTP)
 
 def login_with_google(request):

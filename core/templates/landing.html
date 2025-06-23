@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Bienvenido a AyudApp{% endblock %}
+
+{% block css %}<link rel="stylesheet" href="{% static 'css/landing.css' %}"> {% endblock %}
+
+{% block content %}
+<!-- Sección Hero -->
+<section class="hero-section">
+  <div class="container text-center text-white">
+    <h1 class="hero-title">Tu camino al éxito académico comienza aquí</h1>
+    <p class="hero-subtitle">AyudApp es la plataforma donde puedes encontrar ayuda personalizada para tus estudios.</p>
+  </div>
+</section>
+
+<!-- Sección de características -->
+<section class="features-section py-5 bg-light">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-md-4 col-12 feature">
+        <div class="feature-icon"><i class="bi bi-person-check-fill"></i></div>
+        <h3 class="feature-title">Ayudantes verificados</h3>
+        <p class="feature-desc">Todos nuestros ayudantes pasan por un proceso de postulación y revisión.</p>
+      </div>
+      <div class="col-md-4 col-12 feature">
+        <div class="feature-icon"><i class="bi bi-calendar-check-fill"></i></div>
+        <h3 class="feature-title">Agenda flexible</h3>
+        <p class="feature-desc">Agenda clases según tu disponibilidad y la del ayudante, 100% en línea.</p>
+      </div>
+      <div class="col-md-4 col-12 feature">
+        <div class="feature-icon"><i class="bi bi-shield-lock-fill"></i></div>
+        <h3 class="feature-title">Sin compartir datos personales</h3>
+        <p class="feature-desc">Nos encargamos de proteger tu información y gestionar las clases desde la plataforma.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Sección de precios accesibles -->
+<section class="pricing-section text-white">
+  <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+    <div class="text-content mb-4 mb-md-0">
+      <h2 class="fw-bold mb-3">¡Precios justos y accesibles!</h2>
+      <p class="lead">Cada ayudante fija su tarifa según su experiencia, asegurando precios razonables y adecuados para los estudiantes.</p>
+    </div>
+  </div>
+</section>
+
+<section class="steps-section py-5 bg-white">
+  <div class="container">
+    <h2 class="text-center fw-bold mb-4">¿Cómo funciona?</h2>
+
+    <!-- Tabs -->
+    <div class="d-flex justify-content-center mb-4">
+      <ul class="nav nav-pills">
+        <li class="nav-item">
+          <button class="nav-link" id="btn-estudiante" onclick="mostrarPasos('estudiante')">Estudiante</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link active" id="btn-ayudante" onclick="mostrarPasos('ayudante')">Ayudante</button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Pasos para Estudiante -->
+    <div id="pasos-estudiante" style="display: none;">
+      <div class="row text-center justify-content-center mb-4">
+        <div class="col-md-2 col-10 step-box">01<br><span class="step-text">Ingresa con Google</span></div>
+        <div class="col-md-2 col-10 step-box">02<br><span class="step-text">Busca un ayudante</span></div>
+        <div class="col-md-2 col-10 step-box">03<br><span class="step-text">Agenda una clase</span></div>
+        <div class="col-md-2 col-10 step-box">04<br><span class="step-text">Paga y aprende</span></div>
+      </div>
+      <p class="text-center">Encuentra al ayudante perfecto para tus ramos y agenda clases sin complicaciones.</p>
+    </div>
+
+    <!-- Pasos para Ayudante -->
+    <div id="pasos-ayudante">
+      <div class="row text-center justify-content-center mb-4">
+        <div class="col-md-2 col-10 step-box">01<br><span class="step-text">Ingresa con Google</span></div>
+        <div class="col-md-2 col-10 step-box">02<br><span class="step-text">Postula como ayudante</span></div>
+        <div class="col-md-2 col-10 step-box">03<br><span class="step-text">Configura tu disponibilidad</span></div>
+        <div class="col-md-2 col-10 step-box">04<br><span class="step-text">Realiza tu clase agendada</span></div>
+      </div>
+      <p class="text-center">Sé parte del equipo de ayudantes y genera ingresos compartiendo tu conocimiento.</p>
+    </div>
+
+    <!-- Botón CTA -->
+    <div class="text-center mt-4">
+      <a href="{% url 'acceder' %}" class="btn btn-warning px-4 py-2 rounded-pill text-dark fw-bold">
+        Comenzar ahora
+      </a>
+    </div>
+  </div>
+</section>
+
+<script src="{% static 'js/landing.js' %}"></script>
+{% endblock %}
