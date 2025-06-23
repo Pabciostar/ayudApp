@@ -125,7 +125,7 @@ function crearCarruselAyudantes(ayudantes) {
       tarjeta.innerHTML = `
         <div class="card">
           <div class="square-image-container">
-            <img src="${ayudante.imagen_url}" class="img-fluid square-image" alt="Ayudante" style="width: 250px; height: 250px;">
+            <img src="${ayudante.imagen_url || 'core/static/images/placeHolderPerfilAyudante.png'}" class="img-fluid square-image" alt="Ayudante" style="width: 250px; height: 250px;">
           </div>
           <div class="card-body">
             <h5 class="card-title">${ayudante.nombre}</h5>
