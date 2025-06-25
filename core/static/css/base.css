@@ -86,3 +86,24 @@ main {
     color: white;
     font-size: 0.9rem;
 }
+
+/* Botón "Ingresar" exclusivo para landing */
+.btn-ingresar-landing {
+  background-color: #047F8C; /* Azul medio, sobrio */
+  color: #ffffff;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 6px;        /* Sutil redondeado */
+  border: 2px solid #04668C; /* Azul más oscuro */
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+a.btn-ingresar-landing:hover {
+  background-color: #04668C !important; /* Más oscuro al pasar el mouse */
+  color: #ffffff !important;
+  border-color: #04506F !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+}

@@ -45,7 +45,7 @@ section {
   color: var(--text-light);
   text-align: center;
   padding: 100px 20px;
-  background-image: url('/static/img/landing-hero.jpg');
+  background-image: url('/static/images/banner-landing1.png');
   background-size: cover;
   background-position: center;
   min-height: 70vh;
@@ -177,6 +177,12 @@ section {
 .pricing-section .btn:hover {
   background-color: var(--color-accent);
   color: var(--text-light);
+}
+
+/* Imagen a la derecha */
+.pricing-section .image-content img {
+  max-width: 100%;
+  height: auto;
 }
 
 /* ===================================

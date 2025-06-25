@@ -29,7 +29,7 @@ from .utils import crear_notificacion, obtener_tasa_clp_usd, obtener_tasa_usd_a_
 from .decorators import rol_requerido
 
 def landing_view(request):
-    return render(request, 'landing.html')
+    return render(request, 'landing.html', {'es_landing': True})
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # Solo para pruebas locales (HTTP)
 
