@@ -373,6 +373,7 @@ def perfil_ayudante_html(request, id):
         "usuario_visitante": usuario_visitante,
         "usuario_perfil":    usuario_perfil,
         "ayudante":          ayudante,
+        "rol_usuario": usuario_visitante.rol,
     })
 
 
