@@ -133,6 +133,20 @@ class ClaseAgendada(models.Model):
         managed = False
         db_table = 'clase_agendada'
 
+class Ctacte(models.Model):
+    id_ctacte = models.AutoField(primary_key=True)
+    id_usuario = models.ForeignKey('Usuario', models.DO_NOTHING, db_column='id_usuario')
+    rut_usuario = models.CharField(max_length=10, blank=True, null=True)
+    nombres = models.CharField(max_length=30, blank=True, null=True)
+    apellidos = models.CharField(max_length=30, blank=True, null=True)
+    correo = models.CharField(max_length=50, blank=True, null=True)
+    banco = models.CharField(max_length=30)
+    tipodecta = models.CharField(max_length=15)
+    numdecta = models.DecimalField(max_digits=20, decimal_places=0)
+
+    class Meta:
+        managed = False
+        db_table = 'ctacte'
 
 class Disponibilidad(models.Model):
     id_disponibilidad = models.AutoField(primary_key=True)
@@ -238,7 +252,7 @@ class Notificacion(models.Model):
     remitente = models.CharField(max_length=30)
     destinatario = models.CharField(max_length=50)
     cuerpo = models.CharField(max_length=300)
-    clase_agendada_id_clase = models.DecimalField(max_digits=12, decimal_places=0)
+    clase_agendada_id_clase = models.DecimalField(max_digits=12, decimal_places=0, blank=True, null=True)
 
     class Meta:
         managed = False

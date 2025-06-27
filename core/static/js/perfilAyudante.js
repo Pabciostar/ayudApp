@@ -6,11 +6,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const agendarBtn = document.getElementById("agendar-btn");
   const disponibilidadBtn = document.getElementById("disponibilidad-btn");
   const editarBtn = document.getElementById("editar-btn");
+  const bancariosBtn = document.getElementById("bancarios-btn");
 
   // Ocultar todos los botones por defecto
   if (agendarBtn) agendarBtn.style.display = "none";
   if (disponibilidadBtn) disponibilidadBtn.style.display = "none";
   if (editarBtn) editarBtn.style.display = "none";
+  if (bancariosBtn) bancariosBtn.style.display = "none";
 
   function fetchPerfilAyudante(idAyudante) {
     fetch(`/api/ayudantes/${idAyudante}/`)
@@ -70,6 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (esMismoAyudante) {
           if (disponibilidadBtn) disponibilidadBtn.style.display = "inline-block";
           if (editarBtn) editarBtn.style.display = "inline-block";
+          if (bancariosBtn) bancariosBtn.style.display = "inline-block";
 
           if (agendarBtn) {
             agendarBtn.addEventListener("click", function (e) {

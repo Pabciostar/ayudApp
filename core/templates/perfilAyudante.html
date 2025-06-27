@@ -40,16 +40,19 @@
     <div class="col-md-8 text-center mt-4 mb-5">
       <div class="d-flex justify-content-center gap-3 flex-wrap">
         <a href="{% url 'seleccionarFechaClase' %}" id="disponibilidad-btn" class="btn btn-primary">
-        📅 Configurar Disponibilidad
+          <i class="bi bi-calendar-event"></i> Configurar Disponibilidad
         </a>
         <a href="#" id="agendar-btn" class="btn btn-primary" style="display: none;">
-          📅 Agendar hora
+          <i class="bi bi-calendar-event"></i> Agendar hora
+        </a>
+        <a href="{% url 'editarPerfilAyudante' %}" id="editar-btn" class="btn btn-primary">
+          <i class="bi bi-pencil-square"></i> Editar perfil</a>
+        <a href="{% url 'agregar_datosbancarios' %}" id="bancarios-btn" class="btn btn-primary">
+          <i class="bi bi-bank2"></i> Agregar o Editar Datos Bancarios
         </a>
         <a href="{% url 'buscador' %}" class="btn btn-secondary">
           ← Atrás
         </a>
-        <a href="{% url 'editarPerfilAyudante' %}" id="editar-btn" class="btn btn-primary">
-          <i class="bi bi-pencil-square"></i> Editar perfil</a>
       </div>
     </div>
 

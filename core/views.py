@@ -14,8 +14,8 @@ from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
 from django.db.models import Q
 from django.views.decorators.http import require_GET
-from .models import Usuario, Postulacion, Ayudante, Googlecalendartoken, Disponibilidad, Materia, ClaseAgendada, Transaccion
-from .forms import DatosAdicionalesForm, PostulacionForm
+from .models import Usuario, Postulacion, Ayudante, Googlecalendartoken, Disponibilidad, Materia, ClaseAgendada, Transaccion, Ctacte
+from .forms import DatosAdicionalesForm, PostulacionForm, datosBancariosForm
 from datetime import datetime, timedelta, time
 from .paypal_client import PayPalClient
 from paypalrestsdk import Payment
@@ -248,6 +248,36 @@ def detalleClase_detalle_view(request, id):
 
 def perfilAyudante_view(request):
     return render(request, 'perfilAyudante.html')
+
+def agregar_datosbancarios(request):
+    usuario = get_object_or_404(Usuario, correo=request.user.email)
+
+    try:
+        ctacte = Ctacte.objects.get(id_usuario=usuario)
+        modo_edicion = True
+    except Ctacte.DoesNotExist:
+        ctacte = None
+        modo_edicion = False
+
+    if request.method == 'POST':
+        form = datosBancariosForm(request.POST, instance=ctacte)
+        if form.is_valid():
+            ctacte = form.save(commit=False)
+            ctacte.id_usuario = usuario
+            ctacte.save()
+            messages.success(request, 'Datos bancarios guardados correctamente.')
+            return redirect('perfilAyudante_pagina')
+        else:
+            messages.error(request, 'Por favor corrige los errores en el formulario.')
+    else:
+        form = datosBancariosForm(instance=ctacte, initial={
+            'rut_usuario': usuario.rut_usuario,
+            'nombres': usuario.nombres,
+            'apellidos': usuario.apellidos,
+            'correo': usuario.correo,
+        })
+
+    return render(request, 'datosBancarios.html', {'form': form, 'modo_edicion': modo_edicion})
 
 def panelAdministrador(request):
     return render(request, 'panelAdministrador.html')

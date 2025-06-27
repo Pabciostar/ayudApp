@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/postulacionAyudante.css' %}">
+{% endblock %}
+
+{% block content %}
+<div id="contenedorFormulario">
+    <div id="marcoFormulario">
+        <div class="container mt-4">
+            <h2>
+                {% if modo_edicion %}
+                    Modificar Datos Bancarios
+                {% else %}
+                    Agregar Datos Bancarios
+                {% endif %}
+            </h2>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <div class="form-text">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                <div class="d-flex gap-2 mt-3">
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <a href="{% url 'perfilAyudante_pagina' %}" class="btn btn-secondary">Volver al perfil</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
