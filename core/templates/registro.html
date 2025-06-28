@@ -21,7 +21,10 @@
                             {{ field }}
                             {% if field.errors %}
                                 <div class="text-danger small">
-                                    {{ field.errors|striptags }}
+                                    {# Envuelve cada error individualmente con <strong> #}
+                                    {% for error in field.errors %}
+                                        <strong>{{ error }}</strong><br> {# Agrega un salto de línea si hay múltiples errores #}
+                                    {% endfor %}
                                 </div>
                             {% endif %}
                         </div>
