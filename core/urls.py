@@ -33,4 +33,5 @@ urlpatterns = [
     path('disponibilidades/<int:id_ayudante>/', views.obtener_disponibilidades, name='obtener_disponibilidades'),
     path('cancelar-clase/<int:id_clase>/', views.cancelar_clase_view, name='cancelar_clase'),
     path('datos-bancarios/', views.agregar_datosbancarios, name='agregar_datosbancarios'),
+    path('agendar-test/', views.agendar_test_view, name='agendar_test'),
 ]

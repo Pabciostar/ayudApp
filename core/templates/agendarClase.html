@@ -60,8 +60,12 @@
                     <input type="hidden" id="fecha" name="fecha" required>
                     <input type="hidden" id="hora_inicio" name="hora_inicio" required>
                     <input type="hidden" id="duracion_min" name="duracion_min" required>
+                    <input type="hidden" name="id_ayudante" value="{{ ayudante.id_ayudante_id }}">
 
                     <button type="submit" class="paypal-btn">💳 Pagar con PayPal</button>
+                    <button type="submit" class="btn btn-warning mt-2" id="btn-test-agendar" formaction="{% url 'agendar_test' %}">
+                        ⚡ Agendar sin pagar (Test)
+                    </button>
                 </form>
                 <a href="{% url 'buscador' %}" class="btn btn-secondary mt-2">← Volver</a>
             {% endif %}
