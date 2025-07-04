@@ -62,8 +62,10 @@ function mostrarUsuarios() {
             </thead>
             <tbody id="tabla-usuarios"></tbody>
         </table>
-        <button id="guardar-cambios" class="btn btn-primary mt-3">Guardar cambios</button>
+        <div class="d-flex gap-2 mt-3">
+        <button id="guardar-cambios" class="btn btn-primary">Guardar cambios</button>
         <button id="descargar-excel" class="btn btn-success">Descargar Excel</button>
+        </div>
     `;
 
   // Cargar usuarios inmediatamente (ya no se necesita DOMContentLoaded aquí)
@@ -136,23 +138,10 @@ function mostrarUsuarios() {
 
 // Función para descargar Excel
 function descargarExcel(data) {
-  // Crear contenido CSV (Excel puede abrir CSV)
-  let csvContent = "Nombre,RUT,Correo,Rol\n";
-  
-  data.forEach(usuario => {
-    csvContent += `"${usuario.nombres} ${usuario.apellidos}","${usuario.rut_usuario}","${usuario.correo}","${usuario.rol}"\n`;
-  });
-
-  // Crear blob y descargar
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.setAttribute('href', url);
-  link.setAttribute('download', 'usuarios_ayudapp.csv');
-  link.style.visibility = 'hidden';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(data);
+  XLSX.utils.book_append_sheet(wb, ws, "Usuarios AyudApp");
+  XLSX.writeFile(wb, "usuarios_ayudapp.xlsx", { bookType: "xlsx" });
 }
 
 
