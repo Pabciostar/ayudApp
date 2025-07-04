@@ -63,6 +63,7 @@ function mostrarUsuarios() {
             <tbody id="tabla-usuarios"></tbody>
         </table>
         <button id="guardar-cambios" class="btn btn-primary mt-3">Guardar cambios</button>
+        <button id="descargar-excel" class="btn btn-success">Descargar Excel</button>
     `;
 
   // Cargar usuarios inmediatamente (ya no se necesita DOMContentLoaded aquí)
@@ -87,6 +88,11 @@ function mostrarUsuarios() {
                     </td>
                 `;
         tbody.appendChild(fila);
+      });
+
+      // Agregar evento al botón de descargar Excel
+      document.getElementById('descargar-excel').addEventListener('click', () => {
+        descargarExcel(data);
       });
     });
 
@@ -128,6 +134,26 @@ function mostrarUsuarios() {
   }, 100); // Espera breve para asegurar que el botón existe
 }
 
+// Función para descargar Excel
+function descargarExcel(data) {
+  // Crear contenido CSV (Excel puede abrir CSV)
+  let csvContent = "Nombre,RUT,Correo,Rol\n";
+  
+  data.forEach(usuario => {
+    csvContent += `"${usuario.nombres} ${usuario.apellidos}","${usuario.rut_usuario}","${usuario.correo}","${usuario.rol}"\n`;
+  });
+
+  // Crear blob y descargar
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', 'usuarios_ayudapp.csv');
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
 
 
 async function mostrarClasesAgendadas() {
