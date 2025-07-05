@@ -171,7 +171,6 @@ async function mostrarClasesAgendadas(element) {
           <tr>
             <th>Ayudante</th>
             <th>Estudiante (ID)</th>
-            <th>Fecha Agendamiento</th>
             <th>Fecha Clase</th>
             <th>Estado</th>
             <th>Calificación</th>
@@ -195,7 +194,6 @@ async function mostrarClasesAgendadas(element) {
         <tr>
           <td>${c.nombre_ayudante || 'Sin nombre'}</td>
           <td>${c.usuario_id_usuario}</td>
-          <td>${fechaAgendamiento}</td>
           <td>${c.fecha}</td>
           <td>${c.estado}</td>
           <td>${calificacion}</td>
