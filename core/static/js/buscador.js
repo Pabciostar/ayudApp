@@ -55,22 +55,36 @@ document.addEventListener('DOMContentLoaded', function () {
             const lista = document.createElement('ul');
             lista.className = 'list-group';
 
-            const clasesConfirmadas = data.filter(clase => clase.estado === "confirmada");
+            const ahora = new Date();
 
-            if (clasesConfirmadas.length === 0) {
+            // Filtra clases confirmadas y que aún no han terminado
+            const clasesPendientes = data.filter(clase => {
+                if (clase.estado !== "confirmada") return false;
+
+                // Construir fecha de inicio de clase
+                const fechaInicio = new Date(clase.fecha + 'T' + clase.hora);
+
+                // Calcular fecha de término sumando duracion_min en milisegundos
+                const fechaTermino = new Date(fechaInicio.getTime() + clase.duracion_min * 60000);
+
+                // Mantener si la clase no ha terminado
+                return fechaTermino >= ahora;
+            });
+
+            if (clasesPendientes.length === 0) {
                 lista.innerHTML = '<li class="list-group-item">No hay clases agendadas.</li>';
             } else {
-                clasesConfirmadas.forEach(clase => {
-                    const fecha = new Date(clase.fecha + 'T' + clase.hora);
+                clasesPendientes.forEach(clase => {
+                    const fechaInicio = new Date(clase.fecha + 'T' + clase.hora);
                     const opcionesFecha = { 
                         year: '2-digit', 
                         month: '2-digit', 
                         day: '2-digit',
                         hour: '2-digit', 
                         minute: '2-digit',
-                        hour12: true // Para mostrar p.m. o a.m.
+                        hour12: true
                     };
-                    const fechaFormateada = fecha.toLocaleDateString('es-CL', opcionesFecha);
+                    const fechaFormateada = fechaInicio.toLocaleDateString('es-CL', opcionesFecha);
 
                     const item = document.createElement('li');
                     item.className = 'list-group-item';
@@ -92,6 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Error al cargar clases agendadas:', error);
         });
 });
+
 
 document.addEventListener("DOMContentLoaded", () => {
   fetch("/api/mejores-ayudantes/")
