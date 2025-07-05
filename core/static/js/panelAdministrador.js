@@ -172,10 +172,10 @@ async function mostrarClasesAgendadas(element) {
       <table class="table table-striped">
         <thead>
           <tr>
-            <th>Ayudante</th>
             <th>Estudiante (ID)</th>
             <th>Fecha Clase</th>
             <th>Estado</th>
+            <th>Ayudante</th>
             <th>Calificación</th>
             <th>Valor</th>
             <th>Comisión (15%)</th>
@@ -194,10 +194,10 @@ async function mostrarClasesAgendadas(element) {
 
       tablaHTML += `
         <tr>
-          <td>${c.nombre_ayudante || 'Sin nombre'}</td>
           <td>${c.usuario_id_usuario}</td>
           <td>${c.fecha}</td>
           <td>${c.estado}</td>
+          <td>${c.nombre_ayudante || 'Sin nombre'}</td>
           <td>${calificacion}</td>
           <td>$${c.valor}</td>
           <td>$${comision}</td>
