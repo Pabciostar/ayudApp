@@ -164,6 +164,9 @@ async function mostrarClasesAgendadas(element) {
     const response = await fetch('/api/clases-agendadas/'); // Ajusta URL según tu ruta real
     const clases = await response.json();
 
+    // Ordenar las clases por fecha de clase
+    clases.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
     let tablaHTML = `
       <h4>Clases Agendadas</h4>
       <table class="table table-striped">
@@ -183,7 +186,6 @@ async function mostrarClasesAgendadas(element) {
     `;
 
     clases.forEach(c => {
-      const fechaAgendamiento = c.transaccion_id_transaccion?.fecha?.split('T')[0] || 'No disponible';
       const calificacion = (c.calificacion !== null && c.calificacion !== undefined)
         ? c.calificacion.toFixed(1)
         : 'No aplica';
@@ -204,13 +206,50 @@ async function mostrarClasesAgendadas(element) {
       `;
     });
 
-    tablaHTML += `</tbody></table>`;
+    tablaHTML += `</tbody></table>
+    <div class="d-flex gap-2 mt-3">
+        <button id="descargar-clases-excel" class="btn btn-success">Descargar Clases Excel</button>
+      </div>
+    `;
     panel.innerHTML = tablaHTML;
+
+    // Agregar evento al botón de descargar Excel para clases
+    document.getElementById('descargar-clases-excel').addEventListener('click', () => {
+      descargarClasesExcel(clases); // Pasar las clases ya ordenadas
+    });
 
   } catch (error) {
     console.error('Error al cargar clases agendadas:', error);
     panel.innerHTML = `<p>Error al cargar las clases agendadas.</p>`;
   }
+}
+
+// Función para descargar el Excel de Clases Agendadas
+function descargarClasesExcel(clasesCompletas) {
+  // Mapear los datos para incluir solo las columnas mostradas en pantalla
+  const datosParaExcel = clasesCompletas.map(c => {
+    const calificacion = (c.calificacion !== null && c.calificacion !== undefined)
+      ? c.calificacion.toFixed(1)
+      : 'No aplica';
+    const comision = (c.valor * 0.15).toFixed(0);
+    const pago = (c.valor * 0.85).toFixed(0);
+
+    return {
+      'Ayudante': c.nombre_ayudante || 'Sin nombre',
+      'Estudiante (ID)': c.usuario_id_usuario,
+      'Fecha Clase': c.fecha,
+      'Estado': c.estado,
+      'Calificación': calificacion,
+      'Valor': `$${c.valor}`,
+      'Comisión (15%)': `$${comision}`,
+      'Pago al Ayudante (85%)': `$${pago}`
+    };
+  });
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(datosParaExcel); // Usar los datos mapeados
+  XLSX.utils.book_append_sheet(wb, ws, "Clases Agendadas");
+  XLSX.writeFile(wb, "clases_agendadas.xlsx", { bookType: "xlsx" });
 }
 
 
