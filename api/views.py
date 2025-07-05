@@ -23,6 +23,10 @@ from django.db.models import Q, Func
 from decimal import Decimal  
 from django.db.models.functions import Lower
 from collections import defaultdict
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from core.utils import generar_nueva_evaluacion
+import json
 
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
@@ -329,3 +333,45 @@ def clases_agendadas(request):
 class EvaluacionViewSet(viewsets.ModelViewSet):
     queryset = Evaluacion.objects.all()
     serializer_class = EvaluacionSerializer
+
+
+
+@login_required
+def eliminar_clases_y_notificaciones(request):
+    correo = request.user.email
+    usuario = Usuario.objects.get(correo=correo)
+    usuario_id = usuario.id_usuario
+
+    ClaseAgendada.objects.filter(usuario_id_usuario=usuario_id).delete()
+    Notificacion.objects.filter(destinatario=usuario_id).delete()
+
+    return redirect('buscador')  
+
+
+@csrf_exempt
+def recibir_calificacion(request, notif_id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            nota = int(data.get('nota'))
+            comentario = data.get('comentario', '').strip()
+            
+            # Obtenemos la notificación (y con ella, la clase agendada)
+            notificacion = Notificacion.objects.get(id_notificacion=notif_id)
+
+            # Llamamos a una función auxiliar para crear la evaluación
+            exito = generar_nueva_evaluacion(
+                clase_id=notificacion.clase_agendada_id_clase,
+                estudiante_id=int(notificacion.destinatario),
+                nota=nota,
+                comentario=comentario
+            )
+
+            if not exito:
+                return JsonResponse({'error': 'Ya existe una evaluación para esta clase.'}, status=400)
+
+            return JsonResponse({'mensaje': 'Calificación guardada correctamente.'})
+        except Exception as e:
+            return JsonResponse({'error': f'Error al procesar la calificación: {str(e)}'}, status=500)
+    else:
+        return JsonResponse({'error': 'Método no permitido.'}, status=405)

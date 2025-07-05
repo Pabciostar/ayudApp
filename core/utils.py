@@ -1,23 +1,34 @@
-from django.db import models
-from .models import Notificacion, ClaseAgendada
+from django.db import models, transaction
+from .models import Notificacion, ClaseAgendada, Evaluacion
 from datetime import date, datetime, timedelta
 from decimal import Decimal, getcontext
 import requests
 
-
-
+@transaction.atomic
 def crear_notificacion(asunto, remitente, destinatario, cuerpo, clase_agendada=None):
-    ultima_id = Notificacion.objects.aggregate(max_id=models.Max('id_notificacion'))['max_id'] or 0
-    nueva_id = Decimal(ultima_id) + 1
-    Notificacion.objects.create(
-        id_notificacion=nueva_id,
-        fecha=date.today(),
-        asunto=asunto,
-        remitente=remitente,
-        destinatario=destinatario,
-        cuerpo=cuerpo,
-        clase_agendada_id_clase=clase_agendada
-    )
+    try:
+        count = Notificacion.objects.count()
+        nuevo_id = count + 1
+        nuevo_id_decimal = Decimal(str(nuevo_id))
+
+        if Notificacion.objects.filter(id_notificacion=nuevo_id_decimal).exists():
+            print(f"[ERROR] Ya existe una notificación con ID {nuevo_id_decimal}. Saltando creación.")
+            return
+
+        Notificacion.objects.create(
+            id_notificacion=nuevo_id_decimal,
+            fecha=date.today(),
+            asunto=asunto,
+            remitente=remitente,
+            destinatario=str(destinatario),
+            cuerpo=cuerpo,
+            clase_agendada_id_clase=clase_agendada
+        )
+        print(f"[INFO] Notificación creada exitosamente con ID {nuevo_id_decimal}")
+    except Exception as e:
+        print(f"[ERROR] No se pudo crear la notificación: {e}")
+
+
 
 
 
@@ -32,7 +43,7 @@ def verificar_y_enviar_recordatorios():
         diferencia_despues = (ahora - fecha_hora_clase).total_seconds()
 
         # Recordatorio antes de la clase (hasta ~16 minutos antes)
-        if 0 <= diferencia_antes <= 1000:
+        if 0 <= diferencia_antes <= 300:
             ya_enviada = Notificacion.objects.filter(
                 asunto="Recordatorio",
                 remitente="administrador",
@@ -44,7 +55,7 @@ def verificar_y_enviar_recordatorios():
                 crear_notificacion(
                     asunto="Recordatorio",
                     remitente="administrador",
-                    destinatario=clase.usuario_id_usuario.pk,
+                    destinatario=str(clase.usuario_id_usuario.pk),
                     cuerpo=f"Tiene una clase agendada que comienza a las {clase.hora}",
                     clase_agendada=clase.id_clase
                 )
@@ -53,18 +64,18 @@ def verificar_y_enviar_recordatorios():
                 crear_notificacion(
                     asunto="Recordatorio",
                     remitente="administrador",
-                    destinatario=clase.id_ayudante.pk, 
+                    destinatario=str(clase.id_ayudante.pk), 
                     cuerpo=f"Tiene una clase agendada que comienza a las {clase.hora}",
                     clase_agendada=clase.id_clase
                 )
                 print(clase.id_ayudante.pk)
 
         # Recordatorio después de la clase (pasada 1 hora)
-        if 0 <= diferencia_despues <= 1000:
+        if 0 <= diferencia_despues <= 300:
             ya_enviada = Notificacion.objects.filter(
                 asunto="¿Cómo fue tu clase?",
                 remitente="administrador",
-                destinatario=clase.usuario_id_usuario.pk,
+                destinatario=str(clase.usuario_id_usuario.pk),
                 clase_agendada_id_clase=clase.id_clase
             ).exists()
 
@@ -76,6 +87,30 @@ def verificar_y_enviar_recordatorios():
                     cuerpo="Su clase terminó hace una hora. ¿Te gustaría evaluarla?",
                     clase_agendada=clase.id_clase
                 )
+
+
+def generar_nueva_evaluacion(clase_id, estudiante_id, nota, comentario=None):
+    print(f"[FUNC] Generando nueva evaluación | Clase: {clase_id} | Estudiante: {estudiante_id} | Nota: {nota}")
+
+    ya_existe = Evaluacion.objects.filter(
+        clase_agendada_id_clase=clase_id
+    ).exists()
+
+    if ya_existe:
+        print("[ERROR] Ya existe una evaluación para esta clase.")
+        return False
+
+    ultima_eval = Evaluacion.objects.order_by('-id_evaluacion').first()
+    nuevo_id = ultima_eval.id_evaluacion + 1 if ultima_eval else Decimal('1')
+
+    Evaluacion.objects.create(
+        id_evaluacion=nuevo_id,
+        valoracion=nota,
+        comentario=comentario,
+        clase_agendada_id_clase=clase_id
+    )
+    print("[LOG] Evaluación creada exitosamente.")
+    return True
 
 
 getcontext().prec = 10  # Puedes ajustarla según lo que necesites
