@@ -44,9 +44,18 @@ function showSystemAlert(title, message, isSuccess = true) {
   modal.show();
 }
 
+// Función para manejar el estado activo de los botones del menú
+function setActiveMenuItem(element) {
+  const menuItems = document.querySelectorAll('.list-group-item-action');
+  menuItems.forEach(item => {
+    item.classList.remove('active');
+  });
+  element.classList.add('active');
+}
 
-function mostrarUsuarios() {
+function mostrarUsuarios(element) {
   limpiarPanel();
+  if (element) setActiveMenuItem(element);
   const panel = document.getElementById('panelInformacion');
 
   panel.innerHTML = `
@@ -146,9 +155,10 @@ function descargarExcel(data) {
 }
 
 
-async function mostrarClasesAgendadas() {
+async function mostrarClasesAgendadas(element) {
   const panel = document.getElementById('panelInformacion');
   limpiarPanel();
+  if (element) setActiveMenuItem(element);
 
   try {
     const response = await fetch('/api/clases-agendadas/'); // Ajusta URL según tu ruta real
@@ -206,9 +216,10 @@ async function mostrarClasesAgendadas() {
 }
 
 
-function mostrarPostulaciones() {
+function mostrarPostulaciones(element) {
   const panel = document.getElementById('panelInformacion');
   limpiarPanel();
+  if (element) setActiveMenuItem(element);
 
   fetch('/api/postulaciones/')
     .then(response => response.json())
@@ -255,8 +266,9 @@ function mostrarPostulaciones() {
     });
 }
 
-function listarMaterias() {
+function listarMaterias(element) {
   limpiarPanel();
+  if (element) setActiveMenuItem(element);
   const panel = document.getElementById('panelInformacion');
 
   fetch('/api/materias/')
