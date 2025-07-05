@@ -138,10 +138,11 @@ function mostrarUsuarios() {
 
 // Función para descargar Excel
 function descargarExcel(data) {
+  const sortedData = data.sort((a, b) => a.id_usuario - b.id_usuario);
   const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.json_to_sheet(data);
-  XLSX.utils.book_append_sheet(wb, ws, "Usuarios AyudApp");
-  XLSX.writeFile(wb, "usuarios_ayudapp.xlsx", { bookType: "xlsx" });
+  const ws = XLSX.utils.json_to_sheet(sortedData);
+  XLSX.utils.book_append_sheet(wb, ws, "Usuarios Registrados");
+  XLSX.writeFile(wb, "usuarios_registrados.xlsx", { bookType: "xlsx" });
 }
 
 
