@@ -4,6 +4,8 @@ from . import views
 urlpatterns = [
     path('', views.landing_view, name='inicio'),
     path('acceder/', views.inicio, name="acceder"),
+    path('terminos_y_condiciones/', views.terminos_view, name='terminos_y_condiciones'),
+    path('politica_de_privacidad/', views.politica_view, name='politica_de_privacidad'),
     path('buscador/', views.buscador_view, name='buscador'),
     path('postulacionAyudante/', views.postulacionAyudante_view, name='postulacionAyudante'),
     path('detalleClase', views.detalleClase_view, name='detalleClase'),
