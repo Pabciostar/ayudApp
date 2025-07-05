@@ -31,6 +31,12 @@ from .decorators import rol_requerido
 def landing_view(request):
     return render(request, 'landing.html', {'es_landing': True})
 
+def terminos_view(request):
+    return render(request, 'terminos.html' )
+
+def politica_view(request):
+    return render(request, 'politicas.html')
+
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # Solo para pruebas locales (HTTP)
 
 def login_with_google(request):

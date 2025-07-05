@@ -44,9 +44,18 @@ function showSystemAlert(title, message, isSuccess = true) {
   modal.show();
 }
 
+// Función para manejar el estado activo de los botones del menú
+function setActiveMenuItem(element) {
+  const menuItems = document.querySelectorAll('.list-group-item-action');
+  menuItems.forEach(item => {
+    item.classList.remove('active');
+  });
+  element.classList.add('active');
+}
 
-function mostrarUsuarios() {
+function mostrarUsuarios(element) {
   limpiarPanel();
+  if (element) setActiveMenuItem(element);
   const panel = document.getElementById('panelInformacion');
 
   panel.innerHTML = `
@@ -62,7 +71,10 @@ function mostrarUsuarios() {
             </thead>
             <tbody id="tabla-usuarios"></tbody>
         </table>
-        <button id="guardar-cambios" class="btn btn-primary mt-3">Guardar cambios</button>
+        <div class="d-flex gap-2 mt-3">
+        <button id="guardar-cambios" class="btn btn-primary">Guardar cambios</button>
+        <button id="descargar-excel" class="btn btn-success">Descargar Excel</button>
+        </div>
     `;
 
   // Cargar usuarios inmediatamente (ya no se necesita DOMContentLoaded aquí)
@@ -87,6 +99,11 @@ function mostrarUsuarios() {
                     </td>
                 `;
         tbody.appendChild(fila);
+      });
+
+      // Agregar evento al botón de descargar Excel
+      document.getElementById('descargar-excel').addEventListener('click', () => {
+        descargarExcel(data);
       });
     });
 
@@ -128,11 +145,20 @@ function mostrarUsuarios() {
   }, 100); // Espera breve para asegurar que el botón existe
 }
 
+// Función para descargar Excel
+function descargarExcel(data) {
+  const sortedData = data.sort((a, b) => a.id_usuario - b.id_usuario);
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(sortedData);
+  XLSX.utils.book_append_sheet(wb, ws, "Usuarios Registrados");
+  XLSX.writeFile(wb, "usuarios_registrados.xlsx", { bookType: "xlsx" });
+}
 
 
-async function mostrarClasesAgendadas() {
+async function mostrarClasesAgendadas(element) {
   const panel = document.getElementById('panelInformacion');
   limpiarPanel();
+  if (element) setActiveMenuItem(element);
 
   try {
     const response = await fetch('/api/clases-agendadas/'); // Ajusta URL según tu ruta real
@@ -190,9 +216,10 @@ async function mostrarClasesAgendadas() {
 }
 
 
-function mostrarPostulaciones() {
+function mostrarPostulaciones(element) {
   const panel = document.getElementById('panelInformacion');
   limpiarPanel();
+  if (element) setActiveMenuItem(element);
 
   fetch('/api/postulaciones/')
     .then(response => response.json())
@@ -239,8 +266,9 @@ function mostrarPostulaciones() {
     });
 }
 
-function listarMaterias() {
+function listarMaterias(element) {
   limpiarPanel();
+  if (element) setActiveMenuItem(element);
   const panel = document.getElementById('panelInformacion');
 
   fetch('/api/materias/')

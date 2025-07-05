@@ -18,3 +18,15 @@
 #contenderoDescripcionLogin {
     height: 80vh;
 }
+
+.list-group-item-action.active {
+    background-color: #007bff; /* Un azul para que coincida con Bootstrap primary */
+    color: white;
+    font-weight: bold;
+    border-color: #007bff;
+}
+
+.list-group-item-action:hover {
+    background-color: #e9ecef; /* Color al pasar el ratón */
+    color: #0056b3; /* Un azul más oscuro */
+}

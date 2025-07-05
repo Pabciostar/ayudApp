@@ -1,0 +1,114 @@
+/* =========================== */
+/* AyudAPP - CSS Legal Boostrap */
+/* =========================== */
+
+/* Paleta de colores raíz */
+:root {
+  --color-primario: #04738C;
+  --color-secundario: #048C8C;
+  --color-acento: #82D9D0;
+  --color-texto: #333333;
+  --color-fondo: #F9F9F9;
+}
+
+/* Contenedor legal */
+.legal-container {
+  background-color: #ffffff !important; /* Fondo blanco para máxima legibilidad */
+  color: var(--color-texto) !important;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 40px 30px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.08); /* contorno suave */
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  font-family: "Poppins", sans-serif;
+  line-height: 1.8;
+  position: relative;
+  z-index: 10;
+}
+
+/* Títulos principales */
+.legal-container h1 {
+  color: var(--color-primario);
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* Subtítulos */
+.legal-container h2 {
+  color: var(--color-primario);
+  font-size: 1.5rem;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+/* Subtítulos menores */
+.legal-container h3 {
+  color: var(--color-secundario);
+  font-size: 1.2rem;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+/* Párrafos */
+.legal-container p {
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+
+/* Listas */
+.legal-container ul, .legal-container ol {
+  margin-left: 20px;
+  margin-bottom: 15px;
+}
+
+/* Links */
+.legal-container a {
+  color: var(--color-primario);
+  text-decoration: underline;
+}
+
+.legal-container a:hover {
+  color: var(--color-secundario);
+}
+
+/* Botón de aceptación (usa clases Bootstrap + personalización) */
+.btn-aceptar-legal {
+  background-color: var(--color-primario);
+  color: #ffffff;
+  font-weight: 600;
+  padding: 10px 25px;
+  border-radius: 6px;
+  border: none;
+  text-decoration: none;
+  text-align: center;
+  margin-top: 30px;
+  transition: all 0.3s ease;
+}
+
+.btn-aceptar-legal:hover {
+  background-color: #04668C;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .legal-container {
+    padding: 25px 15px;
+    margin: 20px auto;
+  }
+
+  .legal-container h1 {
+    font-size: 1.6rem;
+  }
+
+  .legal-container h2 {
+    font-size: 1.3rem;
+  }
+}
