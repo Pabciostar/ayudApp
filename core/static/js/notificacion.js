@@ -5,14 +5,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     const notif = await response.json();
 
     let contenidoHTML = `
-        <div class="mensaje-contenedor">
-            <div class="mensaje-header">
-                <h2>${notif.asunto}</h2>
-                <div class="mensaje-meta">De: ${notif.remitente} • ${notif.fecha}</div>
-            </div>
-            <div class="mensaje-cuerpo">
-                ${notif.cuerpo}
-            </div>
+        
+        <div class="contenedor-general-mensaje">
+            <div class="mensaje-contenedor">
+                <div class="mensaje-header">
+                    <h2>${notif.asunto}</h2>
+                    <div class="mensaje-meta">De: ${notif.remitente} • ${notif.fecha}</div>
+                </div>
+                <div class="mensaje-cuerpo">
+                    ${notif.cuerpo}
+                </div>
+            
     `;
 
     if (notif.asunto === "¿Cómo fue tu clase?") {
@@ -40,8 +43,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     contenidoHTML += `
-        <a href="/notificaciones" class="btn btn-secondary btn-volver mt-3">← Volver a notificaciones</a>
+            <a href="/notificaciones" class="btn btn-secondary btn-volver mt-3">← Volver a notificaciones</a>
+            </div>
         </div>
+
     `;
 
     contenedor.innerHTML = contenidoHTML;

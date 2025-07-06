@@ -8,11 +8,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     contenedor.innerHTML = "";
 
     if (notificaciones.length === 0) {
-        contenedor.innerHTML = `
-            <div class="alert alert-info" role="alert">
-                No hay notificaciones.
-            </div>
-        `;
+    contenedor.innerHTML = `
+        <div class="no-notificaciones text-center my-5">
+            <i class="bi bi-bell-slash-fill icono-sin-notificaciones"></i>
+            <p class="mensaje-sin-notificaciones">No hay notificaciones disponibles.</p>
+        </div>
+    `;
     } else {
         notificaciones.forEach(notif => {
             contenedor.innerHTML += `
