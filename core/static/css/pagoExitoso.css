@@ -1,0 +1,37 @@
+#marcoPagoExitoso {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#contenedorPagoExitoso {
+    background-color: #04668C;
+    border: 2px solid #04738C;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 800px; /* REDUCIDO de 900px a 800px */
+    width: 100%;
+    color: white;
+    padding: 20px; /* agrega padding general interno */
+}
+
+#contenedorPagoExitoso .bg-light {
+    margin: 0; /* eliminé margen extra */
+    padding: 30px; /* agrega padding interno al marco blanco */
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1.text-success {
+    font-size: 1.8rem;
+}
+
+ul.list-group li {
+    color: #333; /* para legibilidad en fondo blanco */
+}
+
+.alert-info {
+    font-size: 0.95rem;
+}

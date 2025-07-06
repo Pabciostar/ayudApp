@@ -3,13 +3,13 @@
 {% load humanize %}
 
 {% block css %}
-<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}">
+<link rel="stylesheet" href="{% static 'css/pagoExitoso.css' %}">
 {% endblock %}
 
 {% block content %}
-<div id="marcoNotificaciones" class="container mt-5">
-    <div id="contenedorNotificaciones" class="row justify-content-center">
-        <div class="col-md-8 col-lg-6 bg-light p-5 rounded shadow-sm">
+<div id="marcoPagoExitoso" class="container mt-5 mb-5">
+    <div id="contenedorPagoExitoso" class="row justify-content-center">
+        <div class="col-md-12 col-lg-10 bg-light p-5 rounded shadow-sm">
             <h1 class="text-success mb-4 text-center">¡Clase confirmada exitosamente!</h1>
             <ul class="list-group list-group-flush mb-3">
                 <li class="list-group-item"><strong>Fecha:</strong> {{ clase.fecha }}</li>
