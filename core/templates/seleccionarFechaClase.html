@@ -2,77 +2,73 @@
 {% load static %}
 
 {% block css %}
-<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}">
+<link rel="stylesheet" href="{% static 'css/seleccionarFecha.css' %}">
 {% endblock %}
 
 {% block content %}
-<div id="marcoNotificaciones" class="container">
-    <div id="contenedorNotificaciones" class="row mt-5 py-5">
-        <div class="p-4 col-md-6">
-            <h2 class="mb-4">Configurar horarios disponibles</h2>
-            <form action="{% url 'seleccionarFechaClase' %}" method="POST">
-                {% csrf_token %}
+<div id="contenedorSeleccionarFecha">
+    <!-- Columna formulario -->
+    <div class="columna">
+        <h2 class="mb-4">Configurar horarios disponibles</h2>
+        <form action="{% url 'seleccionarFechaClase' %}" method="POST">
+            {% csrf_token %}
 
-                <div class="mb-3">
-                    <label for="materia" class="form-label">Materia</label>
-                    <select class="form-control" id="materia" name="id_materia" required>
-                        <option value="" disabled selected>Selecciona una materia</option>
-                        {% for materia in materias %}
-                            <option value="{{ materia.id_materia }}">{{ materia.nombre }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label for="fecha" class="form-label">Fecha de la clase</label>
-                    <input type="date" class="form-control" id="fecha" name="fecha" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="hora" class="form-label">Hora de la clase</label>
-                    <input type="time" class="form-control" id="hora" name="hora_inicio" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="duracion" class="form-label">Duración (minutos)</label>
-                    <input type="number" class="form-control" id="duracion" name="duracion_min" required>
-                </div>
-
-                <button type="submit" class="btn btn-success">Agendar</button>
-            </form>
-            <a href="{% url 'perfilAyudante_pagina' %}" class="btn btn-secondary mt-2">Volver al perfil</a>
-        </div>
-    </div>
-</div>
-
-<div id="marcoNotificaciones" class="container">
-    <div id="contenedorNotificaciones" class="row mt-5 py-5">
-        <div class="p-4 col-md-6">
-            <h2 class="mb-4">Listado de Clases disponibles</h2>
-            
-            {% if clases %}
-                <ul class="list-group">
-                    {% for clase in clases %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong>Fecha: {{ clase.fecha|date:"d/m/Y" }} Hora: {{ clase.hora_inicio|time:"H:i" }}</strong> Duración: ({{ clase.duracion_min }} min)<br>
-                            
-                                {% if clase.id_materia %}
-                                    <span>Materia: {{ clase.id_materia.nombre }}</span><br>
-                                {% endif %}
-                            </div>
-                            <form action="{% url 'eliminar_disponibilidad' clase.id_disponibilidad %}" method="POST" style="margin-left: 10px;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                            </form>
-                        </li>
+            <div class="mb-3">
+                <label for="materia" class="form-label">Materia</label>
+                <select class="form-control" id="materia" name="id_materia" required>
+                    <option value="" disabled selected>Selecciona una materia</option>
+                    {% for materia in materias %}
+                        <option value="{{ materia.id_materia }}">{{ materia.nombre }}</option>
                     {% endfor %}
-                </ul>
-            {% else %}
-                <p>No has registrado horarios disponibles.</p>
-            {% endif %}
-        </div>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="fecha" class="form-label">Fecha de la clase</label>
+                <input type="date" class="form-control" id="fecha" name="fecha" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="hora" class="form-label">Hora de la clase</label>
+                <input type="time" class="form-control" id="hora" name="hora_inicio" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="duracion" class="form-label">Duración (minutos)</label>
+                <input type="number" class="form-control" id="duracion" name="duracion_min" required>
+            </div>
+
+            <div class="botones-container">
+                <button type="submit" class="btn btn-success">Agendar</button>
+                <a href="{% url 'perfilAyudante_pagina' %}" class="btn btn-secondary">Volver al perfil</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Columna listado clases -->
+    <div class="columna">
+        <h2 class="mb-4">Listado de Clases disponibles</h2>
+        {% if clases %}
+            <ul class="list-group">
+                {% for clase in clases %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Fecha: {{ clase.fecha|date:"d/m/Y" }} Hora: {{ clase.hora_inicio|time:"H:i" }}</strong><br>
+                            <span>Duración: {{ clase.duracion_min }} min</span><br>
+                            {% if clase.id_materia %}
+                                <span>Materia: {{ clase.id_materia.nombre }}</span><br>
+                            {% endif %}
+                        </div>
+                        <form action="{% url 'eliminar_disponibilidad' clase.id_disponibilidad %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No has registrado horarios disponibles.</p>
+        {% endif %}
     </div>
 </div>
-
 {% endblock %}

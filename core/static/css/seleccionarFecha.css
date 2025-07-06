@@ -1,0 +1,100 @@
+/* seleccionarFecha.css */
+
+/* General */
+body {
+    background-color: #f2f8fb;
+}
+
+h2 {
+    color: #04668C;
+    font-weight: bold;
+}
+
+/* Contenedor principal en dos columnas */
+#contenedorSeleccionarFecha {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+/* Columna individual */
+.columna {
+    background-color: #ffffff;
+    border: 2px solid #04738C;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    padding: 30px;
+    width: 500px;
+}
+
+/* Formulario */
+form label {
+    font-weight: bold;
+    color: #333;
+}
+
+form .form-control {
+    border-radius: 5px;
+}
+
+/* Botones */
+.btn-success {
+    background-color: #048C8C;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #04738C;
+}
+
+.btn-danger {
+    background-color: #d9534f;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #c9302c;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Listado de clases */
+.list-group-item {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.list-group-item strong {
+    color: #04668C;
+}
+
+.list-group-item span {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+/* Botones alineados horizontalmente */
+.botones-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.botones-container button,
+.botones-container a {
+    flex: 1;
+    text-align: center;
+}
