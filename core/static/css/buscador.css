@@ -69,3 +69,29 @@
 #ayudantesCarousel {
   padding-bottom: 30px; /* Espacio para los indicadores */
 }
+
+.card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* distribuye contenido uniformemente */
+}
+
+.card-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* muestra 3 líneas como máximo */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  object-fit: cover; /* para recortar en caso de distinto aspecto */
+  border-radius: 5px; /* opcional: bordes suaves */
+}
+
+.card .square-image-container {
+  padding-top: 10px; /* o el valor que te guste visualmente */
+}
