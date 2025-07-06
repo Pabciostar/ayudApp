@@ -1,11 +1,65 @@
+/* ========================================= */
+/* ✨ Estilos de notificaciones usados ✨ */
+/* ========================================= */
+
+#contenedorNotificaciones {
+  color: white;
+  background-color: #04668C;
+  border: 2px solid #04738C;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 700px;
+}
+
+#marcoNotificaciones {
+  margin-top: 30px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========================================= */
+/* ✨ Estilos generales de mensajes ✨ */
+/* ========================================= */
+
+.mensaje-header {
+  border-bottom: 2px solid #ccc;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+}
+
+.mensaje-header h2 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.mensaje-meta {
+  font-size: 0.9rem;
+  color: white;
+}
+
+.mensaje-cuerpo {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.btn-volver {
+  margin-top: 30px;
+  display: block;
+  text-align: center;
+}
+
+/* ========================================= */
+/* ✨ Estilos específicos de Agendar Clase ✨ */
+/* ========================================= */
+
 .paypal-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   padding: 0.6em 1.2em;
-  background: linear-gradient( to bottom,
-    #009cde 0%,   /* azul claro */
-    #003087 100%  /* azul oscuro */
-  );
+  background: linear-gradient(to bottom, #009cde 0%, #003087 100%);
   border: none;
   border-radius: 4px;
   color: white;
@@ -17,10 +71,7 @@
 }
 
 .paypal-btn:hover {
-  background: linear-gradient( to bottom,
-    #0079b8 0%,
-    #00285e 100%
-  );
+  background: linear-gradient(to bottom, #0079b8 0%, #00285e 100%);
 }
 
 .paypal-logo {
@@ -30,4 +81,42 @@
   font-size: 1.1em;
   font-weight: 800;
   text-transform: uppercase;
+}
+
+.card {
+  border-radius: 10px;
+}
+
+.card h2 {
+  font-weight: 700;
+  color: var(--color-primario, #04738C);
+}
+
+.btn-warning {
+  font-weight: 600;
+}
+
+/* Espaciado general en el card de agendar clase */
+.card-body {
+  padding: 30px 40px;
+}
+
+/* Espaciado entre cada bloque */
+.card-body > *:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+/* Ajuste en select y labels para mejor legibilidad */
+.card-body label {
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.card-body select.form-select {
+  padding: 10px;
+}
+
+/* Botones con mayor separación superior */
+.d-grid.gap-2 {
+  margin-top: 25px;
 }
