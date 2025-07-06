@@ -2,13 +2,13 @@
 {% load static %}
 
 {% block css %}
-<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}">
+<link rel="stylesheet" href="{% static 'css/detallePostulacion.css' %}">
 {% endblock %}
 
 {% block content %}
 <div id="marcoNotificaciones" class="container">
-    <div id="contenedorNotificaciones" class="row mt-5 py-5">
-        <div class="container mt-5">
+    <div id="contenedorNotificaciones" class="row mt-5 py-3">
+        <div class="container mt-3 px-4">
             <h3 class="mb-4">Detalle de Postulación</h3>
 
             <div class="mb-3">
@@ -53,6 +53,6 @@
      data-csrf="{{ csrf_token }}"
      data-redirect="{% url 'panelAdministrador' %}">
 </div>
-  
+
 <script src="{% static 'js/gestionPostulacion.js' %}"></script>
 {% endblock %}
