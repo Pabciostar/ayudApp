@@ -375,3 +375,12 @@ def recibir_calificacion(request, notif_id):
             return JsonResponse({'error': f'Error al procesar la calificación: {str(e)}'}, status=500)
     else:
         return JsonResponse({'error': 'Método no permitido.'}, status=405)
+    
+@api_view(['GET'])
+def listar_notificaciones(request):
+    try:
+        notificaciones = Notificacion.objects.all().order_by('-fecha')
+        serializer = NotificacionSerializer(notificaciones, many=True)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

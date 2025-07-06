@@ -468,3 +468,109 @@ function eliminarMateria(idMateria) {
     showSystemAlert('Error', 'No se pudo eliminar la materia', false);
   });
 }
+
+async function mostrarNotificaciones(element) {
+  const panel = document.getElementById('panelInformacion');
+  limpiarPanel();
+  if (element) setActiveMenuItem(element);
+
+  try {
+    const response = await fetch('/api/notificaciones/');
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+    const notificaciones = await response.json();
+
+    if (!Array.isArray(notificaciones)) {
+      throw new Error('La respuesta no es un array');
+    }
+
+    // Ordenar notificaciones por fecha (más recientes primero)
+    notificaciones.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+    let tablaHTML = `
+      <h4>Notificaciones</h4>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Asunto</th>
+            <th>Remitente</th>
+            <th>Destinatario</th>
+            <th>Cuerpo</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    notificaciones.forEach(notif => {
+       // Obtener nombre del destinatario si es posible
+      let destinatario = notif.destinatario;
+      try {
+        // Esto depende de cómo tengas estructurado tu modelo
+        if (typeof notif.destinatario === 'number') {
+          destinatario = `Usuario ID: ${notif.destinatario}`;
+        }
+      } catch (e) {
+        console.error('Error al procesar destinatario:', e);
+      }
+   
+      tablaHTML += `
+        <tr>
+          <td>${notif.fecha}</td>
+          <td>${notif.asunto}</td>
+          <td>${notif.remitente}</td>
+          <td>${notif.destinatario}</td>
+          <td>${notif.cuerpo.substring(0, 50)}${notif.cuerpo.length > 50 ? '...' : ''}</td>
+        </tr>
+      `;
+    });
+
+    tablaHTML += `</tbody></table>
+    <div class="d-flex gap-2 mt-3">
+        <button id="descargar-notificaciones-excel" class="btn btn-success">Descargar Excel</button>
+      </div>
+    `;
+    panel.innerHTML = tablaHTML;
+
+    // Agregar evento al botón de descargar Excel
+    document.getElementById('descargar-notificaciones-excel').addEventListener('click', () => {
+      descargarNotificacionesExcel(notificaciones);
+    });
+
+  } catch (error) {
+    console.error('Error al cargar notificaciones:', error);
+    panel.innerHTML = `
+      <div class="alert alert-danger">
+        <h4>Error al cargar notificaciones</h4>
+        <p>${error.message}</p>
+        <p>Por favor verifica:</p>
+        <ul>
+          <li>Que el servidor esté funcionando</li>
+          <li>Que tengas conexión a internet</li>
+          <li>Que la API /api/notificaciones/ exista</li>
+        </ul>
+      </div>
+    `;
+  }
+}
+
+function descargarNotificacionesExcel(notificaciones) {
+  // Mapear los datos para el Excel
+  const datosParaExcel = notificaciones.map(notif => {
+    return {
+      'ID Notificación': notif.id_notificacion,
+      'Fecha': notif.fecha,
+      'Asunto': notif.asunto,
+      'Remitente': notif.remitente,
+      'Destinatario': notif.destinatario,
+      'Cuerpo': notif.cuerpo,
+      'Clase Agendada ID': notif.clase_agendada_id_clase || 'N/A'
+    };
+  });
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(datosParaExcel);
+  XLSX.utils.book_append_sheet(wb, ws, "Notificaciones");
+  XLSX.writeFile(wb, "notificaciones.xlsx", { bookType: "xlsx" });
+}
