@@ -178,8 +178,8 @@ async function mostrarClasesAgendadas(element) {
             <th>Ayudante</th>
             <th>Calificación</th>
             <th>Valor</th>
-            <th>Comisión (15%)</th>
-            <th>Pago al Ayudante (85%)</th>
+            <th>Comisión<br>(15%)</th>
+            <th>Pago al<br>Ayudante (85%)</th>
           </tr>
         </thead>
         <tbody>
@@ -208,7 +208,7 @@ async function mostrarClasesAgendadas(element) {
 
     tablaHTML += `</tbody></table>
     <div class="d-flex gap-2 mt-3">
-        <button id="descargar-clases-excel" class="btn btn-success">Descargar Clases Excel</button>
+        <button id="descargar-clases-excel" class="btn btn-success">Descargar Excel</button>
       </div>
     `;
     panel.innerHTML = tablaHTML;
