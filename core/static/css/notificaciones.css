@@ -31,6 +31,7 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     max-width: 700px;
+    padding: 20px; /* agrega padding interno en todo el contenedor verde */
 }
 
 #marcoNotificaciones {
@@ -76,4 +77,65 @@
     margin-top: 30px;
     display: block;
     text-align: center;
+}
+
+.no-notificaciones {
+    background-color: #ffffff;
+    border: 2px dashed #04738C;
+    border-radius: 10px;
+    padding: 20px 40px; /* más espacio en los lados, menos arriba/abajo */
+    width: 100%; /* ocupa todo el ancho del contenedor padre */
+    max-width: none; /* elimina límite de 500px */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.no-notificaciones .icono-sin-notificaciones {
+    font-size: 3rem;
+    color: #04738C;
+    margin-bottom: 15px;
+}
+
+.mensaje-sin-notificaciones {
+    font-size: 1.2rem;
+    color: #333;
+    margin: 0;
+}
+
+.contenedor-general-mensaje {
+    background-color: #04668C; /* contenedor exterior azul */
+    border: 2px solid #04738C;
+    border-radius: 10px;
+    padding: 30px;
+    max-width: 800px;
+    margin: 20px auto;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.mensaje-contenedor {
+    background-color: #ffffff; /* fondo blanco interno */
+    color: #333;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.mensaje-header {
+    border-bottom: 2px solid #ccc;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+.mensaje-header h2 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+.mensaje-meta {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.mensaje-cuerpo {
+    font-size: 1.1rem;
+    line-height: 1.6;
 }
