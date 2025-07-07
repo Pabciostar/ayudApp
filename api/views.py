@@ -339,19 +339,6 @@ class EvaluacionViewSet(viewsets.ModelViewSet):
     serializer_class = EvaluacionSerializer
 
 
-
-@login_required
-def eliminar_clases_y_notificaciones(request):
-    correo = request.user.email
-    usuario = Usuario.objects.get(correo=correo)
-    usuario_id = usuario.id_usuario
-
-    ClaseAgendada.objects.filter(usuario_id_usuario=usuario_id).delete()
-    Notificacion.objects.filter(destinatario=usuario_id).delete()
-
-    return redirect('buscador')  
-
-
 @csrf_exempt
 def recibir_calificacion(request, notif_id):
     if request.method == 'POST':
