@@ -186,6 +186,7 @@ def perfilAyudante(request):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
+@login_required
 def perfil_publico_ayudante(request, id):
     try:
         ayudante = Ayudante.objects.get(pk=id)
@@ -203,6 +204,7 @@ class NotificacionesPorUsuarioAPIView(generics.ListAPIView):
         return Notificacion.objects.filter(destinatario=user_id).order_by('-fecha')
 
 @api_view(['GET'])
+@login_required
 def notificaciones_por_usuario(request, user_id):
     notificaciones = Notificacion.objects.filter(destinatario=user_id).order_by('-fecha')
     serializer = NotificacionSerializer(notificaciones, many=True)
@@ -210,6 +212,7 @@ def notificaciones_por_usuario(request, user_id):
 
 
 @api_view(['GET'])
+@login_required
 def detalle_notificacion(request, id_notificacion):
     try:
         notificacion = Notificacion.objects.get(id_notificacion=id_notificacion)
@@ -288,6 +291,7 @@ def clases_agendadas_por_usuario_ayudante(request, usuario_id):
 
 
 @api_view(['POST'])
+@login_required
 def guardar_evaluacion(request):
     data = dict(request.data)
     

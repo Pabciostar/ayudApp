@@ -1,0 +1,13 @@
+{% load static %}
+
+<div class="rating-stars">
+    {% with rating_int=rating|floatformat:"0" %}
+        {% for i in "12345" %}
+            {% if i|floatformat:"0" <= rating_int %}
+                ★
+            {% else %}
+                ☆
+            {% endif %}
+        {% endfor %}
+    {% endwith %}
+</div>

@@ -19,7 +19,12 @@
     <div class="name-rating-container mb-3">
       <h2 id="contenedorNombreAyudante" class="fw-bold mb-1" style="color: white"></h2>
       <div class="text-warning fs-4">
-        ★★★★☆ (4.0)
+        {% if promedio_nota %}
+          <span class="rating-text ms-2">{{ promedio_nota }} ({{ notas|length }} opiniones)</span>
+            {% include 'partials/estrellas_calificacion.html' with rating=promedio_nota %}
+        {% else %}
+            <span>Sin calificaciones aún.</span>
+        {% endif %}
       </div>
     </div>
     <!-- Foto de perfil centrada -->

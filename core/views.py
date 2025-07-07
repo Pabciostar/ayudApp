@@ -1,3 +1,4 @@
+from collections import defaultdict
 from django.conf import settings
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth import login, logout
@@ -14,7 +15,7 @@ from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
 from django.db.models import Q
 from django.views.decorators.http import require_GET
-from .models import Usuario, Postulacion, Ayudante, Googlecalendartoken, Disponibilidad, Materia, ClaseAgendada, Transaccion, Ctacte
+from .models import Usuario, Postulacion, Ayudante, Googlecalendartoken, Disponibilidad, Materia, ClaseAgendada, Transaccion, Ctacte, Evaluacion
 from .forms import DatosAdicionalesForm, PostulacionForm, datosBancariosForm
 from datetime import datetime, timedelta, time
 from .paypal_client import PayPalClient
@@ -245,16 +246,20 @@ def postulacionAyudante_view(request):
 
     return render(request, 'postulacionAyudante.html', {'form': form})
 
+@login_required
 def detalleClase_view(request):
     return render(request, 'detalleClase.html')
 
+@login_required
 def detalleClase_detalle_view(request, id):
     clase = get_object_or_404(ClaseAgendada, id_clase=id)
     return render(request, 'detalleClase.html', {'clase': clase})
 
+@login_required
 def perfilAyudante_view(request):
     return render(request, 'perfilAyudante.html')
 
+@rol_requerido("ayudante")
 def agregar_datosbancarios(request):
     usuario = get_object_or_404(Usuario, correo=request.user.email)
 
@@ -285,15 +290,18 @@ def agregar_datosbancarios(request):
 
     return render(request, 'datosBancarios.html', {'form': form, 'modo_edicion': modo_edicion})
 
+@rol_requerido("administrador")
 def panelAdministrador(request):
     return render(request, 'panelAdministrador.html')
 
+@login_required
 def notificaciones_view(request):
     usuario = Usuario.objects.get(correo=request.user.email)
     return render(request, 'notificaciones.html', {
         'usuario_id': usuario.id_usuario
     })
 
+@login_required
 def detalle_notificacion_view(request, id_notificacion):
     return render(request, 'notificacion.html', {
         'id_notificacion': id_notificacion
@@ -302,6 +310,7 @@ def detalle_notificacion_view(request, id_notificacion):
 def mensajeEstudianteAyudado_view(request):
     return render(request, 'mensajeEstudianteAyudante.html')
 
+@rol_requerido("administrador")
 def detallePostulacion_view(request):
     id_postulacion = request.GET.get('id')
     postulacion = get_object_or_404(Postulacion, id_postulacion=id_postulacion)
@@ -313,6 +322,7 @@ def detallePostulacion_view(request):
     })
 
 @csrf_exempt
+@rol_requerido("administrador")
 def aceptar_postulacion(request):
     if request.method == "POST":
         import json
@@ -364,6 +374,7 @@ def aceptar_postulacion(request):
     return JsonResponse({"error": "Método no permitido"}, status=405)
 
 @csrf_exempt
+@rol_requerido("administrador")
 def rechazar_postulacion(request):
     if request.method == "POST":
         import json
@@ -390,20 +401,47 @@ def rechazar_postulacion(request):
             return JsonResponse({"error": "Postulación no encontrada"}, status=404)
     return JsonResponse({"error": "Método no permitido"}, status=405)
 
+@rol_requerido("ayudante")
 def editarPerfilAyudante_view(request):
     return render(request, 'editarPerfilAyudante.html')
 
 def registro_view(request):
     return render(request, 'registro.html')
 
+@login_required
 def perfil_ayudante_html(request, id):
-    # 1) Saca el id de tu modelo Usuario desde la sesión
     correo_usuario = request.user.email
     usuario_visitante = get_object_or_404(Usuario, correo=correo_usuario)
 
-    # 2) Carga el ayudante cuyo perfil ves
     ayudante = get_object_or_404(Ayudante, id_ayudante_id=id)
-    usuario_perfil = ayudante.id_ayudante  # instancia de Usuario
+    usuario_perfil = ayudante.id_ayudante  
+
+    clases_agendadas = ClaseAgendada.objects.filter(id_ayudante_id=id)
+
+    ids_clases = clases_agendadas.values_list('id_clase', flat=True)
+
+    evaluaciones = Evaluacion.objects.filter(clase_agendada_id_clase__in=ids_clases)
+
+    notas = []
+
+    for evaluacion in evaluaciones:
+        if evaluacion.valoracion is not None:
+            notas.append(evaluacion.valoracion)
+
+    if len(notas) > 0:
+        promedio_nota = round(sum(notas) / len(notas), 1)
+    else:
+        promedio_nota = 0
+
+    return render(request, "perfilAyudante.html", {
+        "usuario_visitante": usuario_visitante,
+        "usuario_perfil": usuario_perfil,
+        "ayudante": ayudante,
+        "rol_usuario": usuario_visitante.rol,
+        "notas": notas,
+        "promedio_nota": round(promedio_nota, 1) if promedio_nota > 0 else 0,
+    })
+
 
     return render(request, "perfilAyudante.html", {
         "usuario_visitante": usuario_visitante,
@@ -485,6 +523,7 @@ def seccionarFechaClase_view(request):
     })
 
 @login_required
+@rol_requerido("ayudante")
 def eliminar_disponibilidad_view(request, id_disponibilidad):
     try:
         usuario = Usuario.objects.get(correo=request.user.email)
@@ -847,6 +886,7 @@ def paypal_webhook(request):
 
     return JsonResponse({"status": "method not allowed"}, status=405)
 
+@login_required
 def detalleClase_detalle_view(request, id):
     clase = get_object_or_404(ClaseAgendada, id_clase=id)
     ayudante = get_object_or_404(Ayudante, id_ayudante =clase.id_ayudante)
