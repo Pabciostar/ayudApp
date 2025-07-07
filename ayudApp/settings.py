@@ -150,14 +150,15 @@ USE_TZ = True
 
 TIME_ZONE = 'America/Santiago'
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+BASE_DIR = Path(__file__).resolve().parent.parent
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')  # Carpeta final para collectstatic
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',  # si tienes una carpeta 'static' en la raíz
+    os.path.join(BASE_DIR, 'core', 'static'),  # Carpeta donde pones tus CSS, JS y demás
 ]
 
 MEDIA_URL = '/media/'
