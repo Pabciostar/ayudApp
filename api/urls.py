@@ -18,7 +18,8 @@ from .views import (
     clases_agendadas,
     EvaluacionViewSet,
     eliminar_clases_y_notificaciones,
-    recibir_calificacion
+    recibir_calificacion,
+    reportar_problema
 )
 from django.urls import path
 from .views import mi_rol
@@ -47,5 +48,6 @@ urlpatterns = router.urls + [
     path('detalleClase/<int:id_clase>/', detalle_clase_api, name='detalle_clase_api'),
     path('clases-agendadas/', clases_agendadas, name='clases_agendadas_global'),
     path('limpiar-datos/', eliminar_clases_y_notificaciones, name='limpiar_datos'),
-     path('notificacion/<int:notif_id>/calificar/', recibir_calificacion, name='recibir_calificacion'),
+    path('notificacion/<int:notif_id>/calificar/', recibir_calificacion, name='recibir_calificacion'),
+    path('reportar-problema/<int:clase_id>/', reportar_problema, name='reportar_problema'),
 ]

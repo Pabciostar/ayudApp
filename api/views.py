@@ -1,5 +1,5 @@
 import base64
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from rest_framework import viewsets, status, generics
 from core.models import Usuario, Ayudante, Postulacion, Notificacion, Evaluacion, ClaseAgendada, Materia, Transaccion
 from .serializers import ( 
@@ -25,7 +25,8 @@ from django.db.models.functions import Lower
 from collections import defaultdict
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from core.utils import generar_nueva_evaluacion
+from core.utils import crear_notificacion, generar_nueva_evaluacion
+from django.views.decorators.http import require_http_methods
 import json
 
 class UsuarioViewSet(viewsets.ModelViewSet):
@@ -103,7 +104,6 @@ def lista_ayudantes(request):
 @login_required
 def idAyudante(request):
     correo = request.user.email  # Esto lo entrega Google OAuth
-    print("Correo autenticado:", correo)
     try:
         usuario = Usuario.objects.get(correo=correo)
         ayudante = Ayudante.objects.get(id_ayudante=usuario)
@@ -388,3 +388,75 @@ def listar_notificaciones(request):
         return Response(serializer.data)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def reportar_problema(request, clase_id):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            motivo = data.get("motivo")
+            descripcion_usuario = data.get("descripcion", "").strip()
+
+            # Obtenemos la clase agendada
+            clase = get_object_or_404(ClaseAgendada, id_clase=clase_id)
+
+            # El remitente es el estudiante que está logueado
+            correo = request.user.email
+            usuario = Usuario.objects.get(correo=correo)
+            estudiante_id = usuario.id_usuario
+            
+
+            # Creamos la notificación
+            exito = generar_reporte(
+                clase_id=clase.id_clase,
+                estudiante_id=estudiante_id,
+                motivo=motivo,
+                descripcion_usuario=descripcion_usuario
+            )
+
+            if exito:
+                return JsonResponse({"mensaje": "Reporte creado correctamente."})
+            else:
+                return JsonResponse({"error": "Ya existe un reporte para esta clase."}, status=400)
+
+        except Exception as e:
+            return JsonResponse({"error": f"Error al procesar el reporte: {str(e)}"}, status=500)
+    else:
+        return JsonResponse({"error": "Método no permitido."}, status=405)
+
+
+def generar_reporte(clase_id, estudiante_id, motivo, descripcion_usuario=None):
+    
+    ya_existe = Notificacion.objects.filter(
+        clase_agendada_id_clase=clase_id,
+        destinatario=estudiante_id,
+        asunto="Reclamo clase"
+    ).exists()
+
+    if ya_existe:
+        return False
+
+    razon = {
+        "el_ayudante_no_se_presento": "El ayudante no se presentó.",
+        "no_dominio_materia": "El ayudante no mostró dominio de la materia.",
+        "lenguaje_inapropiado": "El ayudante usó lenguaje inapropiado.",
+        "clase_no_finalizada": "El ayudante no terminó la clase.",
+        "otro": f"Otra razón: {descripcion_usuario or 'Sin detalles'}"
+    }
+
+    mensaje_cuerpo = razon.get(motivo, "Razón desconocida")
+
+    try:
+        crear_notificacion(
+            asunto="Reclamo clase",
+            remitente=estudiante_id,
+            destinatario="administrador",
+            cuerpo=mensaje_cuerpo,
+            clase_agendada=clase_id
+        )
+
+        return True
+    except Exception as e:
+        return False

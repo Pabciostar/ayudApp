@@ -15,7 +15,7 @@ from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
 from django.db.models import Q
 from django.views.decorators.http import require_GET
-from .models import Usuario, Postulacion, Ayudante, Googlecalendartoken, Disponibilidad, Materia, ClaseAgendada, Transaccion, Ctacte, Evaluacion
+from .models import Usuario, Postulacion, Ayudante, Googlecalendartoken, Disponibilidad, Materia, ClaseAgendada, Transaccion, Ctacte, Evaluacion, Notificacion
 from .forms import DatosAdicionalesForm, PostulacionForm, datosBancariosForm
 from datetime import datetime, timedelta, time
 from .paypal_client import PayPalClient
@@ -257,7 +257,32 @@ def detalleClase_detalle_view(request, id):
 
 @login_required
 def perfilAyudante_view(request):
-    return render(request, 'perfilAyudante.html')
+    correo_usuario = request.user.email
+    usuario_ayudante = get_object_or_404(Usuario, correo=correo_usuario)
+
+    id_ayudante = usuario_ayudante.id_usuario  
+
+    clases_agendadas = ClaseAgendada.objects.filter(id_ayudante_id=id_ayudante)
+
+    ids_clases = clases_agendadas.values_list('id_clase', flat=True)
+
+    evaluaciones = Evaluacion.objects.filter(clase_agendada_id_clase__in=ids_clases)
+
+    notas = []
+
+    for evaluacion in evaluaciones:
+        if evaluacion.valoracion is not None:
+            notas.append(evaluacion.valoracion)
+
+    if len(notas) > 0:
+        promedio_nota = round(sum(notas) / len(notas), 1)
+    else:
+        promedio_nota = 0
+
+    return render(request, 'perfilAyudante.html', {
+        "notas": notas,
+        "promedio_nota": round(promedio_nota, 1) if promedio_nota > 0 else 0,
+    })
 
 @rol_requerido("ayudante")
 def agregar_datosbancarios(request):
@@ -322,7 +347,6 @@ def detallePostulacion_view(request):
     })
 
 @csrf_exempt
-@rol_requerido("administrador")
 def aceptar_postulacion(request):
     if request.method == "POST":
         import json
@@ -374,7 +398,6 @@ def aceptar_postulacion(request):
     return JsonResponse({"error": "Método no permitido"}, status=405)
 
 @csrf_exempt
-@rol_requerido("administrador")
 def rechazar_postulacion(request):
     if request.method == "POST":
         import json
@@ -402,8 +425,32 @@ def rechazar_postulacion(request):
     return JsonResponse({"error": "Método no permitido"}, status=405)
 
 @rol_requerido("ayudante")
+@login_required
 def editarPerfilAyudante_view(request):
-    return render(request, 'editarPerfilAyudante.html')
+    correo_usuario = request.user.email
+    ayudante = get_object_or_404(Usuario, correo=correo_usuario)
+
+    clases_agendadas = ClaseAgendada.objects.filter(id_ayudante_id=ayudante.id_usuario)
+
+    ids_clases = clases_agendadas.values_list('id_clase', flat=True)
+
+    evaluaciones = Evaluacion.objects.filter(clase_agendada_id_clase__in=ids_clases)
+
+    notas = []
+
+    for evaluacion in evaluaciones:
+        if evaluacion.valoracion is not None:
+            notas.append(evaluacion.valoracion)
+
+    if len(notas) > 0:
+        promedio_nota = round(sum(notas) / len(notas), 1)
+    else:
+        promedio_nota = 0
+    return render(request, 'editarPerfilAyudante.html', {
+        "ayudante": ayudante,
+        "notas": notas,
+        "promedio_nota": round(promedio_nota, 1) if promedio_nota > 0 else 0,
+    })
 
 def registro_view(request):
     return render(request, 'registro.html')
@@ -442,13 +489,6 @@ def perfil_ayudante_html(request, id):
         "promedio_nota": round(promedio_nota, 1) if promedio_nota > 0 else 0,
     })
 
-
-    return render(request, "perfilAyudante.html", {
-        "usuario_visitante": usuario_visitante,
-        "usuario_perfil":    usuario_perfil,
-        "ayudante":          ayudante,
-        "rol_usuario": usuario_visitante.rol,
-    })
 
 
 @csrf_exempt
@@ -836,10 +876,8 @@ def crear_evento_google(clase):
         clase.evento_google_id = evento_creado.get('id')
         clase.save()
 
-        print("Enlace de Google Meet:", enlace_meet)
         return enlace_meet 
     except Exception as e:
-        print("Error al crear evento en Google Calendar:", e)
         return None
 
 
@@ -891,7 +929,13 @@ def detalleClase_detalle_view(request, id):
     clase = get_object_or_404(ClaseAgendada, id_clase=id)
     ayudante = get_object_or_404(Ayudante, id_ayudante =clase.id_ayudante)
     usuario_ayudante = ayudante.id_ayudante 
-    return render(request, 'detalleClase.html', {'clase': clase, 'usuario_ayudante': usuario_ayudante})
+
+    reporte_enviado = Notificacion.objects.filter(
+        clase_agendada_id_clase=id,
+        asunto="Reclamo clase"
+    ).exists()
+
+    return render(request, 'detalleClase.html', {'clase': clase, 'usuario_ayudante': usuario_ayudante, "reporte_enviado": reporte_enviado})
 
 @login_required
 @csrf_exempt

@@ -10,6 +10,7 @@ def crear_notificacion(asunto, remitente, destinatario, cuerpo, clase_agendada=N
         count = Notificacion.objects.count()
         nuevo_id = count + 1
         nuevo_id_decimal = Decimal(str(nuevo_id))
+        print(f"[DEBUG] Generando nuevo ID: {nuevo_id_decimal}")
 
         if Notificacion.objects.filter(id_notificacion=nuevo_id_decimal).exists():
             print(f"[ERROR] Ya existe una notificación con ID {nuevo_id_decimal}. Saltando creación.")

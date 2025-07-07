@@ -1,22 +1,29 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const userDiv = document.getElementById("data-usuario");
     const userId = userDiv.dataset.usuarioId;
-    const response = await fetch(`/api/notificaciones/${userId}/`);
-    const notificaciones = await response.json();
 
-    const contenedor = document.getElementById("contenedorNotificaciones");
-    contenedor.innerHTML = "";
+    try {
+        const response = await fetch(`/api/notificaciones/${userId}/`);
+       if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-    if (notificaciones.length === 0) {
-    contenedor.innerHTML = `
-        <div class="no-notificaciones text-center my-5">
-            <i class="bi bi-bell-slash-fill icono-sin-notificaciones"></i>
-            <p class="mensaje-sin-notificaciones">No hay notificaciones disponibles.</p>
-        </div>
-    `;
-    } else {
-        notificaciones.forEach(notif => {
-            contenedor.innerHTML += `
+        const notificaciones = await response.json();
+
+        // ✅ Ordenar por fecha – más reciente primero
+        notificaciones.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+        const contenedor = document.getElementById("contenedorNotificaciones");
+        contenedor.innerHTML = "";
+
+        if (notificaciones.length === 0) {
+            contenedor.innerHTML = `
+                <div class="no-notificaciones text-center my-5">
+                    <i class="bi bi-bell-slash-fill icono-sin-notificaciones"></i>
+                    <p class="mensaje-sin-notificaciones">No hay notificaciones disponibles.</p>
+                </div>
+            `;
+        } else {
+            // ✅ Mostramos las notificaciones ordenadas
+            contenedor.innerHTML = notificaciones.map(notif => `
                 <div class="mensaje-contenedor mb-4">
                     <div class="mensaje-header">
                         <h2>${notif.asunto}</h2>
@@ -27,7 +34,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <br><a href="/notificacion/${notif.id_notificacion}/" class="btn btn-sm btn-outline-primary mt-2">Ver detalle</a>
                     </div>
                 </div>
-            `;
-        });
+            `).join('');
+        }
+
+    } catch (error) {
+        console.error("Error al cargar notificaciones:", error);
+        contenedor.innerHTML = `
+            <div class="alert alert-danger mt-3">
+                No se pudieron cargar las notificaciones.
+            </div>
+        `;
     }
 });

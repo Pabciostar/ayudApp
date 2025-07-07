@@ -486,7 +486,9 @@ async function mostrarNotificaciones(element) {
     }
 
     // Ordenar notificaciones por fecha (más recientes primero)
-    notificaciones.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+    const notificacionesFiltradas = notificaciones
+      .filter(notif => notif.asunto === "Reclamo clase")
+      .sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 
     let tablaHTML = `
       <h4>Notificaciones</h4>
@@ -503,7 +505,7 @@ async function mostrarNotificaciones(element) {
         <tbody>
     `;
 
-    notificaciones.forEach(notif => {
+    notificacionesFiltradas.forEach(notif => {
        // Obtener nombre del destinatario si es posible
       let destinatario = notif.destinatario;
       try {

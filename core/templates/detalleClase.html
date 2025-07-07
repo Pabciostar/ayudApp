@@ -35,9 +35,45 @@
         {% endif %}
         <a href="{% url 'buscador' %}" class="btn btn-outline-light">Volver</a>
       </div>
+      {% if reporte_enviado %}
+          <div class="alert alert-warning mt-4">
+              ⚠️ Ya has enviado un reporte para esta clase.
+              Habrá un periodo para investigar sobre la situación (leer términos y copndiciones) para resolver adecuadamente la situación
+          </div>
+      {% else %}
+      
+        <!-- Formulario para enviar reclamo de clase -->
+        <form id="formularioReporte" class="mt-4" method="POST">
+          {% csrf_token %}
+            <div class="mb-3">
+                <label for="motivo" class="form-label">Selecciona el motivo del reporte:</label>
+                <select id="motivo" name="motivo" class="form-select" required>
+                    <option value="" selected disabled>Elige una opción</option>
+                    <option value="el_ayudante_no_se_presento">El ayudante no se presentó</option>
+                    <option value="no_dominio_materia">El ayudante no mostró dominio de la materia</option>
+                    <option value="lenguaje_inapropiado">El ayudante usó lenguaje inapropiado</option>
+                    <option value="clase_no_finalizada">El ayudante no terminó la clase</option>
+                    <option value="otro">Otro (especifica abajo)</option>
+                </select>
+            </div>
+      
+            <div class="mb-3 d-none" id="contenedorDescripcion">
+                <label for="descripcion" class="form-label">Escribe más detalles:</label>
+                <textarea id="descripcion" name="descripcion" class="form-control" rows="3"></textarea>
+            </div>
+      
+            <button type="submit" class="btn btn-danger">🔴 Reportar problema</button>
+        </form>
+      
+        <div id="mensajeExito" class="alert alert-success mt-3 d-none" role="alert">
+            ¡Tu reporte ha sido enviado al administrador!
+        </div>
+      
+      {% endif %}
     </div>
   </div>
 </div>
+
 
 
 <!-- Modal de cancelar clase-->
@@ -63,4 +99,14 @@
 </div>
 
 
+<script>
+    const clase = {
+        id_clase: "{{ clase.id_clase }}",
+    };
+    const claseId = clase.id_clase;
+</script>
+
+<script src="{% static 'js/detalle_clase.js' %}"></script>
+
+<script src="{% static 'js/detalle_clase.js' %}"></script>
 {% endblock %}
