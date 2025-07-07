@@ -4,25 +4,29 @@ document.addEventListener('DOMContentLoaded', function () {
     const inputHora = document.getElementById('hora_inicio');
     const inputDuracion = document.getElementById('duracion_min');
     const form = document.querySelector('form');
-    const btnTest = document.getElementById('btn-test-agendar');
 
-    let botonPresionado = null;
+    if (select) {
+        select.addEventListener('change', function () {
 
-    if (btnTest) {
-        btnTest.addEventListener('click', function () {
-            botonPresionado = 'test';
+            console.log("Valor seleccionado:", this.value)
+
+            if (this.value) {
+                const [fecha, hora_inicio, duracion_min] = this.value.split('|');
+
+                console.log("Fecha:", fecha);
+                console.log("Hora:", hora_inicio);
+                console.log("Duración:", duracion_min);
+
+                inputFecha.value = fecha;
+                inputHora.value = hora_inicio;
+                inputDuracion.value = duracion_min;
+            }
         });
     }
 
     if (form) {
         form.addEventListener('submit', function (e) {
-            if (botonPresionado !== 'test') {
-                // Permite que el botón PayPal siga funcionando como está
-                return;
-            }
-
-            // Para el botón TEST, detenemos el envío automático
-            e.preventDefault();
+            e.preventDefault();  // Evita el envío inmediato
 
             if (!select.value) {
                 Swal.fire({
@@ -34,9 +38,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
+            console.log("Valor del select en el submit:", select.value);
+
             const [fecha, hora_inicio, duracion_min] = select.value.split('|');
+            console.log("Valores divididos:", { fecha, hora_inicio, duracion_min});
 
             if (!fecha || !hora_inicio || !duracion_min) {
+                console.error("Faltan datos en el horario. Valor original:", select.value);
                 Swal.fire({
                     icon: 'error',
                     title: 'Error interno',
@@ -47,24 +55,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
             Swal.fire({
                 icon: 'question',
-                title: '¿Confirmar agendamiento de prueba?',
+                title: '¿Confirmar agendamiento?',
                 html: `
                     <p><strong>Fecha:</strong> ${fecha}</p>
                     <p><strong>Hora:</strong> ${hora_inicio}</p>
                     <p><strong>Duración:</strong> ${duracion_min} minutos</p>
                 `,
                 showCancelButton: true,
-                confirmButtonText: 'Sí, agendar (Test)',
+                confirmButtonText: 'Sí, agendar',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // ⚠️ Aquí asignamos los valores a los inputs ocultos
-                    inputFecha.value = fecha;
-                    inputHora.value = hora_inicio;
-                    inputDuracion.value = duracion_min;
-
-                    // ⚡ Establecemos el action y enviamos el formulario
-                    form.setAttribute('action', btnTest.getAttribute('formaction'));
                     form.submit();
                 }
             });

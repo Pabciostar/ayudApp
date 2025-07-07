@@ -2,76 +2,86 @@
 {% load static %}
 
 {% block css %}
-<link rel="stylesheet" href="{% static 'css/notificaciones.css' %}">
 <link rel="stylesheet" href="{% static 'css/agendarClase.css' %}">
 {% endblock %}
 
 {% block content %}
 <div id="marcoNotificaciones" class="container">
-    <div id="contenedorNotificaciones" class="row mt-5 py-5">
-        <div class="p-4 col-md-6">
-            <h2 class="mb-4">Proceso de Agendar Clase</h2>
+  <div id="contenedorNotificaciones" class="row mt-5 py-5 justify-content-center">
 
-            {% if clase_confirmada %}
-                <div class="alert alert-success">
-                    ✅ Clase agendada para el {{ clase_confirmada.fecha }} a las {{ clase_confirmada.hora_inicio }}.
-                </div>
-                <a href="{% url 'pagar_clase' clase_confirmada.id_clase %}" class="btn btn-success mt-3">
-                    💳 Pagar ahora
-                </a>
-            {% else %}
-                <p><strong>Ayudante:</strong> {{ ayudante.id_ayudante.nombres }} {{ ayudante.id_ayudante.apellidos }}</p>
-                <p><strong>Valor por clase:</strong> ${{ ayudante.valor }}</p>
+    <div class="col-lg-8 col-md-10">
+      <div class="card shadow-lg">
+        <div class="card-body">
 
-                <form action="" method="POST">
-                    {% csrf_token %}
+          <h2 class="mb-4 text-center">📅 Proceso de Agendar Clase</h2>
 
-                    <div class="mb-3">
-                        <label for="materia" class="form-label">Materia</label>
-                        <select class="form-control" id="materia" name="id_materia" required>
-                            <option value="" disabled selected>Selecciona una materia</option>
-                            {% for materia in materias %}
-                                <option value="{{ materia.id_materia }}">{{ materia.nombre }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+          {% if clase_confirmada %}
+            <div class="alert alert-success text-center">
+              ✅ Clase agendada para el {{ clase_confirmada.fecha }} a las {{ clase_confirmada.hora_inicio }}.
+            </div>
+            <div class="d-flex justify-content-center">
+              <a href="{% url 'pagar_clase' clase_confirmada.id_clase %}" class="btn btn-success mt-3">
+                💳 Pagar ahora
+              </a>
+            </div>
+          {% else %}
 
-                    {% if disponibilidades %}
-                        <div class="mb-3">
-                            <label for="disponibilidad" class="form-label">Horario disponible</label>
-                            <select class="form-control" id="disponibilidad" name="disponibilidad" required>
-                                <option value="" disabled selected>Selecciona horario</option>
-                                {% for d in disponibilidades %}
-                                    <option 
-                                        value="{{ d.fecha|date:'Y-m-d' }}|{{ d.hora_inicio|time:'H:i' }}|{{ d.duracion_min }}"
-                                        data-materia-id="{{ d.id_materia.id_materia }}">
-                                        {{ d.fecha|date:'Y-m-d' }} - {{ d.hora_inicio|time:'H:i' }} ({{ d.duracion_min }} min)
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    {% else %}
-                        <div class="alert alert-warning">
-                            ⚠️ Este ayudante no ha definido horarios disponibles aún.
-                        </div>
-                    {% endif %}
+            <div class="mb-4">
+              <p><strong>Ayudante:</strong> {{ ayudante.id_ayudante.nombres }} {{ ayudante.id_ayudante.apellidos }}</p>
+              <p><strong>Valor por clase:</strong> ${{ ayudante.valor }}</p>
+            </div>
 
-                    <!-- Campos ocultos que se rellenan con JavaScript -->
-                    <input type="hidden" id="fecha" name="fecha" required>
-                    <input type="hidden" id="hora_inicio" name="hora_inicio" required>
-                    <input type="hidden" id="duracion_min" name="duracion_min" required>
-                    <input type="hidden" name="id_ayudante" value="{{ ayudante.id_ayudante_id }}">
+            <form action="" method="POST">
+              {% csrf_token %}
 
-                    <button type="submit" class="paypal-btn">💳 Pagar con PayPal</button>
-                    <button type="submit" class="btn btn-warning mt-2" id="btn-test-agendar" formaction="{% url 'agendar_test' %}">
-                        ⚡ Agendar sin pagar (Test)
-                    </button>
-                </form>
-                <a href="{% url 'buscador' %}" class="btn btn-secondary mt-2">← Volver</a>
-            {% endif %}
+              <div class="mb-4">
+                <label for="materia" class="form-label">📚 Materia</label>
+                <select class="form-select" id="materia" name="id_materia" required>
+                  <option value="" disabled selected>Selecciona una materia</option>
+                  {% for materia in materias %}
+                    <option value="{{ materia.id_materia }}">{{ materia.nombre }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="mb-4">
+                <label for="disponibilidad" class="form-label">🕒 Horario disponible</label>
+                {% if disponibilidades %}
+                  <select class="form-select" id="disponibilidad" name="disponibilidad" required>
+                    <option value="" disabled selected>Selecciona horario</option>
+                    {% for d in disponibilidades %}
+                      <option 
+                        value="{{ d.fecha|date:'Y-m-d' }}|{{ d.hora_inicio|time:'H:i' }}|{{ d.duracion_min }}"
+                        data-materia-id="{{ d.id_materia.id_materia }}">
+                        {{ d.fecha|date:'Y-m-d' }} - {{ d.hora_inicio|time:'H:i' }} ({{ d.duracion_min }} min)
+                      </option>
+                    {% endfor %}
+                  </select>
+                {% else %}
+                  <div class="alert alert-warning">
+                    ⚠️ Este ayudante no ha definido horarios disponibles aún.
+                  </div>
+                {% endif %}
+              </div>
+
+              <!-- Campos ocultos -->
+              <input type="hidden" id="fecha" name="fecha" required>
+              <input type="hidden" id="hora_inicio" name="hora_inicio" required>
+              <input type="hidden" id="duracion_min" name="duracion_min" required>
+
+              <div class="d-grid gap-2">
+                <button type="submit" class="paypal-btn">💳 Pagar con PayPal</button>
+                <a href="{% url 'buscador' %}" class="btn btn-secondary">← Volver</a>
+              </div>
+
+            </form>
+          {% endif %}
 
         </div>
+      </div>
     </div>
+
+  </div>
 </div>
 
 <script src="{% static 'js/agendar_clase.js' %}"></script>
